@@ -12,15 +12,15 @@ import io.github.palexdev.materialfx.css.themes.Themes;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -31,9 +31,13 @@ public class AssessmentsApplication extends Application {
     TableView table;
     ObservableList<Property> data;
 
+    ApiPropertyAssessmentDAO apiDao;
+
     @Override
     public void start(Stage stage) throws IOException {
         Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+        apiDao = new ApiPropertyAssessmentDAO();
+
         BorderPane root = new BorderPane();
         Scene scene = new Scene(root);
         setTable();
@@ -41,8 +45,36 @@ public class AssessmentsApplication extends Application {
 
         Pagination pagination = new Pagination();
         pagination.setPageCount(10);
-
+        pagination.setMaxPageIndicatorCount(5);
         root.setBottom(pagination);
+
+
+        Button button = new Button("stuff");
+        button.setOnAction(e-> {
+            //FXCollections.observableArrayList(new ApiPropertyAssessmentDAO().getByNeightbourhood("MEADOWLARK PARK")
+            data.clear();
+            data.addAll(apiDao.getByNeightbourhood("MEADOWLARK PARK"));
+            System.out.println(data);
+        });
+
+        Button button1 = new Button("Prev");
+        button1.setOnAction(e->{
+            data.clear();
+            apiDao.setOffset(apiDao.getOffset()!=0? apiDao.getOffset()-100 : apiDao.getOffset());
+            data.setAll(apiDao.getAll());
+        });
+
+        Button button2 = new Button("Next");
+        button2.setOnAction(e->{
+            data.clear();
+            apiDao.setOffset(apiDao.getOffset()+100);
+            data.setAll(apiDao.getAll());
+        });
+
+        VBox vbox = new VBox(button1,button2);
+
+
+        root.setTop(vbox);
 
         stage.setTitle("Hello!");
         stage.setScene(scene);
@@ -54,8 +86,14 @@ public class AssessmentsApplication extends Application {
         launch();
     }
 
+    void pageTable(int index){
+        data.clear();
+        apiDao.setOffset(index*100);
+        data.setAll(apiDao.getAll());
+    }
+
     void setTable(){
-        List<Property> properties = new ApiPropertyAssessmentDAO().getAll();
+        List<Property> properties = apiDao.getAll();
         data = FXCollections.observableArrayList(properties);
         table = new TableView();
 

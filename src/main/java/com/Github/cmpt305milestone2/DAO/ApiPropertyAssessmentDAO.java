@@ -13,6 +13,8 @@ import static com.Github.cmpt305milestone2.Data.IOReader.accountReader;
 import static com.Github.cmpt305milestone2.Data.IOReader.reader;
 
 public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
+    private int limit = 100;
+    private int offset = 0;
     private final String endpoint = "https://data.edmonton.ca/resource/q7d6-ambg.csv";
     HttpClient client;
 
@@ -37,6 +39,9 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
         String query = new QueryBuilder(endpoint)
                 .add("SELECT","*")
                 .add("WHERE","neighbourhood",neighbourhood)
+                .add("ORDER BY","account_number")
+                .add("OFFSET",offset)
+                .add("LIMIT",limit)
                 .build();
         HttpResponse<String> response = makeRequest(query);
         return reader(response).values().stream().toList();
@@ -49,6 +54,9 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
                 .add("WHERE","mill_class_1",assessmentClass)
                 .add("OR","mill_class_1",assessmentClass)
                 .add("OR","mill_class_1",assessmentClass)
+                .add("ORDER BY","account_number")
+                .add("OFFSET",offset)
+                .add("LIMIT",limit)
                 .build();
         HttpResponse<String> response = makeRequest(query);
         return reader(response).values().stream().toList();
@@ -58,6 +66,9 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
     public List<Property> getAll() {
         String query = new QueryBuilder(endpoint)
                 .add("SELECT","*")
+                .add("ORDER BY","account_number")
+                .add("OFFSET",offset)
+                .add("LIMIT",limit)
                 .build();
         HttpResponse<String> response = makeRequest(query);
         return reader(response).values().stream().toList();
@@ -79,5 +90,21 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
             System.out.println(e);
         }
         return response;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
     }
 }
