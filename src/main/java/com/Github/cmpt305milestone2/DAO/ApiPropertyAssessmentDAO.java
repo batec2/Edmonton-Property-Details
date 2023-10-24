@@ -7,7 +7,10 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import java.util.function.Consumer;
 
 import static com.Github.cmpt305milestone2.Data.IOReader.accountReader;
 import static com.Github.cmpt305milestone2.Data.IOReader.reader;
@@ -16,6 +19,9 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
     private int limit = 100;
     private int offset = 0;
     private final String endpoint = "https://data.edmonton.ca/resource/q7d6-ambg.csv";
+    private String currentQuery;
+    private String currentItem;
+    private String currentFilter = "All";
     HttpClient client;
 
     public ApiPropertyAssessmentDAO() {
@@ -25,53 +31,75 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
 
     @Override
     public Property getByAccountnumber(int accountNumber) {
-        String query = new QueryBuilder(endpoint)
+        currentQuery = new QueryBuilder(endpoint)
                 .add("SELECT","*")
                 .add("WHERE","account_number",accountNumber)
                 .build();
-        System.out.println(query);
-        HttpResponse<String> response = makeRequest(query);
+        HttpResponse<String> response = makeRequest(currentQuery);
         return accountReader(response);
     }
 
     @Override
     public List<Property> getByNeightbourhood(String neighbourhood) {
-        String query = new QueryBuilder(endpoint)
+        currentFilter = "Neighbour";
+        currentItem = neighbourhood.toUpperCase();
+        currentQuery = new QueryBuilder(endpoint)
                 .add("SELECT","*")
-                .add("WHERE","neighbourhood",neighbourhood)
+                .add("WHERE","neighbourhood",currentItem)
                 .add("ORDER BY","account_number")
                 .add("OFFSET",offset)
                 .add("LIMIT",limit)
                 .build();
-        HttpResponse<String> response = makeRequest(query);
+        System.out.println(currentQuery);
+        HttpResponse<String> response = makeRequest(currentQuery);
+        if(reader(response)==null){
+            return new ArrayList<>();
+        }
         return reader(response).values().stream().toList();
     }
 
     @Override
     public List<Property> getByAssessmentClass(String assessmentClass) {
-        String query = new QueryBuilder(endpoint)
+        currentFilter = "Assessment";
+        currentItem = assessmentClass.toUpperCase();
+        currentQuery = new QueryBuilder(endpoint)
                 .add("SELECT","*")
-                .add("WHERE","mill_class_1",assessmentClass)
-                .add("OR","mill_class_1",assessmentClass)
-                .add("OR","mill_class_1",assessmentClass)
+                .add("WHERE","mill_class_1",currentItem)
+                .add("OR","mill_class_1",currentItem)
+                .add("OR","mill_class_1",currentItem)
                 .add("ORDER BY","account_number")
                 .add("OFFSET",offset)
                 .add("LIMIT",limit)
                 .build();
-        HttpResponse<String> response = makeRequest(query);
+        System.out.println(currentQuery);
+        HttpResponse<String> response = makeRequest(currentQuery);
+        if(reader(response)==null){
+            return new ArrayList<>();
+        }
         return reader(response).values().stream().toList();
     }
 
     @Override
     public List<Property> getAll() {
-        String query = new QueryBuilder(endpoint)
+        currentFilter = "All";
+        currentQuery = new QueryBuilder(endpoint)
                 .add("SELECT","*")
                 .add("ORDER BY","account_number")
                 .add("OFFSET",offset)
                 .add("LIMIT",limit)
                 .build();
-        HttpResponse<String> response = makeRequest(query);
+        System.out.println(currentQuery);
+        HttpResponse<String> response = makeRequest(currentQuery);
         return reader(response).values().stream().toList();
+    }
+
+    public List<Property> pageCurrentQuery(){
+        return switch (currentFilter) {
+            case "Neighbour" -> this.getByNeightbourhood(currentItem);
+            case "Assessment" -> this.getByAssessmentClass(currentItem);
+            case "All" -> this.getAll();
+            default -> null;
+        };
     }
 
     private HttpResponse<String> makeRequest(String query){

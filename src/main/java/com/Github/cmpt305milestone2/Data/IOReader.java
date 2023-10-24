@@ -63,6 +63,7 @@ public class IOReader {
      * Hashmap of all entries in the fill, Null if response is empty
      */
     public static HashMap<Integer, Property> reader(HttpResponse<String> response){
+        if(response==null){return null;};
         Scanner scanner = new Scanner(response.body());
         HashMap<Integer,Property> hashMap = new HashMap<Integer,Property>();
         scanner.useDelimiter("\n");
@@ -84,6 +85,7 @@ public class IOReader {
     }
 
     public static Property accountReader(HttpResponse<String> response){
+        if(response==null){return null;};
         Scanner scanner = new Scanner(response.body());
         Property property=null;
         scanner.useDelimiter("\n");

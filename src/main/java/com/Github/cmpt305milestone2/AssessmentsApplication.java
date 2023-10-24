@@ -14,17 +14,20 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AssessmentsApplication extends Application {
@@ -43,11 +46,12 @@ public class AssessmentsApplication extends Application {
         setTable();
         root.setCenter(table);
 
+        /*
         Pagination pagination = new Pagination();
         pagination.setPageCount(10);
         pagination.setMaxPageIndicatorCount(5);
         root.setBottom(pagination);
-
+        */
 
         Button button = new Button("stuff");
         button.setOnAction(e-> {
@@ -61,20 +65,71 @@ public class AssessmentsApplication extends Application {
         button1.setOnAction(e->{
             data.clear();
             apiDao.setOffset(apiDao.getOffset()!=0? apiDao.getOffset()-100 : apiDao.getOffset());
-            data.setAll(apiDao.getAll());
+            data.setAll(apiDao.pageCurrentQuery());
         });
 
         Button button2 = new Button("Next");
         button2.setOnAction(e->{
             data.clear();
             apiDao.setOffset(apiDao.getOffset()+100);
-            data.setAll(apiDao.getAll());
+            data.setAll(apiDao.pageCurrentQuery());
         });
 
-        VBox vbox = new VBox(button1,button2);
+        ArrayList<String> filters = new ArrayList<>();
+        filters.add("Get All");
+        filters.add("Neighbourhood");
+        filters.add("Assessment Class");
+        filters.add("Ward");
 
+        TextField filterItem = new TextField();
+        filterItem.setDisable(true);
 
-        root.setTop(vbox);
+        ComboBox filterBox = new ComboBox(FXCollections.observableArrayList(filters));
+        filterBox.setOnAction(e->{
+            switch(filterBox.getValue().toString()){
+                case "Get All"->filterItem.setDisable(true);
+                case "Neighbourhood"->filterItem.setDisable(false);
+                case "Assessment Class"->filterItem.setDisable(false);
+                case "Ward"->filterItem.setDisable(false);
+            }
+        });
+        filterBox.getSelectionModel().selectFirst();
+
+        Button filterButton = new Button("Filter");
+
+        filterButton.setOnAction(e->{
+            switch(filterBox.getValue().toString()){
+                case "Get All"->{
+                    data.clear();
+                    data.setAll(apiDao.getAll());
+                }
+                case "Neighbourhood"->{
+                    if (!filterItem.getText().isBlank()) {
+                        data.clear();
+                        data.setAll(apiDao.getByNeightbourhood(filterItem.getText()));
+                    }
+                }
+                case "Assessment Class"->{
+                    if (!filterItem.getText().isBlank()) {
+                        data.clear();
+                        data.setAll(apiDao.getByAssessmentClass(filterItem.getText()));
+                    }
+                }
+                case "Ward" ->{
+                    if (!filterItem.getText().isBlank()) {
+                        System.out.println("Ward");
+                    }
+                }
+            }
+        });
+
+        HBox hBoxTop = new HBox(filterItem,filterBox,filterButton);
+        hBoxTop.setAlignment(Pos.TOP_RIGHT);
+        root.setTop(hBoxTop);
+
+        HBox hbox = new HBox(button1,button2);
+        hbox.setAlignment(Pos.BASELINE_CENTER);
+        root.setBottom(hbox);
 
         stage.setTitle("Hello!");
         stage.setScene(scene);
@@ -168,9 +223,6 @@ public class AssessmentsApplication extends Application {
         TableColumn<Property, String> assessmentPercent3 = new TableColumn<>("assessmentPercent3");
         assessmentPercent3.setMinWidth(120);
         assessmentPercent3.setCellValueFactory(new PropertyValueFactory<>("assessmentPercent3"));
-
-
-
 
         table.getColumns().setAll(accountNum,suite,houseNum,streetName,garage,
                 neighbourhoodID,neighbourhood,ward,assessedValue,latitude,longitude,point,
