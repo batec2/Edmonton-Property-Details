@@ -35,9 +35,11 @@ public class PropertyAssessments{
      * @param response
      * HttpResponse from a query to api
      */
+    /* TODO
     public PropertyAssessments(HttpResponse<String> response) {
         this.properties = reader(response);
     }
+    */
 
     /**
      * Constructor for if there is existing hashmap

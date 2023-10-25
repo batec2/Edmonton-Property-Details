@@ -1,7 +1,6 @@
 package com.Github.cmpt305milestone2.DAO;
 
 import com.Github.cmpt305milestone2.Data.Property;
-import com.Github.cmpt305milestone2.Data.QueryBuilder;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -9,8 +8,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.function.Consumer;
 
 import static com.Github.cmpt305milestone2.Data.IOReader.accountReader;
 import static com.Github.cmpt305milestone2.Data.IOReader.reader;
@@ -55,7 +52,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
         if(reader(response)==null){
             return new ArrayList<>();
         }
-        return reader(response).values().stream().toList();
+        return reader(response);
     }
 
     @Override
@@ -76,7 +73,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
         if(reader(response)==null){
             return new ArrayList<>();
         }
-        return reader(response).values().stream().toList();
+        return reader(response);
     }
 
     @Override
@@ -90,7 +87,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
                 .build();
         System.out.println(currentQuery);
         HttpResponse<String> response = makeRequest(currentQuery);
-        return reader(response).values().stream().toList();
+        return reader(response);
     }
 
     public List<Property> pageCurrentQuery(){

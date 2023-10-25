@@ -1,4 +1,4 @@
-package com.Github.cmpt305milestone2.Data;
+package com.Github.cmpt305milestone2.DAO;
 
 public class QueryBuilder {
     String query;

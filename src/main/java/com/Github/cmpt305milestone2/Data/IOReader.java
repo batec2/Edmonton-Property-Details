@@ -6,7 +6,9 @@ package com.Github.cmpt305milestone2.Data;
 
 import java.io.File;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -62,10 +64,10 @@ public class IOReader {
      * @return
      * Hashmap of all entries in the fill, Null if response is empty
      */
-    public static HashMap<Integer, Property> reader(HttpResponse<String> response){
+    public static List<Property> reader(HttpResponse<String> response){
         if(response==null){return null;};
         Scanner scanner = new Scanner(response.body());
-        HashMap<Integer,Property> hashMap = new HashMap<Integer,Property>();
+        ArrayList<Property> propertyList = new ArrayList<>();
         scanner.useDelimiter("\n");
         //Skips header, if there is no line returns null
         if(scanner.hasNext()){
@@ -79,9 +81,9 @@ public class IOReader {
         //Reads in Query into properties
         while (scanner.hasNext()){
             Property property = new Property(scanner.next().replace("\"",""));
-            hashMap.put(property.getAccountNum(), property);
+            propertyList.add(property);
         }
-        return hashMap.isEmpty()?null:hashMap;
+        return propertyList;
     }
 
     public static Property accountReader(HttpResponse<String> response){

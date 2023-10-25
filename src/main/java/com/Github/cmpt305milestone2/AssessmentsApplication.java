@@ -1,5 +1,6 @@
 package com.Github.cmpt305milestone2;
 
+import atlantafx.base.theme.Dracula;
 import atlantafx.base.theme.PrimerDark;
 import com.Github.cmpt305milestone2.DAO.ApiPropertyAssessmentDAO;
 import com.Github.cmpt305milestone2.Data.Property;
@@ -14,6 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -38,7 +40,8 @@ public class AssessmentsApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+        //CSS themes from here -> https://github.com/mkpaz/atlantafx
+        Application.setUserAgentStylesheet(new Dracula().getUserAgentStylesheet());
         apiDao = new ApiPropertyAssessmentDAO();
 
         BorderPane root = new BorderPane();
@@ -125,11 +128,15 @@ public class AssessmentsApplication extends Application {
 
         HBox hBoxTop = new HBox(filterItem,filterBox,filterButton);
         hBoxTop.setAlignment(Pos.TOP_RIGHT);
+        hBoxTop.setPadding(new Insets(10));
+        hBoxTop.setSpacing(10);
         root.setTop(hBoxTop);
 
-        HBox hbox = new HBox(button1,button2);
-        hbox.setAlignment(Pos.BASELINE_CENTER);
-        root.setBottom(hbox);
+        HBox hBox = new HBox(button1,button2);
+        hBox.setAlignment(Pos.BASELINE_CENTER);
+        hBox.setPadding(new Insets(10));
+        hBox.setSpacing(10);
+        root.setBottom(hBox);
 
         stage.setTitle("Hello!");
         stage.setScene(scene);
@@ -220,7 +227,7 @@ public class AssessmentsApplication extends Application {
         assessment3.setMinWidth(120);
         assessment3.setCellValueFactory(new PropertyValueFactory<>("assessment3"));
 
-        TableColumn<Property, String> assessmentPercent3 = new TableColumn<>("assessmentPercent3");
+        TableColumn<Property, String> assessmentPercent3 = new TableColumn<>("Assessment Percent3");
         assessmentPercent3.setMinWidth(120);
         assessmentPercent3.setCellValueFactory(new PropertyValueFactory<>("assessmentPercent3"));
 
