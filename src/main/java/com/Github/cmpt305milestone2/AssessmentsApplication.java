@@ -126,11 +126,19 @@ public class AssessmentsApplication extends Application {
             }
         });
 
-        HBox hBoxTop = new HBox(filterItem,filterBox,filterButton);
-        hBoxTop.setAlignment(Pos.TOP_RIGHT);
-        hBoxTop.setPadding(new Insets(10));
-        hBoxTop.setSpacing(10);
-        root.setTop(hBoxTop);
+        filterButton.setAlignment(Pos.BASELINE_RIGHT);
+
+        HBox hBoxInput = new HBox(filterItem,filterBox);
+        hBoxInput.setSpacing(10);
+
+        HBox hBoxFilter = new HBox(filterButton);
+        hBoxFilter.setAlignment(Pos.BOTTOM_RIGHT);
+
+        VBox vBoxLeft = new VBox(hBoxInput,hBoxFilter);
+        vBoxLeft.setSpacing(10);
+        vBoxLeft.setPadding(new Insets(10));
+
+        root.setLeft(vBoxLeft);
 
         HBox hBox = new HBox(button1,button2);
         hBox.setAlignment(Pos.BASELINE_CENTER);
@@ -138,8 +146,9 @@ public class AssessmentsApplication extends Application {
         hBox.setSpacing(10);
         root.setBottom(hBox);
 
-        stage.setTitle("Hello!");
+        stage.setTitle("Property Assessments");
         stage.setScene(scene);
+        stage.setMaximized(true);
         stage.show();
     }
 

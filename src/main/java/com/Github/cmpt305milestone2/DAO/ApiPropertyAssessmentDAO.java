@@ -59,15 +59,20 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
     public List<Property> getByAssessmentClass(String assessmentClass) {
         currentFilter = "Assessment";
         currentItem = assessmentClass.toUpperCase();
+        //currentQuery = "https://data.edmonton.ca/resource/q7d6-ambg.csv?$query=SELECT *,(COALESCE(suite, '')||' '||house_number||' '||street_name) AS test WHERE test LIKE '%2598 STREET NW%25'";
+        /*
         currentQuery = new QueryBuilder(endpoint)
                 .add("SELECT","*")
                 .add("WHERE","mill_class_1",currentItem)
                 .add("OR","mill_class_1",currentItem)
-                .add("OR","mill_class_1",currentItem)
+                .add("OR","mill_class_2",currentItem)
+                .add("OR","mill_class_3",currentItem)
                 .add("ORDER BY","account_number")
                 .add("OFFSET",offset)
                 .add("LIMIT",limit)
                 .build();
+         */
+        currentQuery = currentQuery.replace(" ","%20").replace("|","%7C");
         System.out.println(currentQuery);
         HttpResponse<String> response = makeRequest(currentQuery);
         if(reader(response)==null){
@@ -87,6 +92,30 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
                 .build();
         System.out.println(currentQuery);
         HttpResponse<String> response = makeRequest(currentQuery);
+        return reader(response);
+    }
+
+    public List<Property> getByAddress(String address) {
+        currentFilter = "Address";
+        currentItem = address.toUpperCase();
+        //currentQuery = "https://data.edmonton.ca/resource/q7d6-ambg.csv?$query=SELECT *,(COALESCE(suite, '')||' '||house_number||' '||street_name) AS test WHERE test LIKE '%2598 STREET NW%25'";
+
+        currentQuery = new QueryBuilder(endpoint)
+                .add("SELECT","*","(COALESCE(suite, '')")
+                .add("WHERE","mill_class_1",currentItem)
+                .add("OR","mill_class_1",currentItem)
+                .add("OR","mill_class_1",currentItem)
+                .add("ORDER BY","account_number")
+                .add("OFFSET",offset)
+                .add("LIMIT",limit)
+                .build();
+
+        currentQuery = currentQuery.replace(" ","%20").replace("|","%7C");
+        System.out.println(currentQuery);
+        HttpResponse<String> response = makeRequest(currentQuery);
+        if(reader(response)==null){
+            return new ArrayList<>();
+        }
         return reader(response);
     }
 
