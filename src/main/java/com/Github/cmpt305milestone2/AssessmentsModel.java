@@ -3,22 +3,26 @@ package com.Github.cmpt305milestone2;
 import com.Github.cmpt305milestone2.DAO.ApiPropertyAssessmentDAO;
 import com.Github.cmpt305milestone2.DAO.CsvPropertyAssessmentDAO;
 import com.Github.cmpt305milestone2.Data.Property;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableBooleanValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class AssessmentsModel {
     private ObservableList<Property> data;
     private ApiPropertyAssessmentDAO apiDao;
     private CsvPropertyAssessmentDAO csvDao;
+    private SimpleBooleanProperty csvLoaded = new SimpleBooleanProperty(true);
 
     public AssessmentsModel(){
         apiDao = new ApiPropertyAssessmentDAO();
-        csvDao = new CsvPropertyAssessmentDAO("Property_Assessment_Data_2023.csv");
         List<Property> properties = apiDao.getAll();
         data = FXCollections.observableArrayList(properties);
+        loadCsv();
     }
 
     public void updateAll(){
@@ -45,8 +49,19 @@ public class AssessmentsModel {
         data.setAll(apiDao.pageCurrentQuery());
     }
 
+    private void loadCsv(){
+        new Thread(()->{
+            csvDao = new CsvPropertyAssessmentDAO("Property_Assessment_Data_2023.csv");
+            csvLoaded.set(false);
+            System.out.println("Loaded");
+        }).start();
+    }
     public ObservableList<Property> getData(){
-        return this.data;
+        return data;
+    }
+
+    public SimpleBooleanProperty getCsvLoaded(){
+        return csvLoaded;
     }
 
 }

@@ -87,6 +87,5 @@ public class Statistics{
                 .skip(length/2)//gets the second half of the arraylist
                 .findFirst()//finds first value which should be median
                 .get();//returns bigdecimal
-
     }
 }

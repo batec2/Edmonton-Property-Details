@@ -22,17 +22,10 @@ public class AssessmentsApplication extends Application {
         view = new AssessmentsView(controller,model);
 
         stage.setTitle("Property Assessments");
-        Scene scene2 = new Scene(view.asParent());
-        stage.setScene(scene2);
+        Scene scene = new Scene(view.asParent());
+        stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
-        /*
-        new Thread(()->{
-            csvDao = new CsvPropertyAssessmentDAO("Property_Assessment_Data_2023.csv");
-            apiToCSVToggle.setDisable(false);
-        }).start();
-
-         */
     }
     public static void main(String[] args) {
         launch();

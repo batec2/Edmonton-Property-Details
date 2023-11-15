@@ -35,4 +35,8 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentsDAO {
     public List<Property> getAll() {
         return null;
     }
+
+    public List<Property> getSearchResults(List<String> input){
+
+    }
 }

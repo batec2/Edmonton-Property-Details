@@ -52,7 +52,7 @@ public class AssessmentsView {
 
     private HBox setModeSelector(){
         ToggleSwitch apiToCSVToggle = new ToggleSwitch();
-        apiToCSVToggle.setDisable(true);
+        apiToCSVToggle.disableProperty().bind(model.getCsvLoaded());
         Label csvLabel = new Label("CSV");
         Label apiLabel = new Label("API");
         HBox hBoxCSVtoAPI= new HBox(apiLabel,apiToCSVToggle,csvLabel);
