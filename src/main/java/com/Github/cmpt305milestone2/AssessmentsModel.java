@@ -2,7 +2,9 @@ package com.Github.cmpt305milestone2;
 
 import com.Github.cmpt305milestone2.DAO.ApiPropertyAssessmentDAO;
 import com.Github.cmpt305milestone2.DAO.CsvPropertyAssessmentDAO;
+import com.Github.cmpt305milestone2.DAO.PropertyAssessmentsDAO;
 import com.Github.cmpt305milestone2.Data.Property;
+import com.Github.cmpt305milestone2.Data.PropertyAssessments;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableBooleanValue;
 import javafx.collections.FXCollections;
@@ -10,25 +12,43 @@ import javafx.collections.ObservableList;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class AssessmentsModel {
     private ObservableList<Property> data;
     private ApiPropertyAssessmentDAO apiDao;
     private CsvPropertyAssessmentDAO csvDao;
+    private PropertyAssessmentsDAO dao;
     private SimpleBooleanProperty csvLoaded = new SimpleBooleanProperty(true);
 
     public AssessmentsModel(){
         apiDao = new ApiPropertyAssessmentDAO();
+        dao = apiDao;
         List<Property> properties = apiDao.getAll();
         data = FXCollections.observableArrayList(properties);
         loadCsv();
     }
 
+    public void switchDao(boolean isCSV){
+        if(isCSV){
+            dao = csvDao;
+            updateAll();
+            System.out.println("Selected CSV!");
+        }
+        else{
+            dao = apiDao;
+            updateAll();
+            System.out.println("Selected API!");
+        }
+    }
+
     public void updateAll(){
          data.clear();
-         apiDao.setOffset(0);
-         data.setAll(apiDao.getAll());
+         if(dao instanceof ApiPropertyAssessmentDAO){
+            apiDao.setOffset(0);
+         }
+         data.setAll(dao.getAll());
     }
 
     public void updateFiltered(List<String> input){

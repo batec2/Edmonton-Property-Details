@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -55,6 +56,12 @@ public class PropertyAssessments{
      */
     public Map<Integer,Property> getProperties() {
         return properties;
+    }
+
+    public List<Property> getAll(){
+        List<Property> allValues = new ArrayList<Property>();
+        properties.forEach((key, value) -> allValues.add(value));
+        return allValues;
     }
 
     /**

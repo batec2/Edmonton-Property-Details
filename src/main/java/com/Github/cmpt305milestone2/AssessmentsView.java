@@ -53,6 +53,9 @@ public class AssessmentsView {
     private HBox setModeSelector(){
         ToggleSwitch apiToCSVToggle = new ToggleSwitch();
         apiToCSVToggle.disableProperty().bind(model.getCsvLoaded());
+        apiToCSVToggle.selectedProperty().addListener((observable, oldValue, newValue) ->{
+            model.switchDao(newValue);
+        });
         Label csvLabel = new Label("CSV");
         Label apiLabel = new Label("API");
         HBox hBoxCSVtoAPI= new HBox(apiLabel,apiToCSVToggle,csvLabel);

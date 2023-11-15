@@ -33,10 +33,11 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentsDAO {
 
     @Override
     public List<Property> getAll() {
-        return null;
+        return propertyAssessments.getAll();
     }
 
     public List<Property> getSearchResults(List<String> input){
-
+        //propertyAssessments.getFiltered(e->e.getValue()
+        return null;
     }
 }
