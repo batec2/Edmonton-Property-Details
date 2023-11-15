@@ -24,7 +24,7 @@ public class AssessmentsModel {
     public void updateAll(){
          data.clear();
          apiDao.setOffset(0);
-         data.setAll(apiDao.getSearchResults(Arrays.asList("","","","","","")));
+         data.setAll(apiDao.getAll());
     }
 
     public void updateFiltered(List<String> input){
