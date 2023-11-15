@@ -21,6 +21,8 @@ public class AssessmentClass implements Comparable<AssessmentClass>{
     private String assessment2;
     private String assessment3;
 
+    private String assessmentClass;
+
     /**
      * Constructor for AssessmentClass, requires valid string from Property Assessment data file.
      * If data does not have relevant value blank string is used.
@@ -38,7 +40,7 @@ public class AssessmentClass implements Comparable<AssessmentClass>{
         this.assessment1 = splitData.size()>15?splitData.get(15):"";
         this.assessment2 = splitData.size()>16?splitData.get(16):"";
         this.assessment3 = splitData.size()>17?splitData.get(17):"";
-
+        this.assessmentClass = this.toString();
     }
 
     /**
@@ -173,6 +175,15 @@ public class AssessmentClass implements Comparable<AssessmentClass>{
      */
     public String getAssessment3() {
         return this.assessment3;
+    }
+
+    /**
+     * Gets the all assessment class information
+     * @return
+     * String of all assessment class
+     */
+    public String getAssessmentClass() {
+        return this.assessmentClass;
     }
 
     /**

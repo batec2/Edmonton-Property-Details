@@ -20,6 +20,7 @@ public class House implements Comparable<House>{
     private String neighbourhood;
     private String ward;
     private BigDecimal assessedValue;
+    private String neighbourWard;
 
     /**
      * Constructor for address, requires valid string from Property Assessment data file.
@@ -34,6 +35,7 @@ public class House implements Comparable<House>{
         this.neighbourhood = splitData.get(6);
         this.ward = splitData.get(7);
         this.assessedValue = new BigDecimal(splitData.get(8));
+        this.neighbourWard = this.neighbourhood+" "+this.ward;
     }
 
     /**
@@ -151,6 +153,15 @@ public class House implements Comparable<House>{
      */
     public BigDecimal getAssessedValue(){
         return this.assessedValue;
+    }
+
+    /**
+     * Gets the neighbourhood and ward information
+     * @return
+     * String of neighbourhood and ward
+     */
+    public String getNeighbourWard(){
+        return this.neighbourWard;
     }
 
     /**

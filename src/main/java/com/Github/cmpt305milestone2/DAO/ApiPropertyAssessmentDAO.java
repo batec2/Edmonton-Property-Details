@@ -7,6 +7,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.Github.cmpt305milestone2.Data.IOReader.accountReader;
@@ -18,18 +19,21 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
     private final String endpoint = "https://data.edmonton.ca/resource/q7d6-ambg.csv";
     private String currentQuery;
     private String currentItem;
+
+    private List<String> currentItems;
+
     private String currentFilter = "All";
     HttpClient client;
 
     public ApiPropertyAssessmentDAO() {
         //this.endpoint = endpoint;
         this.client = HttpClient.newHttpClient();
+        currentItems = Arrays.asList("","","","","","");
     }
 
     @Override
     public Property getByAccountnumber(int accountNumber) {
         currentQuery = new QueryBuilder(endpoint)
-                .add("SELECT","*")
                 .add("WHERE","account_number",accountNumber)
                 .build();
         HttpResponse<String> response = makeRequest(currentQuery);
@@ -41,7 +45,6 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
         currentFilter = "Neighbour";
         currentItem = neighbourhood.toUpperCase();
         currentQuery = new QueryBuilder(endpoint)
-                .add("SELECT","*")
                 .add("WHERE","neighbourhood",currentItem)
                 .add("ORDER BY","account_number")
                 .add("OFFSET",offset)
@@ -59,8 +62,6 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
     public List<Property> getByAssessmentClass(String assessmentClass) {
         currentFilter = "Assessment";
         currentItem = assessmentClass.toUpperCase();
-        //currentQuery = "https://data.edmonton.ca/resource/q7d6-ambg.csv?$query=SELECT *,(COALESCE(suite, '')||' '||house_number||' '||street_name) AS test WHERE test LIKE '%2598 STREET NW%25'";
-        /*
         currentQuery = new QueryBuilder(endpoint)
                 .add("SELECT","*")
                 .add("WHERE","mill_class_1",currentItem)
@@ -71,7 +72,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
                 .add("OFFSET",offset)
                 .add("LIMIT",limit)
                 .build();
-         */
+
         currentQuery = currentQuery.replace(" ","%20").replace("|","%7C");
         System.out.println(currentQuery);
         HttpResponse<String> response = makeRequest(currentQuery);
@@ -85,7 +86,6 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
     public List<Property> getAll() {
         currentFilter = "All";
         currentQuery = new QueryBuilder(endpoint)
-                .add("SELECT","*")
                 .add("ORDER BY","account_number")
                 .add("OFFSET",offset)
                 .add("LIMIT",limit)
@@ -95,22 +95,63 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
         return reader(response);
     }
 
-    public List<Property> getByAddress(String address) {
-        currentFilter = "Address";
-        currentItem = address.toUpperCase();
-        //currentQuery = "https://data.edmonton.ca/resource/q7d6-ambg.csv?$query=SELECT *,(COALESCE(suite, '')||' '||house_number||' '||street_name) AS test WHERE test LIKE '%2598 STREET NW%25'";
+    /**
+     * Takes a list of inputs from UI and creates a query based on inputs.
+     * After query is made it is sent to api to get matching items
+     * @param input
+     * @return
+     */
+    public List<Property> getSearchResults(List<String> input) {
+        currentItems = input;
+        QueryBuilder qBuilder = new QueryBuilder(endpoint).addWhere();
+        boolean first = true;
+        for(int i=0;i<input.size();i++){
+            switch(i){
+                case 0:
+                    if(!input.get(i).isBlank()){
+                        qBuilder.addAccountNumber(input.get(i),first);
+                        first=false;
+                    }
+                    break;
+                case 1:
+                    if(!input.get(i).isBlank()){
+                        qBuilder.addAddress(input.get(i),first);
+                        first=false;
+                    }
+                    break;
+                case 2:
+                    if(!input.get(i).isBlank()){
+                        qBuilder.addNeighbourhood(input.get(i),first);
+                        first=false;
+                    }
+                    break;
+                case 3:
+                    if(!input.get(i).isBlank()){
+                        qBuilder.addAssessmentClass(input.get(i),first);
+                        first=false;
+                    }
+                    break;
+                case 4:
+                    if(!input.get(i).isBlank()){
+                        qBuilder.addAssessedMin(input.get(i),first);
+                        first=false;
+                    }
+                    break;
+                case 5:
+                    if(!input.get(i).isBlank()){
+                        qBuilder.addAssessedMax(input.get(i),first);
+                        first=false;
+                    }
+                    break;
+            }
+        }
 
-        currentQuery = new QueryBuilder(endpoint)
-                .add("SELECT","*","(COALESCE(suite, '')")
-                .add("WHERE","mill_class_1",currentItem)
-                .add("OR","mill_class_1",currentItem)
-                .add("OR","mill_class_1",currentItem)
+        currentQuery = qBuilder
                 .add("ORDER BY","account_number")
                 .add("OFFSET",offset)
                 .add("LIMIT",limit)
                 .build();
 
-        currentQuery = currentQuery.replace(" ","%20").replace("|","%7C");
         System.out.println(currentQuery);
         HttpResponse<String> response = makeRequest(currentQuery);
         if(reader(response)==null){
@@ -120,12 +161,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
     }
 
     public List<Property> pageCurrentQuery(){
-        return switch (currentFilter) {
-            case "Neighbour" -> this.getByNeightbourhood(currentItem);
-            case "Assessment" -> this.getByAssessmentClass(currentItem);
-            case "All" -> this.getAll();
-            default -> null;
-        };
+      return currentItems.stream().allMatch(String::isBlank)?this.getAll():this.getSearchResults(currentItems);
     }
 
     private HttpResponse<String> makeRequest(String query){

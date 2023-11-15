@@ -329,4 +329,13 @@ public class Property implements Comparable<Property>{
         return house.getAssessedValue();
     }
 
+    /**
+     * Gets the neighbourhood and ward information
+     * @return
+     * String of neighbourhood and ward
+     */
+    public String getNeighbourWard(){
+        return this.house.getNeighbourWard();
+    }
+
 }

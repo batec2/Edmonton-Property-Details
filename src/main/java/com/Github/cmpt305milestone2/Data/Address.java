@@ -18,6 +18,8 @@ public class Address implements Comparable<Address>{
     private String houseNum;
     private String streetName;
 
+    private String address;
+
     /**
      * Constructor for address, requires valid string from Property Assessment data file.
      * If data does not have relevant value blank string is used.
@@ -29,6 +31,7 @@ public class Address implements Comparable<Address>{
         this.suite = splitData.size()>1?splitData.get(1):"";
         this.houseNum = splitData.size()>2?splitData.get(2):"";
         this.streetName = splitData.size()>3?splitData.get(3):"";
+        this.address = this.toString();
     }
 
     /**
@@ -120,6 +123,15 @@ public class Address implements Comparable<Address>{
      */
     public String getStreetName(){
         return streetName;
+    }
+
+    /**
+     * Gets the address information
+     * @return
+     * String of all address fields
+     */
+    public String getAddress(){
+        return address;
     }
 }
 
