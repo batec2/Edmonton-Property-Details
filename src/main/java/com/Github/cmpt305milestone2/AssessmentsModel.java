@@ -45,16 +45,14 @@ public class AssessmentsModel {
 
     public void updateAll(){
          data.clear();
-         if(dao instanceof ApiPropertyAssessmentDAO){
-            apiDao.setOffset(0);
-         }
+         apiDao.setOffset(0);
          data.setAll(dao.getAll());
     }
 
     public void updateFiltered(List<String> input){
         data.clear();
         apiDao.setOffset(0);
-        data.setAll(apiDao.getSearchResults(input));
+        data.setAll(dao.getSearchResults(input));
     }
 
     public void updatePageUp(){

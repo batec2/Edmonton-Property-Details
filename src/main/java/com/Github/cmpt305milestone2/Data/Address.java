@@ -34,6 +34,13 @@ public class Address implements Comparable<Address>{
         this.address = this.toString();
     }
 
+    public Address(String suite,String houseNum,String streetName){
+        this.suite = suite;
+        this.houseNum = houseNum;
+        this.streetName = streetName;
+        this.address = this.toString();
+    }
+
     /**
      * Gets class member variables in a readable string
      * @return

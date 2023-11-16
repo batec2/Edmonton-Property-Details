@@ -38,6 +38,15 @@ public class House implements Comparable<House>{
         this.neighbourWard = this.neighbourhood+" "+this.ward;
     }
 
+    public House(String garage,String neighbourhoodID,String neighbourhood, String ward,int assessedValue){
+        this.garage = garage;
+        this.neighbourhoodID =neighbourhoodID;
+        this.neighbourhood = neighbourhood;
+        this.ward = ward;
+        this.assessedValue = new BigDecimal(String.valueOf(assessedValue));
+        this.neighbourWard = this.neighbourhood+" "+this.ward;
+    }
+
     /**
      * Gets class member variables in a readable string
      * @return
@@ -151,8 +160,8 @@ public class House implements Comparable<House>{
      * @return
      * BigDecimal of Assessed value
      */
-    public BigDecimal getAssessedValue(){
-        return this.assessedValue;
+    public int getAssessedValue(){
+        return this.assessedValue.intValueExact();
     }
 
     /**

@@ -31,6 +31,12 @@ public class GeoLocation implements Comparable<GeoLocation>{
         this.point = splitData.size()>11?splitData.get(11):"";
     }
 
+    public GeoLocation(String latitude,String longitude,String point){
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.point = point;
+    }
+
     /**
      * Gets class member variables in a readable string
      * @return

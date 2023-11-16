@@ -21,6 +21,7 @@ public class AssessmentsView {
     private TableView table;
     private AssessmentsController controller;
     private AssessmentsModel model;
+
     public AssessmentsView(AssessmentsController controller,AssessmentsModel model){
         this.controller = controller;
         this.model = model;

@@ -60,7 +60,7 @@ public class PropertyAssessments{
 
     public List<Property> getAll(){
         List<Property> allValues = new ArrayList<Property>();
-        properties.forEach((key, value) -> allValues.add(value));
+        properties.forEach((key, value) -> allValues.add(value.clone()));
         return allValues;
     }
 
@@ -85,7 +85,17 @@ public class PropertyAssessments{
         this.properties.entrySet()
                 .stream()
                 .filter(predicate)
-                .forEach(entry->result.put(entry.getKey(), entry.getValue()));//creates new hashmap
+                .forEach(entry->result.put(entry.getKey(), entry.getValue().clone()));//creates new hashmap
+        return new PropertyAssessments(result);
+    }
+
+    /**
+     *
+     * @return
+     */
+    public PropertyAssessments clone(){
+        Map<Integer,Property> result = new HashMap<>();
+        this.properties.forEach((key, value) -> result.put(key, value.clone()));//creates new hashmap
         return new PropertyAssessments(result);
     }
 
@@ -151,7 +161,7 @@ public class PropertyAssessments{
     private ArrayList<BigDecimal> getBigDecimalList(Map<Integer,Property> data){
         ArrayList<BigDecimal> result = new ArrayList<BigDecimal>();
         for(Map.Entry<Integer, Property> entry:data.entrySet()){
-            result.add(entry.getValue().getHouse().getAssessedValue());
+            result.add(BigDecimal.valueOf(entry.getValue().getHouse().getAssessedValue()));
         }
         return result;
     }
@@ -252,10 +262,10 @@ public class PropertyAssessments{
             System.out.println("Account Number = "+properties.get(intInput).getAccountNum());
             System.out.println("Address = "+properties.get(intInput).getAddress());
             System.out.println("Assessed Value = "+
-                    Money.bigDecimalToMoney(properties
+                    Money.bigDecimalToMoney(BigDecimal.valueOf(properties
                     .get(intInput)
                     .getHouse()
-                    .getAssessedValue()));
+                    .getAssessedValue())));
             System.out.println("Assessment Class = "+"["+properties.get(intInput).getAssessmentClass()+"]");
             System.out.println("Neighbourhood = "+
                             properties.get(intInput).getHouse().getNeighbourhood() +

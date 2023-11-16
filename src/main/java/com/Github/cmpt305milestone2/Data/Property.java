@@ -36,6 +36,14 @@ public class Property implements Comparable<Property>{
         this.assessmentClass = new AssessmentClass(data);
     }
 
+    public Property(int accountNum,Address address,House house,GeoLocation geoLocation,AssessmentClass assessmentClass){
+        this.accountNum = accountNum;
+        this.address = address;
+        this.house = house;
+        this.geoLocation = geoLocation;
+        this.assessmentClass = assessmentClass;
+    }
+
 
     /**
      * Gets class member variables in a readable string
@@ -153,6 +161,8 @@ public class Property implements Comparable<Property>{
 
     /**
      *
+     * @param ward
+     * @return
      */
     public boolean inWard(String ward){
         return house.inWard(ward);
@@ -160,6 +170,8 @@ public class Property implements Comparable<Property>{
 
     /**
      *
+     * @param neighbourhood
+     * @return
      */
     public boolean inNeighbourhood(String neighbourhood){
         return house.inNeighbourhood(neighbourhood.toUpperCase());
@@ -167,9 +179,57 @@ public class Property implements Comparable<Property>{
 
     /**
      *
+     * @param assessment
+     * @return
      */
     public boolean isAssessment(String assessment){
         return assessmentClass.isAssessment(assessment.toUpperCase());
+    }
+
+    /**
+     *
+     * @param num
+     * @return
+     */
+    public boolean isAccountNumber(String num){
+        return accountNum == Integer.parseInt(num);
+    }
+
+    /**
+     *
+     * @param inAddress
+     * @return
+     */
+    public boolean isAddress(String inAddress){
+        return address.getAddress().contains(inAddress.toUpperCase());
+    }
+
+    /**
+     *
+     * @param max
+     * @return
+     */
+    public boolean assessmentLessThan(String max){
+        try{
+            return Integer.parseInt(max)<=house.getAssessedValue();
+        }
+        catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    /**
+     *
+     * @param min
+     * @return
+     */
+    public boolean assessmentMoreThan(String min){
+        try{
+            return Integer.parseInt(min)>=house.getAssessedValue();
+        }
+        catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     /**
@@ -179,7 +239,6 @@ public class Property implements Comparable<Property>{
      */
     public String getSuite(){
         return address.getSuite();
-
     }
 
     /**
@@ -325,7 +384,7 @@ public class Property implements Comparable<Property>{
      * @return
      * BigDecimal of Assessed value
      */
-    public BigDecimal getAssessedValue(){
+    public int getAssessedValue(){
         return house.getAssessedValue();
     }
 
@@ -336,6 +395,30 @@ public class Property implements Comparable<Property>{
      */
     public String getNeighbourWard(){
         return this.house.getNeighbourWard();
+    }
+
+    public Property clone(){
+        return new Property(
+                accountNum,
+                new Address(address.getSuite(),
+                        address.getHouseNum(),
+                        address.getStreetName()),
+                new House(house.getGarage(),
+                        house.getNeighbourhoodID(),
+                        house.getNeighbourhood(),
+                        house.getWard(),
+                        house.getAssessedValue()),
+                new GeoLocation(geoLocation.getLatitude(),
+                        geoLocation.getLongitude(),
+                        geoLocation.getPoint()),
+                new AssessmentClass(assessmentClass.
+                        getAssessmentPercent1(),
+                        assessmentClass.getAssessmentPercent2(),
+                        assessmentClass.getAssessmentPercent3(),
+                        assessmentClass.getAssessment1(),
+                        assessmentClass.getAssessment2(),
+                        assessmentClass.getAssessment3())
+        );
     }
 
 }

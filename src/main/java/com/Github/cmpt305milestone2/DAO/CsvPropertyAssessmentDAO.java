@@ -37,7 +37,25 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentsDAO {
     }
 
     public List<Property> getSearchResults(List<String> input){
-        //propertyAssessments.getFiltered(e->e.getValue()
-        return null;
+        PropertyAssessments filteredProp = propertyAssessments.clone();
+        if(!input.get(0).isBlank()){
+            filteredProp = filteredProp.getFiltered(e->e.getValue().isAccountNumber(input.get(0)));
+        }
+        if(!input.get(1).isBlank()){
+            filteredProp = filteredProp.getFiltered(e->e.getValue().isAddress(input.get(1)));
+        }
+        if(!input.get(2).isBlank()){
+            filteredProp = filteredProp.getFiltered(e->e.getValue().inNeighbourhood(input.get(2)));
+        }
+        if(!input.get(3).isBlank()){
+            filteredProp = filteredProp.getFiltered(e->e.getValue().isAssessment(input.get(3)));
+        }
+        if(!input.get(4).isBlank()){
+            filteredProp = filteredProp.getFiltered(e->e.getValue().assessmentMoreThan(input.get(4)));
+        }
+        if(!input.get(5).isBlank()){
+            filteredProp = filteredProp.getFiltered(e->e.getValue().assessmentLessThan(input.get(5)));
+        }
+        return filteredProp.getAll();
     }
 }

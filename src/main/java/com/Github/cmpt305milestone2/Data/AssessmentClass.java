@@ -43,6 +43,17 @@ public class AssessmentClass implements Comparable<AssessmentClass>{
         this.assessmentClass = this.toString();
     }
 
+    public AssessmentClass(String assessmentPercent1,String assessmentPercent2, String assessmentPercent3
+            ,String assessment1,String assessment2,String assessment3){
+        this.assessmentPercent1 = assessmentPercent1;
+        this.assessmentPercent2 = assessmentPercent2;
+        this.assessmentPercent3 = assessmentPercent3;
+        this.assessment1 = assessment1;
+        this.assessment2 = assessment2;
+        this.assessment3 = assessment3;
+        this.assessmentClass = this.toString();
+    }
+
     /**
      * Gets class member variables in a readable string
      * @return

@@ -8,5 +8,6 @@ public interface PropertyAssessmentsDAO {
     Property getByAccountnumber(int accountNumber);
     List<Property> getByNeightbourhood(String neighbourhood);
     List<Property> getByAssessmentClass(String assessmentClass);
+    List<Property> getSearchResults(List<String> input);
     List<Property> getAll();
 }
