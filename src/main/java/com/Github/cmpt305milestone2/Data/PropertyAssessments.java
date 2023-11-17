@@ -161,7 +161,7 @@ public class PropertyAssessments{
     private ArrayList<BigDecimal> getBigDecimalList(Map<Integer,Property> data){
         ArrayList<BigDecimal> result = new ArrayList<BigDecimal>();
         for(Map.Entry<Integer, Property> entry:data.entrySet()){
-            result.add(BigDecimal.valueOf(entry.getValue().getHouse().getAssessedValue()));
+            result.add(entry.getValue().getHouse().getAssessedValue());
         }
         return result;
     }
@@ -262,10 +262,10 @@ public class PropertyAssessments{
             System.out.println("Account Number = "+properties.get(intInput).getAccountNum());
             System.out.println("Address = "+properties.get(intInput).getAddress());
             System.out.println("Assessed Value = "+
-                    Money.bigDecimalToMoney(BigDecimal.valueOf(properties
+                    Money.bigDecimalToMoney(properties
                     .get(intInput)
                     .getHouse()
-                    .getAssessedValue())));
+                    .getAssessedValue()));
             System.out.println("Assessment Class = "+"["+properties.get(intInput).getAssessmentClass()+"]");
             System.out.println("Neighbourhood = "+
                             properties.get(intInput).getHouse().getNeighbourhood() +

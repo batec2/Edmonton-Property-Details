@@ -1,7 +1,9 @@
 package com.Github.cmpt305milestone2;
 
 import atlantafx.base.controls.ToggleSwitch;
+import com.Github.cmpt305milestone2.Data.Money;
 import com.Github.cmpt305milestone2.Data.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -41,8 +43,14 @@ public class AssessmentsView {
     }
 
     private VBox setVboxLeft(){
+        Label CsvtoApiLabel = new Label("Select Data Source");
+        CsvtoApiLabel.setStyle("-fx-font-weight: bold;");
+        Label filterLabel = new Label("Property Filters");
+        filterLabel.setStyle("-fx-font-weight: bold;");
         VBox vBoxLeft = new VBox(
+                CsvtoApiLabel,
                 setModeSelector(),
+                filterLabel,
                 setInputFields());
 
         vBoxLeft.setSpacing(10);
@@ -71,6 +79,8 @@ public class AssessmentsView {
 
         Label addressLabel  = new Label("Address:");
         TextField addressTextField = new TextField("");
+        addressTextField.setPromptText("(Suite# House# Street)");
+
 
         Label neighbourhoodLabel  = new Label("Neighbourhood:");
         TextField neighbourhoodTextField = new TextField("");
@@ -151,7 +161,7 @@ public class AssessmentsView {
 
         table = new TableView();
 
-        TableColumn<Property, String> accountNum = new TableColumn<>("Account Number");
+        TableColumn<Property, String> accountNum = new TableColumn<>("Account #");
         accountNum.setMinWidth(90);
         accountNum.setCellValueFactory(new PropertyValueFactory<>("accountNum"));
 
@@ -160,16 +170,16 @@ public class AssessmentsView {
         address.setCellValueFactory(new PropertyValueFactory<>("address"));
 
         TableColumn<Property, String> garage = new TableColumn<>("Garage");
-        garage.setMinWidth(10);
+        garage.setMinWidth(75);
         garage.setCellValueFactory(new PropertyValueFactory<>("garage"));
 
         TableColumn<Property, String> neighbourWard = new TableColumn<>("Neighbourhood");
         neighbourWard.setMinWidth(200);
         neighbourWard.setCellValueFactory(new PropertyValueFactory<>("neighbourWard"));
 
-        TableColumn<Property, BigDecimal> assessedValue = new TableColumn<>("Assessed Value");
+        TableColumn<Property, String> assessedValue = new TableColumn<>("Assessed Value");
         assessedValue.setMinWidth(90);
-        assessedValue.setCellValueFactory(new PropertyValueFactory<>("assessedValue"));
+        assessedValue.setCellValueFactory(cell->new SimpleObjectProperty<>(Money.bigDecimalToMoney(cell.getValue().getAssessedValue())));
 
         TableColumn<Property, String> latitude = new TableColumn<>("Latitude");
         latitude.setMinWidth(150);

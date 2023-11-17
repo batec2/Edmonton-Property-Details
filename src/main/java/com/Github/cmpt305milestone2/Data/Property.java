@@ -192,11 +192,16 @@ public class Property implements Comparable<Property>{
      * @return
      */
     public boolean isAccountNumber(String num){
-        return accountNum == Integer.parseInt(num);
+        try{
+            return accountNum == Integer.parseInt(num);
+        }
+        catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     /**
-     *
+     * Checks if address matches
      * @param inAddress
      * @return
      */
@@ -205,31 +210,21 @@ public class Property implements Comparable<Property>{
     }
 
     /**
-     *
-     * @param max
-     * @return
+     * Checks if assessed value is less than max
+     * @param max maximum assessed value
+     * @return true if assessed value less than max, false if assessed value more than max
      */
     public boolean assessmentLessThan(String max){
-        try{
-            return Integer.parseInt(max)<=house.getAssessedValue();
-        }
-        catch (NumberFormatException e) {
-            return false;
-        }
+        return house.getAssessedValue().compareTo(new BigDecimal(max))>0;
     }
 
     /**
-     *
-     * @param min
-     * @return
+     * Checks if assessed value is higher than min
+     * @param min minimum assessed value
+     * @return true if assessed value more than min, false if assessed value less than min
      */
     public boolean assessmentMoreThan(String min){
-        try{
-            return Integer.parseInt(min)>=house.getAssessedValue();
-        }
-        catch (NumberFormatException e) {
-            return false;
-        }
+        return house.getAssessedValue().compareTo(new BigDecimal(min))<0;
     }
 
     /**
@@ -384,14 +379,13 @@ public class Property implements Comparable<Property>{
      * @return
      * BigDecimal of Assessed value
      */
-    public int getAssessedValue(){
-        return house.getAssessedValue();
+    public BigDecimal getAssessedValue(){
+        return new BigDecimal(house.getAssessedValue().toString());
     }
 
     /**
      * Gets the neighbourhood and ward information
-     * @return
-     * String of neighbourhood and ward
+     * @return String of neighbourhood and ward
      */
     public String getNeighbourWard(){
         return this.house.getNeighbourWard();
