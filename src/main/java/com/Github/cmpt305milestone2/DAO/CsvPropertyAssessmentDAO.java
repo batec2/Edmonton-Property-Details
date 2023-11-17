@@ -13,12 +13,23 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentsDAO {
     public CsvPropertyAssessmentDAO(String file){
         propertyAssessments = new PropertyAssessments(IOReader.reader(file));
     }
+
+    /**
+     *
+     * @param accountNumber
+     * @return
+     */
     @Override
     public Property getByAccountnumber(int accountNumber) {
         //propertyAssessments.getAccountNum(accountNumber);
         return null;
     }
 
+    /**
+     *
+     * @param neighbourhood
+     * @return
+     */
     @Override
     public List<Property> getByNeightbourhood(String neighbourhood) {
     //    HashMap<Integer,Property> map=propertyAssessments.getFiltered(entry-> entry.getValue().inWard(neighbourhood));
@@ -26,16 +37,31 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentsDAO {
         return null;
     }
 
+    /**
+     *
+     * @param assessmentClass
+     * @return
+     */
     @Override
     public List<Property> getByAssessmentClass(String assessmentClass) {
         return null;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public List<Property> getAll() {
         return propertyAssessments.getAll();
     }
 
+    /**
+     *
+     * @param input
+     * @return
+     */
+    @Override
     public List<Property> getSearchResults(List<String> input){
         PropertyAssessments filteredProp = propertyAssessments.clone();
         if(!input.get(0).isBlank()){

@@ -397,6 +397,10 @@ public class Property implements Comparable<Property>{
         return this.house.getNeighbourWard();
     }
 
+    /**
+     * Creates a clone of property and returns a Property with same member variables
+     * @return Property
+     */
     public Property clone(){
         return new Property(
                 accountNum,
