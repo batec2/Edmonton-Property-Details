@@ -20,7 +20,7 @@ public class AssessmentsModel {
     private PropertyAssessmentsDAO dao;
     private SimpleBooleanProperty csvLoaded = new SimpleBooleanProperty(true);
     /**
-     *
+     * Initializes to start with API DAO as the default, as well gets all data as initial table data
      */
     public AssessmentsModel(){
         apiDao = new ApiPropertyAssessmentDAO();
@@ -57,7 +57,7 @@ public class AssessmentsModel {
 
     /**
      * Sets the table with filtered data from the DAO
-     * @param input
+     * @param input List of Strings to filter data by
      */
     public void updateFiltered(List<String> input){
         apiDao.setOffset(0);

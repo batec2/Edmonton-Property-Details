@@ -22,7 +22,7 @@ public class Property implements Comparable<Property>{
     private AssessmentClass assessmentClass;
 
     /**
-     * Constructor for address, requires valid string from Property Assessment data file.
+     * Constructor for Property, requires valid string from Property Assessment data file.
      * If data does not have relevant value blank string is used.
      * @param data
      * CSV formatted string from property assessment data
@@ -36,6 +36,14 @@ public class Property implements Comparable<Property>{
         this.assessmentClass = new AssessmentClass(data);
     }
 
+    /**
+     * Constructor for Property, takes in existing objects as arguments, used to clone an existing Property
+     * @param accountNum Int
+     * @param address Address object
+     * @param house House object
+     * @param geoLocation GeoLocation object
+     * @param assessmentClass AssessmentClass object
+     */
     public Property(int accountNum,Address address,House house,GeoLocation geoLocation,AssessmentClass assessmentClass){
         this.accountNum = accountNum;
         this.address = address;
@@ -160,50 +168,36 @@ public class Property implements Comparable<Property>{
     }
 
     /**
-     *
-     * @param ward
-     * @return
-     */
-    public boolean inWard(String ward){
-        return house.inWard(ward);
-    }
-
-    /**
-     *
-     * @param neighbourhood
-     * @return
+     * Checks if neighbourhood string contains parameter substring
+     * @param neighbourhood substring to check inside neighbourhood
+     * @return true if neighbourhood contains substring, false otherwise
      */
     public boolean inNeighbourhood(String neighbourhood){
         return house.inNeighbourhood(neighbourhood.toUpperCase());
     }
 
     /**
-     *
-     * @param assessment
-     * @return
+     * Checks if any of the assessment classes match assessment passed in
+     * @param assessment assessment to be compared
+     * @return true if any of assessment classes match, false otherwise
      */
     public boolean isAssessment(String assessment){
         return assessmentClass.isAssessment(assessment.toUpperCase());
     }
 
     /**
-     *
-     * @param num
-     * @return
+     * Checks if account number starts with passed in string
+     * @param num String to check if account number starts with
+     * @return true if accountnumber starts with num, false otherwise
      */
     public boolean isAccountNumber(String num){
-        try{
-            return accountNum == Integer.parseInt(num);
-        }
-        catch (NumberFormatException e) {
-            return false;
-        }
+        return accountNum.toString().startsWith(num);
     }
 
     /**
-     * Checks if address matches
-     * @param inAddress
-     * @return
+     * Checks if argument is a substring within the address
+     * @param inAddress substring to be searched
+     * @return true if address contains parameter, false otherwise
      */
     public boolean isAddress(String inAddress){
         return address.getAddress().contains(inAddress.toUpperCase());

@@ -35,16 +35,24 @@ public class House implements Comparable<House>{
         this.neighbourhood = splitData.get(6);
         this.ward = splitData.get(7);
         this.assessedValue = new BigDecimal(splitData.get(8));
-        this.neighbourWard = this.neighbourhood+" "+this.ward;
+        this.neighbourWard = this.neighbourhood+" ("+this.ward+")";
     }
 
+    /**
+     * Constructor for House, used to create clone of existing House object
+     * @param garage
+     * @param neighbourhoodID
+     * @param neighbourhood
+     * @param ward
+     * @param assessedValue
+     */
     public House(String garage,String neighbourhoodID,String neighbourhood, String ward,BigDecimal assessedValue){
         this.garage = garage;
         this.neighbourhoodID =neighbourhoodID;
         this.neighbourhood = neighbourhood;
         this.ward = ward;
         this.assessedValue = new BigDecimal(String.valueOf(assessedValue));
-        this.neighbourWard = this.neighbourhood+" "+this.ward;
+        this.neighbourWard = this.neighbourhood+" ("+this.ward+")";
     }
 
     /**

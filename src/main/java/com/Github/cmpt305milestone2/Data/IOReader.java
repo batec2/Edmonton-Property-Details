@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- *
+ * Used to read in data and turn data into data structures
  */
 public class IOReader {
 

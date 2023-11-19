@@ -34,6 +34,12 @@ public class Address implements Comparable<Address>{
         this.address = this.toString();
     }
 
+    /**
+     * Constructor for Address used to make a clone of an address
+     * @param suite String
+     * @param houseNum String
+     * @param streetName String
+     */
     public Address(String suite,String houseNum,String streetName){
         this.suite = suite;
         this.houseNum = houseNum;

@@ -3,6 +3,7 @@ package com.Github.cmpt305milestone2;
 import atlantafx.base.controls.ToggleSwitch;
 import com.Github.cmpt305milestone2.Data.Money;
 import com.Github.cmpt305milestone2.Data.Property;
+import javafx.animation.Animation;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -10,10 +11,14 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -27,15 +32,25 @@ public class AssessmentsView {
     private HBox modeSelector;
     private HBox hBoxPager;
     private VBox tableVBox;
+    private Alert noResultAlert;
     private AssessmentsController controller;
     private AssessmentsModel model;
 
+    /**
+     * Takes refrences to model and controller objects, as-well sets UI
+     * @param controller Controller object that takes actions from view and sends to model
+     * @param model Model object that contains app data
+     */
     public AssessmentsView(AssessmentsController controller,AssessmentsModel model){
         this.controller = controller;
         this.model = model;
         setStage();
     }
 
+    /**
+     * Returns Root node(BorderPane)
+     * @return BorderPane root node
+     */
     public Parent asParent() {
         return view ;
     }
@@ -45,7 +60,6 @@ public class AssessmentsView {
      */
     private void setStage(){
         this.view = new BorderPane();
-
         setTable();
         view.setCenter(this.tableVBox);
 
@@ -166,7 +180,7 @@ public class AssessmentsView {
             ArrayList<String> input = new ArrayList<>(Arrays.asList(account,address,neighbourhood,assessClass,min,max));
             this.controller.filterData(input);
         });
-
+        //Adds all elements to the inputFields VBox
         this.inputFields = new VBox(
                 accountLabel,
                 accountTextField,
@@ -181,6 +195,7 @@ public class AssessmentsView {
                 hBoxResetSearch);
         this.inputFields.setSpacing(10);
     }
+
 
     /**
      * Resets all input fields to blank
@@ -262,8 +277,24 @@ public class AssessmentsView {
 
         table.getColumns().setAll(accountNum,address,garage, neighbourWard,assessedValue,latitude,longitude,assessmentClass);
         table.setItems(this.model.getData());
-        table.setFixedCellSize(40);
+        table.setFixedCellSize(40);//this is needed to prevent index error
+
         this.tableVBox = new VBox(table);
+        table.setPlaceholder(setTablePlaceholder());
         VBox.setVgrow(table, Priority.ALWAYS);
+    }
+
+    /**
+     * Sets what is shown when table is empty
+     * @return VBox containing objects to be shown
+     */
+    private VBox setTablePlaceholder(){
+        Image image = new Image(new File("giphy.gif").toURI().toString());
+        ImageView imageView = new ImageView(image);
+
+        Label noResults = new Label("No Results!");
+        VBox placeholder = new VBox(imageView,noResults);
+        placeholder.setAlignment(Pos.CENTER);
+        return placeholder;
     }
 }

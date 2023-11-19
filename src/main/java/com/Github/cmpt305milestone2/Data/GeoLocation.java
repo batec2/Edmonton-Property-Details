@@ -31,6 +31,12 @@ public class GeoLocation implements Comparable<GeoLocation>{
         this.point = splitData.size()>11?splitData.get(11):"";
     }
 
+    /**
+     * Constructor for GeoLocation, Used to create Clone of existing GeoLocation object
+     * @param latitude
+     * @param longitude
+     * @param point
+     */
     public GeoLocation(String latitude,String longitude,String point){
         this.latitude = latitude;
         this.longitude = longitude;

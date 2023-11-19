@@ -43,6 +43,15 @@ public class AssessmentClass implements Comparable<AssessmentClass>{
         this.assessmentClass = this.toString();
     }
 
+    /**
+     * Constructor for AssessmentClass, Used to make clone of Assessment Class
+     * @param assessmentPercent1 String
+     * @param assessmentPercent2 String
+     * @param assessmentPercent3 String
+     * @param assessment1 String
+     * @param assessment2 String
+     * @param assessment3 String
+     */
     public AssessmentClass(String assessmentPercent1,String assessmentPercent2, String assessmentPercent3
             ,String assessment1,String assessment2,String assessment3){
         this.assessmentPercent1 = assessmentPercent1;
@@ -146,14 +155,18 @@ public class AssessmentClass implements Comparable<AssessmentClass>{
 
 
     /**
-     * Gets the assessment percent 1 information
+     * Gets the assessment percent 2 information
      * @return
-     * String of assessment percent 1
+     * String of assessment percent 2
      */
     public String getAssessmentPercent2() {
         return this.assessmentPercent2;
     }
-
+    /**
+     * Gets the assessment percent 3 information
+     * @return
+     * String of assessment percent 3
+     */
     public String getAssessmentPercent3() {
         return this.assessmentPercent3;
     }
