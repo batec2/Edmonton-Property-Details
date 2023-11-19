@@ -39,6 +39,8 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
                 .add("LIMIT",limit)
                 .build();
         HttpResponse<String> response = makeRequest(currentQuery);
+        //Resets filters
+        currentItems = Arrays.asList("","","","","","");
         if(reader(response)==null){
             return new ArrayList<>();
         }
@@ -145,6 +147,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
         catch (Exception e){
             System.out.println("Error: "+e);
         }
+        System.out.println(query);
         return response;
     }
 

@@ -14,16 +14,17 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * View object for Application, sets UI objects and behaviour on UI objects when interacted with by the user
+ */
 public class AssessmentsView {
     private BorderPane view;
     private VBox vBoxLeft;
     private VBox inputFields;
     private HBox modeSelector;
-
     private HBox hBoxPager;
     private VBox tableVBox;
     private AssessmentsController controller;
@@ -39,17 +40,20 @@ public class AssessmentsView {
         return view ;
     }
 
+    /**
+     * Sets the items for the root node
+     */
     private void setStage(){
         this.view = new BorderPane();
 
         setTable();
-        view.setCenter(tableVBox);
+        view.setCenter(this.tableVBox);
 
         setVboxLeft();
-        view.setLeft(vBoxLeft);
+        view.setLeft(this.vBoxLeft);
 
         setBoxPager();
-        view.setBottom(hBoxPager);
+        view.setBottom(this.hBoxPager);
     }
 
     /**
@@ -57,9 +61,9 @@ public class AssessmentsView {
      */
     private void setVboxLeft(){
         Label CsvtoApiLabel = new Label("Select Data Source");
-        CsvtoApiLabel.setStyle("-fx-font-weight: bold;");
+        CsvtoApiLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 24;");
         Label filterLabel = new Label("Property Filters");
-        filterLabel.setStyle("-fx-font-weight: bold;");
+        filterLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 24;");
 
         setModeSelector();
         setInputFields();
@@ -82,23 +86,24 @@ public class AssessmentsView {
     private void setModeSelector(){
         ToggleSwitch apiToCSVToggle = new ToggleSwitch();
         //Disables toggle until thread that loads in CSV completes
-        apiToCSVToggle.disableProperty().bind(model.getCsvLoaded());
+        apiToCSVToggle.disableProperty().bind(this.model.getCsvLoaded());
         //Switches which dao is used by the model
         apiToCSVToggle.selectedProperty()
                 .addListener((observable, oldValue, newValue) ->{
-                    model.switchDao(newValue);
+                    this.controller.switchDao(newValue);
                     resetFields();//empties input fields
         });
         Label csvLabel = new Label("CSV");
         Label apiLabel = new Label("API");
 
         this.modeSelector= new HBox(apiLabel,apiToCSVToggle,csvLabel);
-        this.modeSelector.setSpacing(5);
+        this.modeSelector.setSpacing(10);
         this.modeSelector.setAlignment(Pos.CENTER);
     }
 
     /**
-     * Creates and sets input fields behaviour, takes input for filtering dataset
+     * Creates and sets input fields behaviour, takes input for filtering dataset, search and reset buttons
+     * are bound to booleans in the model to prevent multiple button presses
      */
     private void setInputFields(){
         //Account number
@@ -131,19 +136,25 @@ public class AssessmentsView {
         TextField minTextField = new TextField();
         minTextField.setPromptText("Min");
         TextField maxTextField = new TextField();
-
         maxTextField.setPromptText("Max");
+
         HBox hBoxMinMax = new HBox(minTextField,maxTextField);
+        hBoxMinMax.setSpacing(10);
+
 
         //Search and Reset Button
         Button resetButton = new Button("Reset");
+        resetButton.disableProperty().bind(controller.getLoading());//Disables button while data is loading
         resetButton.setOnAction(e->{
-            controller.resetData();
+            this.controller.resetData();
             resetFields();
         });
 
         Button searchButton = new Button("Search");
+        searchButton.disableProperty().bind(controller.getLoading());//Disables button while data is loading
         HBox hBoxResetSearch = new HBox(searchButton,resetButton);
+        hBoxResetSearch.setSpacing(10);
+
         //Gets all the values in the input texts and gets new list
         searchButton.setOnAction(e->{
             String account = accountTextField.getText();
@@ -153,7 +164,7 @@ public class AssessmentsView {
             String min = minTextField.getText();
             String max = maxTextField.getText();
             ArrayList<String> input = new ArrayList<>(Arrays.asList(account,address,neighbourhood,assessClass,min,max));
-            controller.filterData(input);
+            this.controller.filterData(input);
         });
 
         this.inputFields = new VBox(
@@ -168,10 +179,11 @@ public class AssessmentsView {
                 valueRange,
                 hBoxMinMax,
                 hBoxResetSearch);
+        this.inputFields.setSpacing(10);
     }
 
     /**
-     * Resets the input fields back to empty
+     * Resets all input fields to blank
      */
     private void resetFields(){
         //text fields not in separate nodes
@@ -191,16 +203,17 @@ public class AssessmentsView {
     }
 
     /**
-     * Sets Bottom pager behaviour, only available when using api, gets next and previous 1000 data items
+     * Sets Bottom pager behaviour, only available when using api, buttons are disabled while data loads into the table
+     * to prevent multiple button presses by the user
      */
     private void setBoxPager(){
         Button prevButton = new Button("Prev");
-        prevButton.disableProperty().bind(model.getUsingCSV());
-        prevButton.setOnAction(e->controller.pageDown());
+        prevButton.disableProperty().bind(this.controller.getLoadingPrev());
+        prevButton.setOnAction(e->this.controller.pageDown());
 
         Button nextButton = new Button("Next");
-        nextButton.disableProperty().bind(model.getUsingCSV());
-        nextButton.setOnAction(e->controller.pageUp());
+        nextButton.disableProperty().bind(this.controller.getLoadingNext());
+        nextButton.setOnAction(e->this.controller.pageUp());
 
         this.hBoxPager = new HBox(prevButton,nextButton);
         this.hBoxPager.setAlignment(Pos.BASELINE_CENTER);
@@ -209,10 +222,10 @@ public class AssessmentsView {
     }
 
     /**
-     * Sets Columns and cell values as well binds table to model
+     * Sets Columns and cell values as well binds table to model so table is automatically updated with changes
+     * to the model
      */
     private void setTable(){
-
         TableView table = new TableView();
 
         TableColumn<Property, String> accountNum = new TableColumn<>("Account #");
@@ -248,9 +261,9 @@ public class AssessmentsView {
         assessmentClass.setCellValueFactory(new PropertyValueFactory<>("assessmentClass"));
 
         table.getColumns().setAll(accountNum,address,garage, neighbourWard,assessedValue,latitude,longitude,assessmentClass);
-        table.setItems(model.getData());
-        //table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-        tableVBox = new VBox(table);
+        table.setItems(this.model.getData());
+        table.setFixedCellSize(40);
+        this.tableVBox = new VBox(table);
         VBox.setVgrow(table, Priority.ALWAYS);
     }
 }

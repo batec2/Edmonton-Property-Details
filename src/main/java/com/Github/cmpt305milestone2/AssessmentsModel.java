@@ -10,14 +10,15 @@ import javafx.collections.ObservableList;
 import java.util.List;
 
 
+/**
+ * Model for application that contains data to be displayed, has access to two DAOs, an API DAO, and CSV DAO
+ */
 public class AssessmentsModel {
     private ObservableList<Property> data;
     private ApiPropertyAssessmentDAO apiDao;
     private CsvPropertyAssessmentDAO csvDao;
     private PropertyAssessmentsDAO dao;
     private SimpleBooleanProperty csvLoaded = new SimpleBooleanProperty(true);
-    private SimpleBooleanProperty usingCSV = new SimpleBooleanProperty(false);
-
     /**
      *
      */
@@ -30,65 +31,69 @@ public class AssessmentsModel {
     }
 
     /**
-     *
-     * @param isCSV
+     * Switches the DAO which is used by the model
+     * @param isCSV true for CSV, false for API
      */
     public void switchDao(boolean isCSV){
         if(isCSV){
             dao = csvDao;
-            usingCSV.set(true);
             updateAll();
         }
         else{
             dao = apiDao;
-            usingCSV.set(false);
             updateAll();
         }
     }
 
     /**
-     *
+     * Sets the table with unfiltered data from the DAO
      */
     public void updateAll(){
-         data.clear();
          apiDao.setOffset(0);
-         data.setAll(dao.getAll());
+         List<Property> items = dao.getAll();
+         data.clear();
+         data.setAll(items);
     }
 
     /**
-     *
+     * Sets the table with filtered data from the DAO
      * @param input
      */
     public void updateFiltered(List<String> input){
-        data.clear();
         apiDao.setOffset(0);
-        data.setAll(dao.getSearchResults(input));
+        List<Property> items = dao.getSearchResults(input);
+        data.clear();
+        data.setAll(items);
     }
 
     /**
-     *
+     * Only available when using the api DAO,
+     * increments the data forward retrieved from the API DAO and updates the table
      */
     public void updatePageUp(){
         if(apiDao.pageCurrentQuery().size()==500){
+            apiDao.setOffset(apiDao.getOffset() + 500);
+            List<Property> items = apiDao.pageCurrentQuery();
             data.clear();
-            apiDao.setOffset(apiDao.getOffset()+500);
-            data.setAll(apiDao.pageCurrentQuery());
+            data.setAll(items);
         }
     }
 
     /**
-     *
+     * Only available when using the api DAO,
+     * increments the data backwards retrieved from the API DAO and updates the table
      */
     public void updatePageDown(){
         if(apiDao.getOffset()!=0){
+            apiDao.setOffset(apiDao.getOffset() - 500);
+            List<Property> items = apiDao.pageCurrentQuery();
             data.clear();
-            apiDao.setOffset(apiDao.getOffset()-500);
-            data.setAll(apiDao.pageCurrentQuery());
+            data.setAll(items);
         }
     }
 
     /**
-     *
+     * Loads the csv into the CSV DAO, uses thread to slow down on startup
      */
     private void loadCsv(){
         new Thread(()->{
@@ -99,27 +104,17 @@ public class AssessmentsModel {
     }
 
     /**
-     *
-     * @return
+     * Gets the ObservableList from the model
+     * @return ObservableList that updates listeners on changes
      */
     public ObservableList<Property> getData(){
         return data;
     }
-
     /**
-     *
-     * @return
+     * Gets an observable boolean csvloaded, that indicates if data finished loading into the DAO
+     * @return SimpleBooleanProperty an observable boolean that updates listeners of changes
      */
     public SimpleBooleanProperty getCsvLoaded(){
         return csvLoaded;
     }
-
-    /**
-     *
-     * @return
-     */
-    public SimpleBooleanProperty getUsingCSV(){
-        return usingCSV;
-    }
-
 }

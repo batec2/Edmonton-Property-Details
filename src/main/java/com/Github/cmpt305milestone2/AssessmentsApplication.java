@@ -1,5 +1,7 @@
 package com.Github.cmpt305milestone2;
 
+import atlantafx.base.theme.CupertinoDark;
+import atlantafx.base.theme.NordDark;
 import atlantafx.base.theme.PrimerDark;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -13,10 +15,15 @@ public class AssessmentsApplication extends Application {
     AssessmentsView view;
     AssessmentsController controller;
 
+    /**
+     * Creates UI objects and adds them to the stage
+     * @param stage
+     * @throws IOException
+     */
     @Override
     public void start(Stage stage) throws IOException {
         //CSS themes from here -> https://github.com/mkpaz/atlantafx
-        Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+        Application.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
         model = new AssessmentsModel();
         controller = new AssessmentsController(model);
         view = new AssessmentsView(controller,model);

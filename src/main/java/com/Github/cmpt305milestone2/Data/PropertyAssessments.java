@@ -33,9 +33,9 @@ public class PropertyAssessments{
     }
 
     /**
-     *
-     * @param predicate
-     * @return
+     * Takes a Predicate and filters hashmap based on predicate
+     * @param predicate Predicate that will evaluate to true or false
+     * @return Returns a new PropertyAssessments object
      */
     public PropertyAssessments getFiltered(Predicate<Map.Entry<Integer,Property>> predicate){
         Map<Integer,Property> result = new HashMap<>();
@@ -47,8 +47,8 @@ public class PropertyAssessments{
     }
 
     /**
-     *
-     * @return
+     * Makes a clone of PropertyAssessments Object
+     * @return PropertyAssessments object
      */
     public PropertyAssessments clone(){
         Map<Integer,Property> result = new HashMap<>();

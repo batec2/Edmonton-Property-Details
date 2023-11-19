@@ -181,7 +181,7 @@ public class House implements Comparable<House>{
      * True if house is in neighbourhood, else false
      */
     public boolean inNeighbourhood(String input){
-        return this.neighbourhood.equalsIgnoreCase(input);
+        return this.neighbourhood.contains(input);
     }
 
     /**
