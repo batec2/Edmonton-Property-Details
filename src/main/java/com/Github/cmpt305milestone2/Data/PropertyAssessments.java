@@ -6,10 +6,7 @@ package com.Github.cmpt305milestone2.Data;
 
 import java.math.BigDecimal;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 
 import static com.Github.cmpt305milestone2.Data.IOReader.reader;
@@ -23,62 +20,22 @@ public class PropertyAssessments{
     private Map<Integer,Property> properties;
 
     /**
-     * Constructor for new object, reads in data from csv
-     * @param fileName
-     * Properties Assessments csv
-     */
-    public PropertyAssessments(String fileName) {
-        this.properties = reader(fileName);
-    }
-
-    /**
-     * Constructor for new object, reads from api
-     * @param response
-     * HttpResponse from a query to api
-     */
-    /* TODO
-    public PropertyAssessments(HttpResponse<String> response) {
-        this.properties = reader(response);
-    }
-    */
-
-    /**
      * Constructor for if there is existing hashmap
      * @param newMap
      * HashMap containing Properties
      */
     public PropertyAssessments(Map<Integer,Property> newMap){this.properties = newMap;}
 
-    /**
-     * Gets all hashmap of properties
-     * @return
-     * Properties hashmap
-     */
-    public Map<Integer,Property> getProperties() {
-        return properties;
-    }
-
     public List<Property> getAll(){
         List<Property> allValues = new ArrayList<Property>();
         properties.forEach((key, value) -> allValues.add(value.clone()));
-        return allValues;
+        return allValues.stream().sorted().toList();
     }
 
     /**
-     * Prints all entries in hashmap
-     */
-    public void printEntrySet(){
-        for(Map.Entry<Integer, Property> entry:this.properties.entrySet()){
-            System.out.println(entry.getValue().toString());
-        }
-    }
-
-    /**
-     * Gets all entries in hashmap that have matching Neighbourhood with input
-     * @param input
-     * String of Neighbourhood to be filtered
+     *
+     * @param predicate
      * @return
-     * Returns new PropertyAssessments object containing filtered hashmap
      */
     public PropertyAssessments getFiltered(Predicate<Map.Entry<Integer,Property>> predicate){
         Map<Integer,Property> result = new HashMap<>();
@@ -96,57 +53,6 @@ public class PropertyAssessments{
     public PropertyAssessments clone(){
         Map<Integer,Property> result = new HashMap<>();
         this.properties.forEach((key, value) -> result.put(key, value.clone()));//creates new hashmap
-        return new PropertyAssessments(result);
-    }
-
-    /**
-     * Gets all entries in hashmap that have matching Neighbourhood with input
-     * @param input
-     * String of Neighbourhood to be filtered
-     * @return
-     * Returns new PropertyAssessments object containing filtered hashmap
-     */
-    public PropertyAssessments getNeighbourhood(String input){
-        if(input==null||input.isBlank()){return null;}
-        Map<Integer,Property> result = new HashMap<>();
-        this.properties.entrySet()
-                .stream()
-                .filter(entry->entry.getValue().getHouse().inNeighbourhood(input))
-                .forEach(entry->result.put(entry.getKey(), entry.getValue()));
-        return new PropertyAssessments(result);
-    }
-
-    /**
-     * Gets all entries in hashmap that have matching ward with input
-     * @param input
-     * String of ward to be filtered
-     * @return
-     * Returns new PropertyAssessments object containing filtered hashmap
-     */
-    public PropertyAssessments getWard(String input){
-        if(input==null||input.isBlank()){return null;}
-        Map<Integer,Property> result = new HashMap<>();
-        this.properties.entrySet()
-                .stream()
-                .filter(entry->entry.getValue().getHouse().inWard(input))
-                .forEach(entry->result.put(entry.getKey(), entry.getValue()));
-        return new PropertyAssessments(result);
-    }
-
-    /**
-     * Gets all entries in hashmap that have matching Assessment Class 1 with input
-     * @param input
-     * String of Assessment Class 1 to be filtered
-     * @return
-     * Returns new PropertyAssessments object containing filtered hashmap
-     */
-    public PropertyAssessments getAssessmentClass(String input){
-        if(input==null||input.isBlank()){return null;}
-        Map<Integer,Property> result = new HashMap<>();
-        this.properties.entrySet()
-                .stream()
-                .filter(entry->entry.getValue().getAssessmentClass().isAssessment(input))//add to stream if entry is in the ward
-                .forEach(entry->result.put(entry.getKey(), entry.getValue()));
         return new PropertyAssessments(result);
     }
 
@@ -236,51 +142,4 @@ public class PropertyAssessments{
             System.out.println("median = "+Money.bigDecimalToMoney(this.median()));
         }
     }
-
-    /**
-     * Gets a single account and prints information
-     * @param input
-     * String account number that can be valid integer
-     */
-    public void getAccountNum(String input){
-        Integer intInput;
-        //checks if input is valid integer
-        try{
-            intInput = Integer.parseInt(input);
-        }
-        catch (Exception ex){
-            System.out.println("Account Number is not valid");
-            return;
-        }
-        //gets property with account number
-        Property account = properties.get(intInput);
-        if(account == null){
-            System.out.println("No entry for account number");
-        }
-        //Prints information related to account
-        else{
-            System.out.println("Account Number = "+properties.get(intInput).getAccountNum());
-            System.out.println("Address = "+properties.get(intInput).getAddress());
-            System.out.println("Assessed Value = "+
-                    Money.bigDecimalToMoney(properties
-                    .get(intInput)
-                    .getHouse()
-                    .getAssessedValue()));
-            System.out.println("Assessment Class = "+"["+properties.get(intInput).getAssessmentClass()+"]");
-            System.out.println("Neighbourhood = "+
-                            properties.get(intInput).getHouse().getNeighbourhood() +
-                        "("+properties.get(intInput).getHouse().getWard()+")");
-            System.out.println("Location = "+properties.get(intInput).getGeoLocation().getPoint());
-        }
-    }
-
-    /**
-     * @return
-     * True if properties are not null and size is not 0
-     * False otherwise
-     */
-    public boolean isNotEmpty(){
-        return ((properties!=null)&&(!properties.isEmpty()));
-    }
-
 }

@@ -16,14 +16,25 @@ import java.util.List;
 public class AssessmentsController {
     AssessmentsModel model;
 
+    /**
+     *
+     * @param model
+     */
     AssessmentsController(AssessmentsModel model){
         this.model = model;
     }
 
+    /**
+     *
+     */
     public void resetData(){
         model.updateAll();
     }
 
+    /**
+     *
+     * @param input
+     */
     public void filterData(List<String> input){
         if(input.stream().allMatch(String::isBlank)){
             model.updateAll();
@@ -33,10 +44,16 @@ public class AssessmentsController {
         }
     }
 
+    /**
+     *
+     */
     public void pageUp(){
         model.updatePageUp();
     }
 
+    /**
+     *
+     */
     public void pageDown(){
         model.updatePageDown();
     }

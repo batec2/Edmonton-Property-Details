@@ -60,8 +60,8 @@ public class QueryBuilder {
     }
 
     public QueryBuilder addAccountNumber(String value,boolean first){
-        this.query = first?this.query+" "+"account_number='"+value+"' "
-                :this.query+" "+"AND account_number='"+value+"' ";
+        this.query = first?this.query+" "+"account_number LIKE'"+value+"%' "
+                :this.query+" "+"AND account_number LIKE'"+value+"%' ";
         return this;
     }
 
@@ -72,8 +72,8 @@ public class QueryBuilder {
     }
     // | = %7C space = %20 % = %25
     public QueryBuilder addNeighbourhood(String value,boolean first){
-        this.query = first?this.query+" "+"neighbourhood='"+value.toUpperCase()+"' "
-                :this.query+" "+"AND neighbourhood='"+value.toUpperCase()+"' ";
+        this.query = first?this.query+" "+"neighbourhood LIKE'%"+value.toUpperCase()+"%' "
+                :this.query+" "+"AND neighbourhood LIKE'"+value.toUpperCase()+"%' ";
         return this;
     }
 

@@ -20,7 +20,12 @@ import java.util.Arrays;
 
 public class AssessmentsView {
     private BorderPane view;
-    private TableView table;
+    private VBox vBoxLeft;
+    private VBox inputFields;
+    private HBox modeSelector;
+
+    private HBox hBoxPager;
+    private VBox tableVBox;
     private AssessmentsController controller;
     private AssessmentsModel model;
 
@@ -36,55 +41,80 @@ public class AssessmentsView {
 
     private void setStage(){
         this.view = new BorderPane();
+
         setTable();
-        view.setCenter(this.table);
-        view.setLeft(setVboxLeft());
-        view.setBottom(setBoxPager());
+        view.setCenter(tableVBox);
+
+        setVboxLeft();
+        view.setLeft(vBoxLeft);
+
+        setBoxPager();
+        view.setBottom(hBoxPager);
     }
 
-    private VBox setVboxLeft(){
+    /**
+     * Sets all items in the left vbox including the mode selector and all input fields
+     */
+    private void setVboxLeft(){
         Label CsvtoApiLabel = new Label("Select Data Source");
         CsvtoApiLabel.setStyle("-fx-font-weight: bold;");
         Label filterLabel = new Label("Property Filters");
         filterLabel.setStyle("-fx-font-weight: bold;");
-        VBox vBoxLeft = new VBox(
+
+        setModeSelector();
+        setInputFields();
+
+        this.vBoxLeft = new VBox(
                 CsvtoApiLabel,
-                setModeSelector(),
+                this.modeSelector,
                 filterLabel,
-                setInputFields());
+                this.inputFields);
 
-        vBoxLeft.setSpacing(10);
-        vBoxLeft.setPadding(new Insets(10));
-
-        return vBoxLeft;
+        this.vBoxLeft.setSpacing(10);
+        this.vBoxLeft.setPadding(new Insets(10));
     }
 
-    private HBox setModeSelector(){
+    /**
+     * Creates and sets data source toggle switch behaviour, binds the disabled
+     * property to a boolean in the model to act as a mutex, to prevent CSV usage
+     * before csv is properly loaded in.
+     */
+    private void setModeSelector(){
         ToggleSwitch apiToCSVToggle = new ToggleSwitch();
+        //Disables toggle until thread that loads in CSV completes
         apiToCSVToggle.disableProperty().bind(model.getCsvLoaded());
-        apiToCSVToggle.selectedProperty().addListener((observable, oldValue, newValue) ->{
-            model.switchDao(newValue);
+        //Switches which dao is used by the model
+        apiToCSVToggle.selectedProperty()
+                .addListener((observable, oldValue, newValue) ->{
+                    model.switchDao(newValue);
+                    resetFields();//empties input fields
         });
         Label csvLabel = new Label("CSV");
         Label apiLabel = new Label("API");
-        HBox hBoxCSVtoAPI= new HBox(apiLabel,apiToCSVToggle,csvLabel);
-        hBoxCSVtoAPI.setSpacing(5);
-        hBoxCSVtoAPI.setAlignment(Pos.CENTER);
-        return hBoxCSVtoAPI;
+
+        this.modeSelector= new HBox(apiLabel,apiToCSVToggle,csvLabel);
+        this.modeSelector.setSpacing(5);
+        this.modeSelector.setAlignment(Pos.CENTER);
     }
 
-    private VBox setInputFields(){
+    /**
+     * Creates and sets input fields behaviour, takes input for filtering dataset
+     */
+    private void setInputFields(){
+        //Account number
         Label accountLabel  = new Label("Account Number:");
         TextField accountTextField = new TextField("");
 
+        //Address
         Label addressLabel  = new Label("Address:");
         TextField addressTextField = new TextField("");
         addressTextField.setPromptText("(Suite# House# Street)");
 
-
+        //Neighbourhood
         Label neighbourhoodLabel  = new Label("Neighbourhood:");
         TextField neighbourhoodTextField = new TextField("");
 
+        //Assessment Class
         ArrayList<String> assessClassComboItems = new ArrayList<>(
                 Arrays.asList(
                         "", "COMMERCIAL","RESIDENTIAL","OTHER RESIDENTIAL","NONRES MUNICIPAL/RES EDUCATION","FARMLAND"
@@ -95,6 +125,7 @@ public class AssessmentsView {
         ComboBox<String> assessClassCombo = new ComboBox<>(FXCollections.observableArrayList(assessClassComboItems));
         assessClassCombo.getSelectionModel().selectFirst();
 
+        //Assessed value
         Label valueRange = new Label("Assessed Value Range");
 
         TextField minTextField = new TextField();
@@ -104,19 +135,16 @@ public class AssessmentsView {
         maxTextField.setPromptText("Max");
         HBox hBoxMinMax = new HBox(minTextField,maxTextField);
 
+        //Search and Reset Button
         Button resetButton = new Button("Reset");
         resetButton.setOnAction(e->{
             controller.resetData();
-            accountTextField.setText("");
-            addressTextField.setText("");
-            neighbourhoodTextField.setText("");
-            assessClassCombo.getSelectionModel().selectFirst();
-            minTextField.setText("");
-            maxTextField.setText("");
+            resetFields();
         });
 
         Button searchButton = new Button("Search");
         HBox hBoxResetSearch = new HBox(searchButton,resetButton);
+        //Gets all the values in the input texts and gets new list
         searchButton.setOnAction(e->{
             String account = accountTextField.getText();
             String address = addressTextField.getText();
@@ -128,7 +156,7 @@ public class AssessmentsView {
             controller.filterData(input);
         });
 
-        return new VBox(
+        this.inputFields = new VBox(
                 accountLabel,
                 accountTextField,
                 addressLabel,
@@ -142,24 +170,50 @@ public class AssessmentsView {
                 hBoxResetSearch);
     }
 
-    private HBox setBoxPager(){
+    /**
+     * Resets the input fields back to empty
+     */
+    private void resetFields(){
+        //text fields not in separate nodes
+        this.inputFields.getChildren()
+                .filtered(n->n instanceof TextField)
+                .forEach(n->((TextField)n).setText(""));
+        //Sets combo box to first select which is blank
+        this.inputFields.getChildren()
+                .filtered(n->n instanceof ComboBox<?>)
+                .forEach(n->((ComboBox<?>)n).getSelectionModel().selectFirst());
+        //clears the min and max text fields
+        this.inputFields.getChildren()
+                .filtered(n->n instanceof HBox)
+                .forEach(n->((HBox)n).getChildren()
+                        .filtered(field->field instanceof TextField)
+                        .forEach(field->((TextField)field).setText("")));
+    }
+
+    /**
+     * Sets Bottom pager behaviour, only available when using api, gets next and previous 1000 data items
+     */
+    private void setBoxPager(){
         Button prevButton = new Button("Prev");
+        prevButton.disableProperty().bind(model.getUsingCSV());
         prevButton.setOnAction(e->controller.pageDown());
 
         Button nextButton = new Button("Next");
+        nextButton.disableProperty().bind(model.getUsingCSV());
         nextButton.setOnAction(e->controller.pageUp());
 
-        HBox hBoxPager = new HBox(prevButton,nextButton);
-        hBoxPager.setAlignment(Pos.BASELINE_CENTER);
-        hBoxPager.setPadding(new Insets(10));
-        hBoxPager.setSpacing(10);
-
-        return hBoxPager;
+        this.hBoxPager = new HBox(prevButton,nextButton);
+        this.hBoxPager.setAlignment(Pos.BASELINE_CENTER);
+        this.hBoxPager.setPadding(new Insets(10));
+        this.hBoxPager.setSpacing(10);
     }
 
+    /**
+     * Sets Columns and cell values as well binds table to model
+     */
     private void setTable(){
 
-        table = new TableView();
+        TableView table = new TableView();
 
         TableColumn<Property, String> accountNum = new TableColumn<>("Account #");
         accountNum.setMinWidth(90);
@@ -195,6 +249,8 @@ public class AssessmentsView {
 
         table.getColumns().setAll(accountNum,address,garage, neighbourWard,assessedValue,latitude,longitude,assessmentClass);
         table.setItems(model.getData());
+        //table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        tableVBox = new VBox(table);
         VBox.setVgrow(table, Priority.ALWAYS);
     }
 }

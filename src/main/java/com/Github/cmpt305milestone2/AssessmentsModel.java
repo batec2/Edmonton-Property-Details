@@ -4,16 +4,11 @@ import com.Github.cmpt305milestone2.DAO.ApiPropertyAssessmentDAO;
 import com.Github.cmpt305milestone2.DAO.CsvPropertyAssessmentDAO;
 import com.Github.cmpt305milestone2.DAO.PropertyAssessmentsDAO;
 import com.Github.cmpt305milestone2.Data.Property;
-import com.Github.cmpt305milestone2.Data.PropertyAssessments;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableBooleanValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
+
 
 public class AssessmentsModel {
     private ObservableList<Property> data;
@@ -21,7 +16,11 @@ public class AssessmentsModel {
     private CsvPropertyAssessmentDAO csvDao;
     private PropertyAssessmentsDAO dao;
     private SimpleBooleanProperty csvLoaded = new SimpleBooleanProperty(true);
+    private SimpleBooleanProperty usingCSV = new SimpleBooleanProperty(false);
 
+    /**
+     *
+     */
     public AssessmentsModel(){
         apiDao = new ApiPropertyAssessmentDAO();
         dao = apiDao;
@@ -30,43 +29,67 @@ public class AssessmentsModel {
         loadCsv();
     }
 
+    /**
+     *
+     * @param isCSV
+     */
     public void switchDao(boolean isCSV){
         if(isCSV){
             dao = csvDao;
+            usingCSV.set(true);
             updateAll();
-            System.out.println("Selected CSV!");
         }
         else{
             dao = apiDao;
+            usingCSV.set(false);
             updateAll();
-            System.out.println("Selected API!");
         }
     }
 
+    /**
+     *
+     */
     public void updateAll(){
          data.clear();
          apiDao.setOffset(0);
          data.setAll(dao.getAll());
     }
 
+    /**
+     *
+     * @param input
+     */
     public void updateFiltered(List<String> input){
         data.clear();
         apiDao.setOffset(0);
         data.setAll(dao.getSearchResults(input));
     }
 
+    /**
+     *
+     */
     public void updatePageUp(){
-        data.clear();
-        apiDao.setOffset(apiDao.getOffset()+100);
-        data.setAll(apiDao.pageCurrentQuery());
+        if(apiDao.pageCurrentQuery().size()==500){
+            data.clear();
+            apiDao.setOffset(apiDao.getOffset()+500);
+            data.setAll(apiDao.pageCurrentQuery());
+        }
     }
 
+    /**
+     *
+     */
     public void updatePageDown(){
-        data.clear();
-        apiDao.setOffset(apiDao.getOffset()!=0? apiDao.getOffset()-100 : apiDao.getOffset());
-        data.setAll(apiDao.pageCurrentQuery());
+        if(apiDao.getOffset()!=0){
+            data.clear();
+            apiDao.setOffset(apiDao.getOffset()-500);
+            data.setAll(apiDao.pageCurrentQuery());
+        }
     }
 
+    /**
+     *
+     */
     private void loadCsv(){
         new Thread(()->{
             csvDao = new CsvPropertyAssessmentDAO("Property_Assessment_Data_2023.csv");
@@ -74,12 +97,29 @@ public class AssessmentsModel {
             System.out.println("Loaded");
         }).start();
     }
+
+    /**
+     *
+     * @return
+     */
     public ObservableList<Property> getData(){
         return data;
     }
 
+    /**
+     *
+     * @return
+     */
     public SimpleBooleanProperty getCsvLoaded(){
         return csvLoaded;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public SimpleBooleanProperty getUsingCSV(){
+        return usingCSV;
     }
 
 }

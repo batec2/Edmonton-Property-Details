@@ -19,10 +19,8 @@ public class IOReader {
     /**
      * Takes filename and converts lines in file into entries
      * in a Hashmap
-     * @param fileName
-     * Valid filename
-     * @return
-     * Hashmap of all entries in the fill, Null if file can not be opened
+     * @param fileName Valid filename
+     * @return Hashmap of all entries in the fill, Null if file can not be opened
      * or file is empty
      */
     public static HashMap<Integer, Property> reader(String fileName){
@@ -84,46 +82,5 @@ public class IOReader {
             propertyList.add(property);
         }
         return propertyList;
-    }
-
-    public static Property accountReader(HttpResponse<String> response){
-        if(response==null){return null;};
-        Scanner scanner = new Scanner(response.body());
-        Property property=null;
-        scanner.useDelimiter("\n");
-        //Skips header, if there is no line returns null
-        if(scanner.hasNext()){
-            scanner.next(); //Skips header
-        }
-        else{
-            System.out.println("Error Query Response Empty");
-            return null;
-        }
-        //Reads in Query into properties
-        while (scanner.hasNext()){
-            property = new Property(scanner.next().replace("\"",""));
-        }
-        return property;
-    }
-
-    /**
-     * Prints out a prompt and takes user in user input returns
-     * the input in the form of a string
-     * @param prompt
-     * String prompt to be displayed for the user
-     * @return
-     * String user input
-     */
-    public static String userInput(String prompt,Scanner scanner){
-        System.out.print(prompt);
-        String input = "";
-        try{
-            input = scanner.nextLine();
-        }
-        catch (Exception ex){
-            System.out.println("Caught: "+ex);
-            return null;
-        }
-        return input;
     }
 }

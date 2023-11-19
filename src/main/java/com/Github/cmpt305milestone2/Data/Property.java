@@ -119,7 +119,7 @@ public class Property implements Comparable<Property>{
      * @return
      * Integer of account number
      */
-    public Integer getAccountNum(){
+    public int getAccountNum(){
         return this.accountNum;
     }
 
@@ -215,7 +215,7 @@ public class Property implements Comparable<Property>{
      * @return true if assessed value less than max, false if assessed value more than max
      */
     public boolean assessmentLessThan(String max){
-        return house.getAssessedValue().compareTo(new BigDecimal(max))>0;
+        return house.getAssessedValue().compareTo(new BigDecimal(max))<=0;
     }
 
     /**
@@ -224,7 +224,7 @@ public class Property implements Comparable<Property>{
      * @return true if assessed value more than min, false if assessed value less than min
      */
     public boolean assessmentMoreThan(String min){
-        return house.getAssessedValue().compareTo(new BigDecimal(min))<0;
+        return house.getAssessedValue().compareTo(new BigDecimal(min))>=0;
     }
 
     /**
