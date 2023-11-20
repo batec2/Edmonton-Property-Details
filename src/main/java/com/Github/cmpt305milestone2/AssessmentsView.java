@@ -3,7 +3,6 @@ package com.Github.cmpt305milestone2;
 import atlantafx.base.controls.ToggleSwitch;
 import com.Github.cmpt305milestone2.Data.Money;
 import com.Github.cmpt305milestone2.Data.Property;
-import javafx.animation.Animation;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;

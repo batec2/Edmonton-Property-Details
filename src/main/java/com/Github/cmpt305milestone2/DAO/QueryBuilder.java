@@ -141,7 +141,7 @@ public class QueryBuilder {
      */
     public QueryBuilder addNeighbourhood(String value,boolean first){
         this.query = first?this.query+" "+"neighbourhood LIKE'%"+value.toUpperCase()+"%' "
-                :this.query+" "+"AND neighbourhood LIKE'"+value.toUpperCase()+"%' ";
+                :this.query+" "+"AND neighbourhood LIKE'%"+value.toUpperCase()+"%' ";
         return this;
     }
     /**
@@ -156,13 +156,13 @@ public class QueryBuilder {
             this.query = this.query+
                     "(mill_class_1='"+value.toUpperCase()+ "'"+
                     "OR mill_class_2='"+value.toUpperCase()+ "'"+
-                    "OR mill_class_2='"+value.toUpperCase()+"') ";
+                    "OR mill_class_3='"+value.toUpperCase()+"') ";
         }
         else{
             this.query = this.query+
                     "AND (mill_class_1='"+value.toUpperCase()+ "'"+
                     "OR mill_class_2='"+value.toUpperCase()+ "'"+
-                    "OR mill_class_2='"+value.toUpperCase()+"') ";
+                    "OR mill_class_3='"+value.toUpperCase()+"') ";
         }
         return this;
     }
@@ -196,6 +196,7 @@ public class QueryBuilder {
      * @return Returns query String
      */
     public String build(){
+        System.out.println(query);
         return query
                 .replace("%","%25")
                 .replace("|","%7C")

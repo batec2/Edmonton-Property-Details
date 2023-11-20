@@ -28,7 +28,7 @@ public class AssessmentsApplication extends Application {
         controller = new AssessmentsController(model);
         view = new AssessmentsView(controller,model);
 
-        stage.setTitle("Property Assessments");
+        stage.setTitle("Edmonton Property Assessments");
         Scene scene = new Scene(view.asParent());
         stage.setScene(scene);
         stage.setMaximized(true);
