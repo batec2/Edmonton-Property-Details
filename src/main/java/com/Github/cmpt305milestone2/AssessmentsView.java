@@ -32,7 +32,6 @@ public class AssessmentsView {
     private HBox modeSelector;
     private HBox hBoxPager;
     private VBox tableVBox;
-    private Alert noResultAlert;
     private AssessmentsController controller;
     private AssessmentsModel model;
 
@@ -143,6 +142,7 @@ public class AssessmentsView {
         Label assessClassLabel = new Label("Assessment Class");
         ComboBox<String> assessClassCombo = new ComboBox<>(FXCollections.observableArrayList(assessClassComboItems));
         assessClassCombo.getSelectionModel().selectFirst();
+        assessClassCombo.setMaxWidth(1000);
 
         //Assessed value
         Label valueRange = new Label("Assessed Value Range");
@@ -289,9 +289,10 @@ public class AssessmentsView {
      * @return VBox containing objects to be shown
      */
     private VBox setTablePlaceholder(){
+        //image that shows
         Image image = new Image(new File("giphy.gif").toURI().toString());
         ImageView imageView = new ImageView(image);
-
+        //text
         Label noResults = new Label("No Results!");
         VBox placeholder = new VBox(imageView,noResults);
         placeholder.setAlignment(Pos.CENTER);
