@@ -54,50 +54,55 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
      * @return Returns a filtered list of properties sorted by account number
      */
     public List<Property> getSearchResults(List<String> input) {
-        currentItems = input;
+
+        if(!checkInput(input)){
+            return new ArrayList<>();
+        }
+
+        currentItems = sanitizeInput(input);//replaces single quotes
         QueryBuilder qBuilder = new QueryBuilder(endpoint).addWhere();
         boolean first = true;
-        for(int i=0;i<input.size();i++){
+        for(int i=0;i<currentItems.size();i++){
             switch(i){
                 //Account number
                 case 0:
-                    if(!input.get(i).isBlank()){
-                        qBuilder.addAccountNumber(input.get(i),first);
+                    if(!currentItems.get(i).isBlank()){
+                        qBuilder.addAccountNumber(currentItems.get(i),first);
                         first=false;
                     }
                     break;
                 //Address
                 case 1:
-                    if(!input.get(i).isBlank()){
-                        qBuilder.addAddress(input.get(i),first);
+                    if(!currentItems.get(i).isBlank()){
+                        qBuilder.addAddress(currentItems.get(i),first);
                         first=false;
                     }
                     break;
                 //Neighbourhood
                 case 2:
-                    if(!input.get(i).isBlank()){
-                        qBuilder.addNeighbourhood(input.get(i),first);
+                    if(!currentItems.get(i).isBlank()){
+                        qBuilder.addNeighbourhood(currentItems.get(i),first);
                         first=false;
                     }
                     break;
                 //Assessment Class
                 case 3:
-                    if(!input.get(i).isBlank()){
-                        qBuilder.addAssessmentClass(input.get(i),first);
+                    if(!currentItems.get(i).isBlank()){
+                        qBuilder.addAssessmentClass(currentItems.get(i),first);
                         first=false;
                     }
                     break;
                 //Min Assessed Value
                 case 4:
-                    if(!input.get(i).isBlank()){
-                        qBuilder.addAssessedMin(input.get(i),first);
+                    if(!currentItems.get(i).isBlank()){
+                        qBuilder.addAssessedMin(currentItems.get(i),first);
                         first=false;
                     }
                     break;
                 //Max Assessed Value
                 case 5:
-                    if(!input.get(i).isBlank()){
-                        qBuilder.addAssessedMax(input.get(i),first);
+                    if(!currentItems.get(i).isBlank()){
+                        qBuilder.addAssessedMax(currentItems.get(i),first);
                         first=false;
                     }
                     break;
@@ -111,10 +116,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
                 .build();
 
         HttpResponse<String> response = makeRequest(currentQuery);
-        if(reader(response)==null){
-            return new ArrayList<>();
-        }
-        return reader(response);
+        return reader(response)==null?new ArrayList<>():reader(response);
     }
 
     /**
@@ -164,5 +166,30 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
      */
     public void setOffset(int offset) {
         this.offset = offset;
+    }
+
+    /**
+     * Replaces all single quotes from the input with an escaped single quote
+     * @param input List of strings
+     * @return List of strings
+     */
+    public List<String> sanitizeInput(List<String> input){
+        List<String> sanitized = new ArrayList<>();
+        input.forEach(item->sanitized.add(item.replace("'","''")));
+        return sanitized;
+    }
+
+    /**
+     * Checks input for invalid special characters
+     * @param input List of strings
+     * @return Returns true if the inputs are valid, false otherwise
+     */
+    public boolean checkInput(List<String> input){
+        for(String item:input){
+            if(item.matches("[^A-Za-z0-9'-]")){//regex check for any character not in the brackets
+                return false;
+            }
+        }
+        return true;
     }
 }
