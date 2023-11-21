@@ -9,6 +9,8 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
+
 import static com.Github.cmpt305milestone2.Data.IOReader.reader;
 
 /**
@@ -54,12 +56,10 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
      * @return Returns a filtered list of properties sorted by account number
      */
     public List<Property> getSearchResults(List<String> input) {
-
+        currentItems = sanitizeInput(input);//replaces single quotes
         if(!checkInput(input)){
             return new ArrayList<>();
         }
-
-        currentItems = sanitizeInput(input);//replaces single quotes
         QueryBuilder qBuilder = new QueryBuilder(endpoint).addWhere();
         boolean first = true;
         for(int i=0;i<currentItems.size();i++){
@@ -186,7 +186,8 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
      */
     public boolean checkInput(List<String> input){
         for(String item:input){
-            if(item.matches("[^A-Za-z0-9'-]")){//regex check for any character not in the brackets
+            if(Pattern.compile("[^A-Za-z0-9'-]").matcher(item).find()){//regex check for any character not in the brackets
+                System.out.println(item);
                 return false;
             }
         }
