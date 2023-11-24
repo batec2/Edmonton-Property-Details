@@ -27,7 +27,7 @@ public class AssessmentsApplication extends Application {
         model = new AssessmentsModel();
         controller = new AssessmentsController(model);
         view = new AssessmentsView(controller,model);
-
+        model.testFunct();
         stage.setTitle("Edmonton Property Assessments");
         Scene scene = new Scene(view.asParent());
         stage.setScene(scene);
@@ -35,6 +35,7 @@ public class AssessmentsApplication extends Application {
         stage.show();
     }
     public static void main(String[] args) {
+
         launch();
     }
 }
