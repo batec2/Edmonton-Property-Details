@@ -4,9 +4,7 @@ import com.Github.cmpt305milestone2.Data.IOReader;
 import com.Github.cmpt305milestone2.Data.Property;
 import com.Github.cmpt305milestone2.Data.PropertyAssessments;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class CsvPropertyAssessmentDAO implements PropertyAssessmentsDAO {
     PropertyAssessments propertyAssessments;
@@ -56,5 +54,9 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentsDAO {
             filteredProp = filteredProp.getFiltered(e->e.getValue().assessmentLessThan(input.get(5)));
         }
         return filteredProp.getAll();
+    }
+
+    public List<String> getNeighbourhoods() {
+        return propertyAssessments.getNeighbourhoods();
     }
 }

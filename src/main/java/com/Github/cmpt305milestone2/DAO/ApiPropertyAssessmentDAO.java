@@ -186,7 +186,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
      */
     public boolean checkInput(List<String> input){
         for(String item:input){
-            if(Pattern.compile("[^A-Za-z0-9'-]").matcher(item).find()){//regex check for any character not in the brackets
+            if(Pattern.compile("[^\sA-Za-z0-9'-]").matcher(item).find()){//regex check for any character not in the brackets
                 System.out.println(item);
                 return false;
             }
