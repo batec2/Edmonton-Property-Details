@@ -11,9 +11,38 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-<junit.version>5.9.2</junit.version>  </properties>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <arcgis.version>200.2.0</arcgis.version>
+    <junit.version>5.9.2</junit.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>arcgis</id>
+      <url>https://esri.jfrog.io/artifactory/arcgis</url>
+    </repository>
+  </repositories>
 
   <dependencies>
+    <!--ArcGIS dependencies -->
+    <dependency>
+      <groupId>com.esri.arcgisruntime</groupId>
+      <artifactId>arcgis-java</artifactId>
+      <version>${arcgis.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.esri.arcgisruntime</groupId>
+      <artifactId>arcgis-java-jnilibs</artifactId>
+      <version>${arcgis.version}</version>
+      <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>com.esri.arcgisruntime</groupId>
+      <artifactId>arcgis-java-resources</artifactId>
+      <version>${arcgis.version}</version>
+      <type>zip</type>
+    </dependency>
+
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
@@ -24,6 +53,14 @@
       <artifactId>javafx-fxml</artifactId>
       <version>21.0.1</version>
     </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-web -->
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-web</artifactId>
+      <version>21.0.1</version>
+    </dependency>
+
 
     <dependency>
       <groupId>io.github.palexdev</groupId>
@@ -42,7 +79,7 @@
       <artifactId>slf4j-api</artifactId>
       <version>2.0.9</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
+    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple-->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
@@ -79,6 +116,32 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.1</version>
+        <configuration>
+          <artifactItems>
+            <artifactItem>
+              <groupId>com.esri.arcgisruntime</groupId>
+              <artifactId>arcgis-java-jnilibs</artifactId>
+              <version>${arcgis.version}</version>
+              <type>zip</type>
+              <overWrite>false</overWrite>
+              <outputDirectory>${user.home}/.arcgis/${arcgis.version}</outputDirectory>
+            </artifactItem>
+            <artifactItem>
+              <groupId>com.esri.arcgisruntime</groupId>
+              <artifactId>arcgis-java-resources</artifactId>
+              <version>${arcgis.version}</version>
+              <type>zip</type>
+              <overWrite>false</overWrite>
+              <outputDirectory>${user.home}/.arcgis/${arcgis.version}</outputDirectory>
+            </artifactItem>
+          </artifactItems>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.11.0</version>
         <configuration>
@@ -86,6 +149,7 @@
           <target>20</target>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>
@@ -105,6 +169,26 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <mainClass>com.Github.cmpt305milestone2.AssessmentsApplication</mainClass>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>io.takari</groupId>
+        <artifactId>maven</artifactId>
+        <version>0.7.4</version>
       </plugin>
     </plugins>
   </build>
