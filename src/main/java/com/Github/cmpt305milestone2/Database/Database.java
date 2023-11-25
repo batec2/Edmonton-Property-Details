@@ -3,7 +3,6 @@ package com.Github.cmpt305milestone2.Database;
 import com.Github.cmpt305milestone2.DAO.CsvPropertyAssessmentDAO;
 import com.Github.cmpt305milestone2.DAO.PropertyAssessmentsDAO;
 import com.Github.cmpt305milestone2.Data.Property;
-import com.Github.cmpt305milestone2.Data.PropertyAssessments;
 
 import java.sql.*;
 import java.util.List;
@@ -14,7 +13,7 @@ public class Database {
             " neighbourhood_id,neighbourhood,ward,assessed_value,latitude,longitude,point_location,tax_class_pct_1," +
             "tax_class_pct_2, tax_class_pct_3,mill_class_1,mill_class_2, mill_class_3) VALUES ";
 
-    public void testFunct(){
+    public void createPropertyTable(){
         Connection connection = null;
         PropertyAssessmentsDAO dao = new CsvPropertyAssessmentDAO("files/Property_Assessment_Data_2023.csv");
         try
