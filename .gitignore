@@ -36,3 +36,7 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+files/Trees_20231124.csv
+/PropertyAssessmentsApp.db
+/PropertyAssessmentsApp_backup.db

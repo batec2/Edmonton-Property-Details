@@ -77,6 +77,30 @@ public class House implements Comparable<House>{
     }
 
     /**
+     * Gets class member variables in a readable string
+     * @return
+     * String of all the member variables
+     */
+    public String toStringNull() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder
+                .append(garage.isBlank()?"":"'")
+                .append(garage.isBlank()?"Null":garage)
+                .append(garage.isBlank()?",":"',")
+                .append(neighbourhoodID.isBlank()?"Null":neighbourhoodID)
+                .append(",")
+                .append(neighbourhood.isBlank()?"":"'")
+                .append(neighbourhood.isBlank()?"Null":neighbourhood.replace("'","''"))
+                .append(neighbourhood.isBlank()?",":"',")
+                .append(ward.isBlank()?"":"'")
+                .append(ward.isBlank()?"Null":ward.replace("'","''"))
+                .append(ward.isBlank()?",":"',")
+                .append(assessedValue)
+                .append(",");
+        return stringBuilder.toString();
+    }
+
+    /**
      * Compares member variables of classes
      * @param o the object to be compared.
      * @return

@@ -65,6 +65,27 @@ public class Address implements Comparable<Address>{
     }
 
     /**
+     * Gets class member variables in a readable string
+     * @return
+     * String of all the member variables
+     */
+    public String toStringNull() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder
+                .append(suite.isBlank()?"":"'")
+                .append(suite.isBlank()?"Null":suite.replace("'","''"))
+                .append(suite.isBlank()?",":"',")
+                .append(houseNum.isBlank()?"":"'")
+                .append(houseNum.isBlank()?"Null":houseNum.replace("'","''"))
+                .append(houseNum.isBlank()?",":"',")
+                .append(streetName.isBlank()?"":"'")
+                .append(streetName.isBlank()?"Null":streetName.replace("'","''"))
+                .append(streetName.isBlank()?",":"',");
+
+        return stringBuilder.toString();
+    }
+
+    /**
      * Compares member variables of classes
      * @param o the object to be compared.
      * @return

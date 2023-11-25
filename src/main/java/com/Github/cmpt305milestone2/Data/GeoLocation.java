@@ -61,6 +61,24 @@ public class GeoLocation implements Comparable<GeoLocation>{
     }
 
     /**
+     * Gets class member variables in a readable string
+     * @return
+     * String of all the member variables
+     */
+    public String toStringNull() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder
+                .append(latitude.isBlank()?"Null":latitude)
+                .append(",")
+                .append(longitude.isBlank()?"Null":longitude)
+                .append(",")
+                .append(point.isBlank()?"":"'")
+                .append(point.isBlank()?"Null":point)
+                .append(point.isBlank()?",":"',");
+        return stringBuilder.toString();
+    }
+
+    /**
      * Compares member variables of classes
      * @param o the object to be compared.
      * @return

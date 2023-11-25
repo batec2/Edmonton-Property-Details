@@ -5,6 +5,8 @@ module com.example.cmpt305milestone2 {
     requires org.jetbrains.annotations;
     requires java.net.http;
     requires atlantafx.base;
+    requires java.sql;
+    requires com.esri.arcgisruntime;
 
     opens com.Github.cmpt305milestone2 to javafx.fxml;
     exports com.Github.cmpt305milestone2;
