@@ -289,7 +289,7 @@ public class AssessmentsView {
      */
     private VBox setTablePlaceholder(){
         //image that shows
-        Image image = new Image(new File("giphy.gif").toURI().toString());
+        Image image = new Image(new File("files/giphy.gif").toURI().toString());
         ImageView imageView = new ImageView(image);
         //text
         Label noResults = new Label("No Results!");

@@ -4,9 +4,7 @@ import com.Github.cmpt305milestone2.Data.IOReader;
 import com.Github.cmpt305milestone2.Data.Property;
 import com.Github.cmpt305milestone2.Data.PropertyAssessments;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 
 public class CsvPropertyAssessmentDAO implements PropertyAssessmentsDAO {
     PropertyAssessments propertyAssessments;
