@@ -61,7 +61,7 @@ public class Property implements Comparable<Property>{
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(this.accountNum)
+        stringBuilder.append("'"+this.accountNum+"'")
                 .append(" ")
                 .append(this.address.toString())
                 .append(" ")
@@ -70,6 +70,21 @@ public class Property implements Comparable<Property>{
                 .append(this.geoLocation.toString())
                 .append(" ")
                 .append(this.assessmentClass.toString());
+        return stringBuilder.toString();
+    }
+
+    /**
+     * Gets class member variables in a readable string
+     * @return
+     * String of all the member variables
+     */
+    public String toStringNull() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("'"+this.accountNum+"',")
+                .append(this.address.toStringNull())
+                .append(this.house.toStringNull())
+                .append(this.geoLocation.toStringNull())
+                .append(this.assessmentClass.toStringNull());
         return stringBuilder.toString();
     }
 

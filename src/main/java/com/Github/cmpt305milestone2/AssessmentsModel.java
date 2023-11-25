@@ -8,6 +8,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import java.util.List;
+import java.sql.*;
 
 
 /**
@@ -97,7 +98,7 @@ public class AssessmentsModel {
      */
     private void loadCsv(){
         new Thread(()->{
-            csvDao = new CsvPropertyAssessmentDAO("Property_Assessment_Data_2023.csv");
+            csvDao = new CsvPropertyAssessmentDAO("files/Property_Assessment_Data_2023.csv");
             csvLoaded.set(false);
             System.out.println("Loaded");
         }).start();

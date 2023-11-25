@@ -86,6 +86,35 @@ public class AssessmentClass implements Comparable<AssessmentClass>{
         return stringBuilder.toString();
     }
     /**
+     * Gets class member variables in a readable string
+     * @return
+     * String of all the member variables
+     */
+    public String toStringNull() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder
+                .append(assessmentPercent1.isBlank()?"":"'")
+                .append(assessmentPercent1.isBlank()?"Null":assessmentPercent1)
+                .append(assessmentPercent1.isBlank()?",":"',")
+                .append(assessmentPercent2.isBlank()?"":"'")
+                .append(assessmentPercent2.isBlank()?"Null":assessmentPercent2)
+                .append(assessmentPercent2.isBlank()?",":"',")
+                .append(assessmentPercent3.isBlank()?"":"'")
+                .append(assessmentPercent3.isBlank()?"Null":assessmentPercent3)
+                .append(assessmentPercent3.isBlank()?",":"',")
+                .append(assessment1.isBlank()?"":"'")
+                .append(assessment1.isBlank()?"Null":assessment1)
+                .append(assessment1.isBlank()?",":"',")
+                .append(assessment2.isBlank()?"":"'")
+                .append(assessment2.isBlank()?"Null":assessment2)
+                .append(assessment2.isBlank()?",":"',")
+                .append(assessment3.isBlank()?"":"'")
+                .append(assessment3.isBlank()?"Null":assessment3)
+                .append(assessment3.isBlank()?"":"'");
+
+        return stringBuilder.toString();
+    }
+    /**
      * Compares member variables of classes
      * @param o the object to be compared.
      * @return
