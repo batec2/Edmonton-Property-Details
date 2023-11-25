@@ -8,6 +8,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import java.util.List;
+import java.util.SortedSet;
 import java.sql.*;
 
 
@@ -101,6 +102,7 @@ public class AssessmentsModel {
             csvDao = new CsvPropertyAssessmentDAO("files/Property_Assessment_Data_2023.csv");
             csvLoaded.set(false);
             System.out.println("Loaded");
+            notify();
         }).start();
     }
 
@@ -118,4 +120,17 @@ public class AssessmentsModel {
     public SimpleBooleanProperty getCsvLoaded(){
         return csvLoaded;
     }
+
+    /*
+    public List<String> getNeighbourhoods() {
+        while (!csvLoaded.get()) {
+            try {
+                wait();
+            }
+            catch(InterruptedException e) {
+            }
+        }
+        return csvDao.getNeighbourhoods();
+    }
+     */
 }

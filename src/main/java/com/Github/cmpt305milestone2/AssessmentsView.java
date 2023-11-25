@@ -18,8 +18,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * View object for Application, sets UI objects and behaviour on UI objects when interacted with by the user
@@ -129,6 +128,15 @@ public class AssessmentsView {
 
         //Neighbourhood
         Label neighbourhoodLabel  = new Label("Neighbourhood:");
+
+        /*
+        AutoCompleteTextField neighbourhoodTextField = new AutoCompleteTextField();
+        new Thread(() -> {
+            List<String> neighbourhoods = model.getNeighbourhoods();
+            Collections.sort(neighbourhoods);
+            neighbourhoodTextField.getEntries().addAll(neighbourhoods);
+        }).start();
+         */
         TextField neighbourhoodTextField = new TextField("");
 
         //Assessment Class
@@ -145,7 +153,6 @@ public class AssessmentsView {
 
         //Assessed value
         Label valueRange = new Label("Assessed Value Range");
-
         TextField minTextField = new TextField();
         minTextField.setPromptText("Min");
         TextField maxTextField = new TextField();

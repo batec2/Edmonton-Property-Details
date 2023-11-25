@@ -142,4 +142,12 @@ public class PropertyAssessments{
             System.out.println("median = "+Money.bigDecimalToMoney(this.median()));
         }
     }
+
+    public List<String> getNeighbourhoods() {
+        Set<String> neighbourhoods = new HashSet<>();
+        for (Property property : properties.values()) {
+            neighbourhoods.add(property.getNeighbourhood());
+        }
+        return new ArrayList<>(neighbourhoods);
+    }
 }
