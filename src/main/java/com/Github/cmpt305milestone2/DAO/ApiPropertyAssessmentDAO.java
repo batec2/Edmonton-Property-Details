@@ -55,6 +55,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
      * @param input Takes in a list of inputs to filter by
      * @return Returns a filtered list of properties sorted by account number
      */
+    @Override
     public List<Property> getSearchResults(List<String> input) {
         currentItems = sanitizeInput(input);//replaces single quotes
         if(!checkInput(input)){

@@ -83,4 +83,34 @@ public class IOReader {
         }
         return propertyList;
     }
+
+    public static List<FruitTree> treeReader(String fileName){
+        File fileIn;
+        Scanner scanner = null;
+        ArrayList<FruitTree> treeList = new ArrayList<>();
+
+        try{
+            fileIn = new File(fileName);
+            scanner = new Scanner(fileIn);
+        }
+        catch (Exception ex){
+            System.out.println("Error: Can't Open File");
+            return null;
+        }
+        scanner.useDelimiter("\n");
+        //Skips header, if there is no line returns null
+        if(scanner.hasNext()){
+            scanner.next(); //Skips header
+        }
+        else{
+            System.out.println("Error Query Response Empty");
+            return null;
+        }
+        //Reads in Query into properties
+        while (scanner.hasNext()){
+            FruitTree tree = new FruitTree(scanner.next());
+            treeList.add(tree);
+        }
+        return treeList;
+    }
 }
