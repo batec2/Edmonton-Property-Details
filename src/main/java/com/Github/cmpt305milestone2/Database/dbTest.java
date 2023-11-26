@@ -4,10 +4,8 @@ import com.Github.cmpt305milestone2.DAO.FruitTreesDAO;
 
 public class dbTest {
     public static void main(String[] args) {
-        //Database db = new Database();
+        Database db = new Database();
         //db.createPropertyTable();
-
-        FruitTreesDAO fruitTreesDAO = new FruitTreesDAO();
-        System.out.println(fruitTreesDAO.getAll().get(0).toStringNull());
+        db.createTreesTable();
     }
 }

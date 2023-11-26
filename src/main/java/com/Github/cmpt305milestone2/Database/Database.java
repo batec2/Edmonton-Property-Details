@@ -15,6 +15,10 @@ public class Database {
             " neighbourhood_id,neighbourhood,ward,assessed_value,latitude,longitude,point_location,tax_class_pct_1," +
             "tax_class_pct_2, tax_class_pct_3,mill_class_1,mill_class_2, mill_class_3) VALUES ";
 
+    String insertTreesString = "BEGIN; INSERT INTO FruitTrees (tree_id,neighbourhood_name,location_type,species_botanical," +
+            "species_common,genus,species,cultivar,diameter_breast_height,condition_percent,planted_date," +
+            "owner,bears_edible_fruit,type_of_edible_fruit,amount,latitude,longitude,location,point_location) VALUES ";
+
     public void createPropertyTable(){
         Connection connection = null;
         PropertyAssessmentsDAO dao = new CsvPropertyAssessmentDAO("files/Property_Assessment_Data_2023.csv");
@@ -93,12 +97,17 @@ public class Database {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);  // set timeout to 30 sec.
 
-            statement.executeUpdate(
-                    "create table if not exists FruitTrees ()");
 
+            //statement.executeUpdate("drop table if exists FruitTrees");
+            statement.executeUpdate(
+                    "create table if not exists FruitTrees (id integer PRIMARY KEY,tree_id text,neighbourhood_name text,location_type text," +
+                            "species_botanical text,species_common text,genus text,species text,cultivar text," +
+                            "diameter_breast_height integer,condition_percent integer,planted_date text,owner text," +
+                            "bears_edible_fruit boolean,type_of_edible_fruit text,amount integer," +
+                            "latitude real,longitude real,location text,point_location text)");
 
             List<FruitTree> fruitTrees = dao.getAll();
-            StringBuilder stringBuilder = new StringBuilder(insertPropertyString);
+            StringBuilder stringBuilder = new StringBuilder(insertTreesString);
             int i = 1;
             for(FruitTree item:fruitTrees)
             {
@@ -106,9 +115,9 @@ public class Database {
                 if((i%1000==0)||(i==fruitTrees.size())) {
                     System.out.println(i);
                     try {
-                        stringBuilder.append("ON CONFLICT(account_number) DO NOTHING; COMMIT;");
+                        stringBuilder.append("ON CONFLICT(id) DO NOTHING; COMMIT;");
                         statement.executeUpdate(stringBuilder.toString());
-                        stringBuilder = new StringBuilder(insertPropertyString);
+                        stringBuilder = new StringBuilder(insertTreesString);
                     } catch (Exception e) {
                         System.out.println(e);
                         System.exit(1);
