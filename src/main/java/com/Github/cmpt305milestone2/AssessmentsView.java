@@ -52,11 +52,13 @@ public class AssessmentsView {
         return view ;
     }
 
+    public BorderPane asBorderPane() { return view;}
     /**
      * Sets the items for the root node
      */
     private void setStage(){
         this.view = new BorderPane();
+        //view.setPadding(new Insets(0,0,0,40));
         setTable();
         view.setCenter(this.tableVBox);
 
