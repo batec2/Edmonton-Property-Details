@@ -102,7 +102,7 @@ public class AssessmentsModel {
             csvDao = new CsvPropertyAssessmentDAO("files/Property_Assessment_Data_2023.csv");
             csvLoaded.set(false);
             System.out.println("Loaded");
-            notify();
+            //notify();
         }).start();
     }
 

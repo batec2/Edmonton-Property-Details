@@ -8,6 +8,12 @@ import java.util.*;
 
 public class CsvPropertyAssessmentDAO implements PropertyAssessmentsDAO {
     PropertyAssessments propertyAssessments;
+
+    public CsvPropertyAssessmentDAO(){
+        propertyAssessments = new PropertyAssessments(IOReader.reader("files/Property_Assessment_Data_2023.csv"));
+    }
+
+
     public CsvPropertyAssessmentDAO(String file){
         propertyAssessments = new PropertyAssessments(IOReader.reader(file));
     }
