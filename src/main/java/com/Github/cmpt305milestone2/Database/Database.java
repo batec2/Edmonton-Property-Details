@@ -1,7 +1,9 @@
 package com.Github.cmpt305milestone2.Database;
 
 import com.Github.cmpt305milestone2.DAO.CsvPropertyAssessmentDAO;
+import com.Github.cmpt305milestone2.DAO.FruitTreesDAO;
 import com.Github.cmpt305milestone2.DAO.PropertyAssessmentsDAO;
+import com.Github.cmpt305milestone2.Data.FruitTree;
 import com.Github.cmpt305milestone2.Data.Property;
 
 import java.sql.*;
@@ -48,7 +50,7 @@ public class Database {
                     }
                 }
                 i++;
-            };
+            }
 
             /*
             ResultSet rs = statement.executeQuery("select * from PropertyAssessments");
@@ -81,4 +83,56 @@ public class Database {
             }
         }
     }
+    public void createTreesTable(){
+        Connection connection = null;
+        FruitTreesDAO dao = new FruitTreesDAO();
+        try
+        {
+            // create a database connection
+            connection = DriverManager.getConnection("jdbc:sqlite:PropertyAssessmentsApp.db");
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);  // set timeout to 30 sec.
+
+            statement.executeUpdate(
+                    "create table if not exists FruitTrees ()");
+
+
+            List<FruitTree> fruitTrees = dao.getAll();
+            StringBuilder stringBuilder = new StringBuilder(insertPropertyString);
+            int i = 1;
+            for(FruitTree item:fruitTrees)
+            {
+                stringBuilder.append((i%1000==0)||(i==fruitTrees.size())?"(" + item.toStringNull() + ")":"(" + item.toStringNull() + "),");
+                if((i%1000==0)||(i==fruitTrees.size())) {
+                    System.out.println(i);
+                    try {
+                        stringBuilder.append("ON CONFLICT(account_number) DO NOTHING; COMMIT;");
+                        statement.executeUpdate(stringBuilder.toString());
+                        stringBuilder = new StringBuilder(insertPropertyString);
+                    } catch (Exception e) {
+                        System.out.println(e);
+                        System.exit(1);
+                    }
+                }
+                i++;
+            }
+        }
+        catch(SQLException e)
+        {
+            System.err.println(e.getMessage());
+        }
+        finally
+        {
+            try
+            {
+                if(connection != null)
+                    connection.close();
+            }
+            catch(SQLException e)
+            {
+                System.err.println(e.getMessage());
+            }
+        }
+    }
+
 }
