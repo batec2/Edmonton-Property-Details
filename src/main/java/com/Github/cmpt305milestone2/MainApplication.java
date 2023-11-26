@@ -2,16 +2,12 @@ package com.Github.cmpt305milestone2;
 
 import atlantafx.base.theme.CupertinoDark;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class MainApplication extends Application {
@@ -21,7 +17,7 @@ public class MainApplication extends Application {
     AssessmentsController assController;
     HamburgerView burgerView;
     HamburgerController burgerController;
-    MapView mapView;
+    HeatMapView mapView;
 
     BorderPane mainPane;
     BorderPane rootPane;
@@ -39,11 +35,10 @@ public class MainApplication extends Application {
         assModel = new AssessmentsModel();
         assController = new AssessmentsController( assModel);
         assView = new AssessmentsView(assController, assModel);
-        mainPane = assView.asBorderPane();
-        mapView = new MapView(assController);
+        mapView = new HeatMapView(assController, assModel);
+        mainPane = mapView.asBorderPane();
         burgerController = new HamburgerController(mainPane, assView, mapView);
         burgerView = new HamburgerView(burgerController);
-        ObservableList<BorderPane> mainPanes = FXCollections.observableList(List.of(mainPane));
         stage.setTitle("Edmonton Property Assessments");
         rootPane.setLeft(burgerView.sidebar);
         rootPane.setCenter(mainPane);

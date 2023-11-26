@@ -98,6 +98,12 @@ public class AssessmentsView {
      */
     private void setModeSelector(){
         ToggleSwitch apiToCSVToggle = new ToggleSwitch();
+
+        //Defaults to API
+        if(controller.getIsCSV()) {
+            controller.switchDao(false);
+        }
+
         //Disables toggle until thread that loads in CSV completes
         apiToCSVToggle.disableProperty().bind(this.model.getCsvLoaded());
         //Switches which dao is used by the model

@@ -24,6 +24,8 @@ public class AssessmentsController {
     private SimpleBooleanProperty loadingPrev = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty loading = new SimpleBooleanProperty(false);
 
+    private boolean isCSV = false;
+
     /**
      * Takes a AssessmentsModel object
      * @param model model that holds data for application
@@ -38,10 +40,10 @@ public class AssessmentsController {
      */
     public void resetData(){
         loading.set(true);
-        new Thread(()->{
+        //new Thread(()->{
             model.updateAll();
             loading.set(false);
-        }).start();
+        //}).start();
     }
 
     /**
@@ -60,6 +62,10 @@ public class AssessmentsController {
             }
             loading.set(false);
         }).start();
+    }
+
+    public void filterMapData(List<String> input) {
+
     }
 
     /**
@@ -105,6 +111,7 @@ public class AssessmentsController {
             loadingNext.set(false);
             loadingPrev.set(false);
         }
+        this.isCSV = isCSV;
 
     }
     /**
@@ -128,4 +135,6 @@ public class AssessmentsController {
     public SimpleBooleanProperty getLoading(){
         return loading;
     }
+
+    public boolean getIsCSV() {return isCSV; }
 }

@@ -6,9 +6,9 @@ import javafx.scene.layout.BorderPane;
 public class HamburgerController{
     BorderPane mainPane;
     AssessmentsView aView;
-    MapView mapView;
+    HeatMapView mapView;
 
-    public HamburgerController(BorderPane mainPane, AssessmentsView aView, MapView mapView) {
+    public HamburgerController(BorderPane mainPane, AssessmentsView aView, HeatMapView mapView) {
         this.mainPane = mainPane;
         this.aView = aView;
         this.mapView = mapView;
