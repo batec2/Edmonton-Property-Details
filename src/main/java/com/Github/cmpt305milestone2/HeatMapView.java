@@ -286,4 +286,13 @@ public class HeatMapView {
         }
     }
 
+    /**
+     * Get's the map view object, doesn't deep copy as this is used to
+     * @return
+     */
+    public void destroyMapView() {
+        if(this.mapView != null) {
+            this.mapView.dispose();
+        }
+    }
 }
