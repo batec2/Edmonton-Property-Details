@@ -98,12 +98,12 @@ public class AssessmentsModel {
      * Loads the csv into the CSV DAO, uses thread to slow down on startup
      */
     private void loadCsv(){
-        new Thread(()->{
+        //new Thread(()->{
             csvDao = new CsvPropertyAssessmentDAO("files/Property_Assessment_Data_2023.csv");
             csvLoaded.set(false);
             System.out.println("Loaded");
             //notify();
-        }).start();
+       // }).start();
     }
 
     /**
