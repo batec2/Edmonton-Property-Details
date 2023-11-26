@@ -28,7 +28,6 @@ public class AssessmentsApplication extends Application {
      * @param stage
      * @throws IOException
      */
-    /*
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -47,13 +46,9 @@ public class AssessmentsApplication extends Application {
 
         launch();
     }
-     */
+
+    /*
     private MapView mapView;
-
-    public static void main(String[] args) {
-
-        Application.launch(args);
-    }
 
     @Override
     public void start(Stage stage) {
@@ -88,10 +83,11 @@ public class AssessmentsApplication extends Application {
 
         mapView.setViewpoint(new Viewpoint(53.5461, -113.4937, 300000));
     }
-
+    */
     /**
      * Stops and releases all resources used in application.
      */
+    /*
     @Override
     public void stop() {
 
@@ -99,5 +95,6 @@ public class AssessmentsApplication extends Application {
             mapView.dispose();
         }
     }
+    */
 }
 

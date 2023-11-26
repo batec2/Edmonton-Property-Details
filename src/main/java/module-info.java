@@ -7,6 +7,7 @@ module com.example.cmpt305milestone2 {
     requires atlantafx.base;
     requires java.sql;
     requires com.esri.arcgisruntime;
+    requires com.jfoenix;
 
     opens com.Github.cmpt305milestone2 to javafx.fxml;
     exports com.Github.cmpt305milestone2;
