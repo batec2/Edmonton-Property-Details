@@ -53,7 +53,7 @@ public class AssessmentsController {
      */
     public void filterData(List<String> input){
         loading.set(true);
-        new Thread(()->{
+        //new Thread(()->{
             if(input.stream().allMatch(String::isBlank)){
                 model.updateAll();
             }
@@ -61,7 +61,7 @@ public class AssessmentsController {
                 model.updateFiltered(input);
             }
             loading.set(false);
-        }).start();
+        //}).start();
     }
 
     public void filterMapData(List<String> input) {

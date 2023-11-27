@@ -121,16 +121,8 @@ public class AssessmentsModel {
         return csvLoaded;
     }
 
-    /*
+
     public List<String> getNeighbourhoods() {
-        while (!csvLoaded.get()) {
-            try {
-                wait();
-            }
-            catch(InterruptedException e) {
-            }
-        }
         return csvDao.getNeighbourhoods();
     }
-     */
 }

@@ -69,12 +69,10 @@ public class HamburgerView{
             jfxButton.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             jfxButton.setOnMouseClicked(event -> {
                 if(jfxButton.getText().equals("Table View")){
-                    controller.setTableView();
-                    System.out.println("Table View Selected!");
+                    controller.setView('t');
                 }
                 else if(jfxButton.getText().equals("Map View")) {
-                    controller.setMapView();
-                    System.out.println("Map View Selected!");
+                    controller.setView('m');
                 }
             });
         }
