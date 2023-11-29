@@ -1,5 +1,6 @@
-package com.Github.cmpt305milestone2;
+package com.Github.cmpt305milestone2.Views;
 
+import com.Github.cmpt305milestone2.HamburgerController;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.transitions.hamburger.HamburgerNextArrowBasicTransition;
@@ -88,4 +89,9 @@ public class HamburgerView{
         mainContent.setCenter(vbox2);
         sidebar.setLeft(scrollPane);
         }
+
+    public BorderPane getSidebar() {
+        return sidebar;
+    }
+
 }

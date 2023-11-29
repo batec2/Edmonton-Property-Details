@@ -1,5 +1,8 @@
-package com.Github.cmpt305milestone2;
+package com.Github.cmpt305milestone2.Views;
 
+import com.Github.cmpt305milestone2.AssessmentsController;
+import com.Github.cmpt305milestone2.AssessmentsModel;
+import com.Github.cmpt305milestone2.AutoCompleteTextField;
 import com.Github.cmpt305milestone2.Data.Money;
 import com.Github.cmpt305milestone2.Data.Property;
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;

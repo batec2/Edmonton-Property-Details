@@ -1,8 +1,6 @@
 package com.Github.cmpt305milestone2.Database;
 
-import com.Github.cmpt305milestone2.DAO.FruitTreesDAO;
-
-public class dbTest {
+public class InitDB {
     public static void main(String[] args) {
         try {
             Database db = new Database();

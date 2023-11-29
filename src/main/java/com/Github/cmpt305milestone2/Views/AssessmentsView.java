@@ -1,6 +1,8 @@
-package com.Github.cmpt305milestone2;
+package com.Github.cmpt305milestone2.Views;
 
 import atlantafx.base.controls.ToggleSwitch;
+import com.Github.cmpt305milestone2.AssessmentsController;
+import com.Github.cmpt305milestone2.AssessmentsModel;
 import com.Github.cmpt305milestone2.Data.Money;
 import com.Github.cmpt305milestone2.Data.Property;
 import javafx.beans.property.SimpleObjectProperty;
