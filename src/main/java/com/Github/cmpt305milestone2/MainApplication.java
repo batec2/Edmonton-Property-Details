@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.sql.SQLException;
 
 
 public class MainApplication extends Application {
@@ -29,7 +30,7 @@ public class MainApplication extends Application {
      */
 
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws IOException, SQLException {
         //CSS themes from here -> https://github.com/mkpaz/atlantafx
         Application.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
         rootPane = new BorderPane();

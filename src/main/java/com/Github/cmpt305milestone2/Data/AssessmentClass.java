@@ -44,6 +44,22 @@ public class AssessmentClass implements Comparable<AssessmentClass>{
     }
 
     /**
+     * Constructor for AssessmentClass, requires valid string from Property Assessment data file.
+     * If data does not have relevant value blank string is used.
+     * @param data
+     * CSV formatted string from property assessment data
+     */
+    public AssessmentClass(List<String> data){
+        this.assessmentPercent1 = data.get(12) == null?"":data.get(12);
+        this.assessmentPercent2 = data.get(13) == null?"":data.get(13);
+        this.assessmentPercent3 = data.get(14) == null?"":data.get(14);
+        this.assessment1 = data.get(15) == null?"":data.get(15);
+        this.assessment2 = data.get(16) == null?"":data.get(16);
+        this.assessment3 = data.get(17) == null?"":data.get(17);
+        this.assessmentClass = this.toString();
+    }
+
+    /**
      * Constructor for AssessmentClass, Used to make clone of Assessment Class
      * @param assessmentPercent1 String
      * @param assessmentPercent2 String

@@ -5,10 +5,8 @@
 package com.Github.cmpt305milestone2.Data;
 
 import org.jetbrains.annotations.NotNull;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+
+import java.util.*;
 
 /**
  * Holds the suit, house number, and street name of a property
@@ -31,6 +29,19 @@ public class Address implements Comparable<Address>{
         this.suite = splitData.size()>1?splitData.get(1):"";
         this.houseNum = splitData.size()>2?splitData.get(2):"";
         this.streetName = splitData.size()>3?splitData.get(3):"";
+        this.address = this.toString();
+    }
+
+    /**
+     * Constructor for address, requires valid string from Property Assessment data file.
+     * If data does not have relevant value blank string is used.
+     * @param data
+     * CSV formatted string from property assessment data
+     */
+    public Address(List<String> data){
+        this.suite = data.get(1) == null?"":data.get(1);
+        this.houseNum = data.get(2) == null?"":data.get(2);
+        this.streetName = data.get(3) == null?"":data.get(3);
         this.address = this.toString();
     }
 

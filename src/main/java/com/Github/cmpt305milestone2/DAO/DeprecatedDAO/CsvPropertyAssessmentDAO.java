@@ -1,4 +1,4 @@
-package com.Github.cmpt305milestone2.DAO;
+package com.Github.cmpt305milestone2.DAO.DeprecatedDAO;
 
 import com.Github.cmpt305milestone2.Data.IOReader;
 import com.Github.cmpt305milestone2.Data.Property;

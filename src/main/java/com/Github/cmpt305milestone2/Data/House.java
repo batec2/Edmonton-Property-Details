@@ -39,6 +39,21 @@ public class House implements Comparable<House>{
     }
 
     /**
+     * Constructor for address, requires valid string from Property Assessment data file.
+     * If data does not have relevant value blank string is used.
+     * @param data
+     * CSV formatted string from property assessment data
+     */
+    public House(List<String> data){
+        this.garage = data.get(4) == null?"":data.get(4);
+        this.neighbourhoodID = data.get(5) == null?"":data.get(5);;
+        this.neighbourhood = data.get(6) == null?"":data.get(6);
+        this.ward = data.get(7) == null?"":data.get(7);
+        this.assessedValue = new BigDecimal(data.get(8));
+        this.neighbourWard = this.neighbourhood+" ("+this.ward+")";
+    }
+
+    /**
      * Constructor for House, used to create clone of existing House object
      * @param garage
      * @param neighbourhoodID

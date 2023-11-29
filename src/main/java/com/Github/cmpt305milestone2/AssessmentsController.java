@@ -29,10 +29,15 @@ public class AssessmentsController {
      * model is finishes updating
      */
     public void resetData(){
-        loading.set(true);
+        //loading.set(true);
         //new Thread(()->{
+        try {
             model.updateAll();
-            loading.set(false);
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+        //loading.set(false);
         //}).start();
     }
 
@@ -42,15 +47,25 @@ public class AssessmentsController {
      * @param input List of strings contained filters
      */
     public void filterData(List<String> input){
-        loading.set(true);
+        //loading.set(true);
         //new Thread(()->{
-            if(input.stream().allMatch(String::isBlank)){
+        if(input.stream().allMatch(String::isBlank)){
+            try {
                 model.updateAll();
             }
-            else{
+            catch (Exception e){
+                System.out.println(e);
+            }
+        }
+        else{
+            try {
                 model.updateFiltered(input);
             }
-            loading.set(false);
+            catch (Exception e){
+                System.out.println(e);
+            }
+        }
+        //loading.set(false);
         //}).start();
     }
 
@@ -67,7 +82,12 @@ public class AssessmentsController {
         loadingPrev.set(true);
         loadingNext.set(true);
         new Thread(()->{
-            model.updatePageUp();
+            try {
+                model.updatePageUp();
+            }
+            catch (Exception e){
+                System.out.println(e);
+            }
             loadingPrev.set(false);
             loadingNext.set(false);
         }).start();
@@ -81,7 +101,12 @@ public class AssessmentsController {
         loadingPrev.set(true);
         loadingNext.set(true);
         new Thread(()->{
-            model.updatePageDown();
+            try{
+                model.updatePageDown();
+            }
+            catch (Exception e){
+                System.out.println(e);
+            }
             loadingPrev.set(false);
             loadingNext.set(false);
         }).start();
@@ -92,8 +117,14 @@ public class AssessmentsController {
      * model finishes updating
      * @param isCSV true for CSV false for API
      */
+    @Deprecated
     public void switchDao(boolean isCSV){
-        model.switchDao(isCSV);
+        try {
+            model.switchDao(isCSV);
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
         if(isCSV){
             loadingNext.set(true);
             loadingPrev.set(true);

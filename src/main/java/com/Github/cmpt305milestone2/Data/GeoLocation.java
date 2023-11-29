@@ -32,6 +32,18 @@ public class GeoLocation implements Comparable<GeoLocation>{
     }
 
     /**
+     * Constructor for GeoLocation, requires valid string from Property Assessment data file.
+     * If data does not have relevant value blank string is used.
+     * @param data
+     * CSV formatted string from property assessment data
+     */
+    public GeoLocation(List<String> data){
+        this.latitude = data.get(9) == null?"":data.get(9);
+        this.longitude = data.get(10) == null?"":data.get(10);
+        this.point = data.get(11) == null?"":data.get(11);
+    }
+    
+    /**
      * Constructor for GeoLocation, Used to create Clone of existing GeoLocation object
      * @param latitude
      * @param longitude
