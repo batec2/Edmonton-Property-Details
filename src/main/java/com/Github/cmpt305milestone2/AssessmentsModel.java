@@ -68,6 +68,9 @@ public class AssessmentsModel {
         data.setAll(items);
     }
 
+    public Property getAssessment(double longitude, double latitude) {
+        return csvDao.getAssessment(longitude, latitude);
+    }
     /**
      * Only available when using the api DAO,
      * increments the data forward retrieved from the API DAO and updates the table
@@ -121,16 +124,8 @@ public class AssessmentsModel {
         return csvLoaded;
     }
 
-    /*
+
     public List<String> getNeighbourhoods() {
-        while (!csvLoaded.get()) {
-            try {
-                wait();
-            }
-            catch(InterruptedException e) {
-            }
-        }
         return csvDao.getNeighbourhoods();
     }
-     */
 }

@@ -52,7 +52,6 @@ public class Property implements Comparable<Property>{
         this.assessmentClass = assessmentClass;
     }
 
-
     /**
      * Gets class member variables in a readable string
      * @return
@@ -60,6 +59,33 @@ public class Property implements Comparable<Property>{
      */
     @Override
     public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("ACCOUNT #: ").append(this.accountNum)
+                .append("\nADDRESS: ").append(this.address.toString())
+                .append("\nNEIGHBOURHOOD: ").append(this.getNeighbourhood())
+                .append("\nWARD:").append(this.getWard())
+                .append("\nASSESSED VALUE: ").append(Money.bigDecimalToMoney(this.getAssessedValue()))
+                .append("\nLOCATION: ").append(this.geoLocation)
+                .append("\nASSESSMENT CLASS 1: ").append(this.getAssessment1())
+                .append(" ").append(this.getAssessmentPercent1());
+        if(!this.getAssessment2().isEmpty()) {
+            stringBuilder.append("\nASSESSMENT CLASS 2: ").append(this.getAssessment2())
+                         .append(" ").append(this.getAssessmentPercent2());
+        }
+        if(!this.getAssessment3().isEmpty()) {
+            stringBuilder.append("\nASSESSMENT CLASS 3: ").append(this.getAssessment3())
+                         .append(" ").append(this.getAssessmentPercent3());
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
+     * Gets class member variables in a readable string
+     * @return
+     * String of all the member variables
+     */
+    //@Override
+    public String toStringOLD() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("'"+this.accountNum+"'")
                 .append(" ")
