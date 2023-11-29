@@ -91,7 +91,7 @@ public class HeatMapView {
         //view.setPadding(new Insets(0,0,0,40));
 
         if(!controller.getIsCSV()) {
-            controller.switchDao(true);
+            //controller.switchDao(true);
         }
 
         setMap();

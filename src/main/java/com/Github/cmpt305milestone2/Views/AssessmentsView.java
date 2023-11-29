@@ -75,17 +75,12 @@ public class AssessmentsView {
      * Sets all items in the left vbox including the mode selector and all input fields
      */
     private void setVboxLeft(){
-        Label CsvtoApiLabel = new Label("Select Data Source");
-        CsvtoApiLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 24;");
         Label filterLabel = new Label("Property Filters");
         filterLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 24;");
 
-        setModeSelector();
         setInputFields();
 
         this.vBoxLeft = new VBox(
-                CsvtoApiLabel,
-                this.modeSelector,
                 filterLabel,
                 this.inputFields);
 
@@ -98,6 +93,7 @@ public class AssessmentsView {
      * property to a boolean in the model to act as a mutex, to prevent CSV usage
      * before csv is properly loaded in.
      */
+    @Deprecated
     private void setModeSelector(){
         ToggleSwitch apiToCSVToggle = new ToggleSwitch();
 

@@ -1,5 +1,6 @@
-package com.Github.cmpt305milestone2.DAO;
+package com.Github.cmpt305milestone2.DAO.DeprecatedDAO;
 
+import com.Github.cmpt305milestone2.DAO.QueryBuilder;
 import com.Github.cmpt305milestone2.Data.Property;
 
 import java.net.URI;
@@ -41,6 +42,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentsDAO {
                 .add("LIMIT",limit)
                 .build();
         HttpResponse<String> response = makeRequest(currentQuery);
+
         //Resets filters
         currentItems = Arrays.asList("","","","","","");
         if(reader(response)==null){

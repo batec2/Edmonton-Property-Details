@@ -1,15 +1,16 @@
 package com.Github.cmpt305milestone2;
 
-import com.Github.cmpt305milestone2.DAO.ApiPropertyAssessmentDAO;
-import com.Github.cmpt305milestone2.DAO.CsvPropertyAssessmentDAO;
-import com.Github.cmpt305milestone2.DAO.PropertyAssessmentsDAO;
+import com.Github.cmpt305milestone2.DAO.DatabaseDAO;
+import com.Github.cmpt305milestone2.DAO.DeprecatedDAO.ApiPropertyAssessmentDAO;
+import com.Github.cmpt305milestone2.DAO.DeprecatedDAO.CsvPropertyAssessmentDAO;
+import com.Github.cmpt305milestone2.DAO.DeprecatedDAO.PropertyAssessmentsDAO;
 import com.Github.cmpt305milestone2.Data.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.sql.SQLException;
 import java.util.List;
-import java.util.SortedSet;
-import java.sql.*;
 
 
 /**
@@ -17,17 +18,15 @@ import java.sql.*;
  */
 public class AssessmentsModel {
     private ObservableList<Property> data;
-    private ApiPropertyAssessmentDAO apiDao;
+    private DatabaseDAO dao;
     private CsvPropertyAssessmentDAO csvDao;
-    private PropertyAssessmentsDAO dao;
     private SimpleBooleanProperty csvLoaded = new SimpleBooleanProperty(true);
     /**
      * Initializes to start with API DAO as the default, as well gets all data as initial table data
      */
-    public AssessmentsModel(){
-        apiDao = new ApiPropertyAssessmentDAO();
-        dao = apiDao;
-        List<Property> properties = apiDao.getAll();
+    public AssessmentsModel() throws SQLException {
+        dao = new DatabaseDAO();
+        List<Property> properties = dao.getAll();
         data = FXCollections.observableArrayList(properties);
         loadCsv();
     }
@@ -36,13 +35,14 @@ public class AssessmentsModel {
      * Switches the DAO which is used by the model
      * @param isCSV true for CSV, false for API
      */
-    public void switchDao(boolean isCSV){
+    @Deprecated
+    public void switchDao(boolean isCSV)throws SQLException{
         if(isCSV){
-            dao = csvDao;
+            //dao = csvDao;
             updateAll();
         }
         else{
-            dao = apiDao;
+            //dao = apiDao;
             updateAll();
         }
     }
@@ -50,8 +50,8 @@ public class AssessmentsModel {
     /**
      * Sets the table with unfiltered data from the DAO
      */
-    public void updateAll(){
-         apiDao.setOffset(0);
+    public void updateAll() throws SQLException{
+         dao.setOffset(0);
          List<Property> items = dao.getAll();
          data.clear();
          data.setAll(items);
@@ -61,8 +61,8 @@ public class AssessmentsModel {
      * Sets the table with filtered data from the DAO
      * @param input List of Strings to filter data by
      */
-    public void updateFiltered(List<String> input){
-        apiDao.setOffset(0);
+    public void updateFiltered(List<String> input)throws SQLException{
+        dao.setOffset(0);
         List<Property> items = dao.getSearchResults(input);
         data.clear();
         data.setAll(items);
@@ -75,10 +75,10 @@ public class AssessmentsModel {
      * Only available when using the api DAO,
      * increments the data forward retrieved from the API DAO and updates the table
      */
-    public void updatePageUp(){
-        if(apiDao.pageCurrentQuery().size()==500){
-            apiDao.setOffset(apiDao.getOffset() + 500);
-            List<Property> items = apiDao.pageCurrentQuery();
+    public void updatePageUp() throws SQLException{
+        if(dao.pageCurrentQuery().size()==500){
+            dao.setOffset(dao.getOffset() + 500);
+            List<Property> items = dao.pageCurrentQuery();
             data.clear();
             data.setAll(items);
         }
@@ -88,10 +88,10 @@ public class AssessmentsModel {
      * Only available when using the api DAO,
      * increments the data backwards retrieved from the API DAO and updates the table
      */
-    public void updatePageDown(){
-        if(apiDao.getOffset()!=0){
-            apiDao.setOffset(apiDao.getOffset() - 500);
-            List<Property> items = apiDao.pageCurrentQuery();
+    public void updatePageDown()throws SQLException{
+        if(dao.getOffset()!=0){
+            dao.setOffset(dao.getOffset() - 500);
+            List<Property> items = dao.pageCurrentQuery();
             data.clear();
             data.setAll(items);
         }
