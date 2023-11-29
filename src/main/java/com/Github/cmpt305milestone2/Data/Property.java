@@ -53,6 +53,20 @@ public class Property implements Comparable<Property>{
     }
 
     /**
+     * Constructor for Property, requires valid string from Property Assessment data file.
+     * If data does not have relevant value blank string is used.
+     * @param data
+     * CSV formatted string from property assessment data
+     */
+    public Property(List<String> data){
+        this.accountNum = Integer.valueOf(data.get(0));
+        this.address = new Address(data);
+        this.house = new House(data);
+        this.geoLocation = new GeoLocation(data);
+        this.assessmentClass = new AssessmentClass(data);
+    }
+
+    /**
      * Gets class member variables in a readable string
      * @return
      * String of all the member variables

@@ -19,6 +19,10 @@ public class QueryBuilder {
         this.query = endpoint+"?$query=SELECT *,(COALESCE(suite, '')||' '||house_number||' '||street_name) AS address ";
     }
 
+    public QueryBuilder() {
+        this.query = "SELECT *,(COALESCE(suite, '')||' '||house_number||' '||street_name) AS address FROM PropertyAssessments ";
+    }
+
     /**
      * Adds a SQL function supported by SoQL for example ORDER BY to the current query
      * Example ORDER BY(sql) Col_Name(value)
@@ -195,6 +199,16 @@ public class QueryBuilder {
      * Replaces characters in query with URI encoding
      * @return Returns query String
      */
+    public String buildQuery(){
+        System.out.println(query);
+        return query;
+    }
+
+    /**
+     * Replaces characters in query with URI encoding
+     * @return Returns query String
+     */
+    @Deprecated
     public String build(){
         System.out.println(query);
         return query

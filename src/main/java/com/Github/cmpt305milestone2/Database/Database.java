@@ -1,14 +1,15 @@
 package com.Github.cmpt305milestone2.Database;
 
 import com.Github.cmpt305milestone2.DAO.CrimeDataDAO;
-import com.Github.cmpt305milestone2.DAO.CsvPropertyAssessmentDAO;
+import com.Github.cmpt305milestone2.DAO.DeprecatedDAO.CsvPropertyAssessmentDAO;
 import com.Github.cmpt305milestone2.DAO.FruitTreesDAO;
-import com.Github.cmpt305milestone2.DAO.PropertyAssessmentsDAO;
+import com.Github.cmpt305milestone2.DAO.DeprecatedDAO.PropertyAssessmentsDAO;
 import com.Github.cmpt305milestone2.Data.Crime;
 import com.Github.cmpt305milestone2.Data.FruitTree;
 import com.Github.cmpt305milestone2.Data.Property;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Database {
@@ -17,7 +18,7 @@ public class Database {
 
     Statement statement;
 
-    String insertPropertyString = "BEGIN; INSERT INTO PropertyAssessments(account_number,suite,house_number,street_number,garage," +
+    String insertPropertyString = "BEGIN; INSERT INTO PropertyAssessments(account_number,suite,house_number,street_name,garage," +
             " neighbourhood_id,neighbourhood,ward,assessed_value,latitude,longitude,point_location,tax_class_pct_1," +
             "tax_class_pct_2, tax_class_pct_3,mill_class_1,mill_class_2, mill_class_3) VALUES ";
 
@@ -33,11 +34,28 @@ public class Database {
         statement.setQueryTimeout(30);  // set timeout to 30 sec.
     }
 
+    public List<Property> queryPropertyAssessments(String query) throws SQLException{
+        ResultSet resultSet = statement.executeQuery(query);
+        ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+        final int columnCount = resultSetMetaData.getColumnCount();
+        List<Property> properties = new ArrayList<>();
+
+        while(resultSet.next())
+        {
+            List<String> values = new ArrayList<>();
+            for (int i = 1; i <= columnCount; i++) {
+                values.add(resultSet.getString(i));
+            }
+            properties.add(new Property(values));
+        }
+        return properties;
+    }
+
     public void createPropertyTable() throws SQLException{
         PropertyAssessmentsDAO dao = new CsvPropertyAssessmentDAO("files/Property_Assessment_Data_2023.csv");
         statement.executeUpdate(
                 "create table if not exists PropertyAssessments (account_number integer, suite text,house_number text," +
-                        "street_number text,garage text, neighbourhood_id integer,neighbourhood text," +
+                        "street_name text,garage text, neighbourhood_id integer,neighbourhood text," +
                         "ward text,assessed_value integer,latitude real,longitude real,point_location text," +
                         "tax_class_pct_1 text,tax_class_pct_2 text, tax_class_pct_3 text,mill_class_1 text," +
                         "mill_class_2 text, mill_class_3 text,PRIMARY KEY (account_number))");
@@ -112,7 +130,7 @@ public class Database {
         statement.executeUpdate("drop table if exists Crime");
     }
 
-    public void openConnection()throws SQLException{
+    private void openConnection()throws SQLException{
         // create a database connection
         this.connection = DriverManager.getConnection("jdbc:sqlite:PropertyAssessmentsApp.db");
     }
@@ -122,15 +140,4 @@ public class Database {
             connection.close();
         }
     }
-
-       /*
-    ResultSet rs = statement.executeQuery("select * from PropertyAssessments");
-    while(rs.next())
-    {
-        // read the result set
-        System.out.println("account_number = " + rs.getString("account_number"));
-        System.out.println("ward = " + rs.getString("ward"));
-    }
-     */
-
 }
