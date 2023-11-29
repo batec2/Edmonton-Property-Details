@@ -205,13 +205,7 @@ public class HeatMapView {
         searchButton.setOnAction(e->{
             String neighbourhood = neighbourhoodTextField.getText();
             String assessClass = assessClassCombo.getValue();
-            /*
-            String red = redTextField.getText();
-            String orange = orangeTextField.getText();
-            String yellow = yellowTextField.getText();
-            String yg = ygTextField.getText();
-            ArrayList<String> ranges = new ArrayList<>(Arrays.asList(red,orange,yellow,yg));
-             */
+
             Integer red = redSpinner.getValue();
             Integer orange = orangeSpinner.getValue();
             Integer yellow = yellowSpinner.getValue();
@@ -237,10 +231,6 @@ public class HeatMapView {
                 assessClassLabel,
                 assessClassCombo,
                 colourRanges,
-                //hBoxRed,
-                //hBoxOrange,
-                //hBoxYellow,
-                //hBoxYG,
                 grid,
                 greenLabel,
                 hBoxResetSearch);
@@ -295,43 +285,12 @@ public class HeatMapView {
     private void updateMap(@NotNull String neighbourhood, String assessClass, List<Integer>/*<String>*/ ranges) {
         mapView.getGraphicsOverlays().clear();
 
-        // create a graphics overlay for propertiesand add it to the map view
+        // create a graphics overlay for properties and add it to the map view
         GraphicsOverlay graphicsOverlay = new GraphicsOverlay();
         mapView.getGraphicsOverlays().add(graphicsOverlay);
 
-
-        // create a point geometry with a location and spatial reference
-        Point point;
-
         SimpleMarkerSymbol.Style markerStyle = SimpleMarkerSymbol.Style.CIRCLE;
         float markerSize = 5f;
-
-        // create an opaque orange point symbol with a opaque blue outline symbol
-        SimpleMarkerSymbol markerSymbolRed =
-                new SimpleMarkerSymbol(markerStyle, Color.RED, markerSize);
-        SimpleMarkerSymbol markerSymbolOrange =
-                new SimpleMarkerSymbol(markerStyle, Color.ORANGE, markerSize);
-        SimpleMarkerSymbol markerSymbolYellow =
-                new SimpleMarkerSymbol(markerStyle, Color.YELLOW, markerSize);
-        SimpleMarkerSymbol markerSymbolYG =
-                new SimpleMarkerSymbol(markerStyle, Color.YELLOWGREEN, markerSize);
-        SimpleMarkerSymbol markerSymbolGreen =
-                new SimpleMarkerSymbol(markerStyle, Color.GREEN, markerSize);
-        SimpleMarkerSymbol marker;
-
-        /*
-        SimpleFillSymbol fillSymbolRed =
-                new SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, Color.RED, new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, Color.RED, 1));
-        SimpleFillSymbol fillSymbolOrange =
-                new SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, Color.ORANGE, new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, Color.ORANGE, 1));
-        SimpleFillSymbol fillSymbolYellow =
-                new SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, Color.YELLOW, new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, Color.YELLOW, 1));
-        SimpleFillSymbol fillSymbolYG =
-                new SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, Color.YELLOWGREEN, new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, Color.YELLOWGREEN, 1));
-        SimpleFillSymbol fillSymbolGreen =
-                new SimpleFillSymbol(SimpleFillSymbol.Style.SOLID, Color.GREEN, new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, Color.GREEN, 1));
-        SimpleFillSymbol fill;
-         */
 
         if (neighbourhood.isEmpty() && assessClass.isEmpty()) {
             this.controller.resetData();
@@ -340,42 +299,30 @@ public class HeatMapView {
             ArrayList<String> input = new ArrayList<>(Arrays.asList("", "", neighbourhood, assessClass, "", ""));
             this.controller.filterData(input);
         }
+        new Thread(()->{
+            for(Property property : model.getData()) {
+                double longitude = Double.parseDouble(property.getLongitude());
+                double latitude = Double.parseDouble(property.getLatitude());
+                int value = property.getAssessedValue().intValue();
+                Color color;
 
-        for(Property property : model.getData()) {
-            double longitude = Double.parseDouble(property.getLongitude());
-            double latitude = Double.parseDouble(property.getLatitude());
-            int value = property.getAssessedValue().intValue();
-            if (value < /*Integer.parseInt(*/ranges.get(0)) {
-                marker = markerSymbolRed;
-                //fill = fillSymbolRed;
-            } else if (value < /*Integer.parseInt(*/ranges.get(1)) {
-                marker = markerSymbolOrange;
-                //fill = fillSymbolOrange;
-            } else if (value < /*Integer.parseInt(*/ranges.get(2)) {
-                marker = markerSymbolYellow;
-                //fill = fillSymbolYellow;
-            } else if (value < /*Integer.parseInt(*/ranges.get(3)) {
-                marker = markerSymbolYG;
-                //fill = fillSymbolYG;
-            } else {
-                marker = markerSymbolGreen;
-                //fill = fillSymbolGreen;
+                if (value <ranges.get(0)) {
+                    color = Color.RED;
+                } else if (value <ranges.get(1)) {
+                    color = Color.ORANGE;
+                } else if (value <ranges.get(2)) {
+                    color = Color.YELLOW;;
+                } else if (value <ranges.get(3)) {
+                    color = Color.YELLOWGREEN;
+                } else {
+                    color = Color.GREEN;
+                }
+                graphicsOverlay.getGraphics().add(
+                        new Graphic(
+                                new Point(longitude, latitude, SpatialReferences.getWgs84()),
+                                new SimpleMarkerSymbol(markerStyle, color, markerSize)));
             }
-            point = new Point(longitude, latitude, SpatialReferences.getWgs84());
-            //PointCollection polygonPoints = new PointCollection(SpatialReferences.getWgs84());
-            //polygonPoints.add(new Point(longitude - 0.0001, latitude + 0.00005));
-            //polygonPoints.add(new Point(longitude + 0.0001, latitude + 0.00005));
-            //polygonPoints.add(new Point(longitude + 0.0001, latitude- 0.00005));
-            //polygonPoints.add(new Point(longitude - 0.0001, latitude - 0.00005));
-            // create a graphic with the point geometry and symbol
-            Graphic pointGraphic = new Graphic(point, marker);
-            //Polygon polygon = new Polygon(polygonPoints);
-            //Graphic polyGraphic = new Graphic(polygon, fill);
-            // add the point graphic to the graphics overlay
-            graphicsOverlay.getGraphics().add(pointGraphic);
-            //graphicsOverlay.getGraphics().add(polyGraphic);
-        }
-
+        }).start();
         mapView.setOnMouseClicked(e -> {
             if(e.getButton() == MouseButton.PRIMARY && e.isStillSincePress()) {
                 Point2D mapViewPoint = new Point2D(e.getX(), e.getY());
@@ -401,6 +348,12 @@ public class HeatMapView {
                 double longitude = point.getX();
                 double latitude = point.getY();
                 Property p = controller.getAssessment(longitude, latitude);
+
+                if(p==null){
+                    System.out.println("Nothing");
+                    return;
+                }
+
                 dialog.setTitle("Property Information");
                 dialog.getDialogPane().setContent(dialogContent(p));
                 //dialog.setContentText(p.toString());

@@ -56,7 +56,7 @@ public class Database {
         statement.executeUpdate(
                 "create table if not exists PropertyAssessments (account_number integer, suite text,house_number text," +
                         "street_name text,garage text, neighbourhood_id integer,neighbourhood text," +
-                        "ward text,assessed_value integer,latitude real,longitude real,point_location text," +
+                        "ward text,assessed_value integer,latitude text,longitude text,point_location text," +
                         "tax_class_pct_1 text,tax_class_pct_2 text, tax_class_pct_3 text,mill_class_1 text," +
                         "mill_class_2 text, mill_class_3 text,PRIMARY KEY (account_number))");
 
@@ -82,7 +82,7 @@ public class Database {
                         "species_botanical text,species_common text,genus text,species text,cultivar text," +
                         "diameter_breast_height integer,condition_percent integer,planted_date text,owner text," +
                         "bears_edible_fruit boolean,type_of_edible_fruit text,amount integer," +
-                        "latitude real,longitude real,location text,point_location text)");
+                        "latitude text,longitude text,location text,point_location text)");
 
         List<FruitTree> fruitTrees = dao.getAll();
         StringBuilder stringBuilder = new StringBuilder(insertTreesString);
@@ -103,7 +103,7 @@ public class Database {
     public void createCrimeTable() throws SQLException{
         CrimeDataDAO dao = new CrimeDataDAO();
         statement.executeUpdate(
-                "create table if not exists Crime (longitude real,latitude real,id integer PRIMARY KEY,reported_date text," +
+                "create table if not exists Crime (longitude text,latitude text,id integer PRIMARY KEY,reported_date text," +
                         "occurrence_category text,occurrence_group text,occurrence_type_group text," +
                         "intersection text,reported_day text,reported_month text,reported_year text," +
                         "date_reported text)");
