@@ -150,4 +150,12 @@ public class PropertyAssessments{
         }
         return new ArrayList<>(neighbourhoods);
     }
+
+    public Property getByLocation(double longitude, double latitude) {
+        for(Property property : properties.values()) {
+            if(Double.parseDouble(property.getLongitude()) == longitude && Double.parseDouble(property.getLatitude()) == latitude)
+                return property.clone();
+        }
+        return null;
+    }
 }
