@@ -65,4 +65,8 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentsDAO {
     public List<String> getNeighbourhoods() {
         return propertyAssessments.getNeighbourhoods();
     }
+
+    public Property getAssessment(double longitude, double latitude) {
+        return propertyAssessments.getByLocation(longitude, latitude);
+    }
 }

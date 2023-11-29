@@ -19,7 +19,7 @@ import java.util.List;
  * button spam from UI by setting observable values to true or false
  */
 public class AssessmentsController {
-    AssessmentsModel model;
+    private AssessmentsModel model;
     private SimpleBooleanProperty loadingNext = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty loadingPrev = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty loading = new SimpleBooleanProperty(false);
@@ -64,7 +64,8 @@ public class AssessmentsController {
         //}).start();
     }
 
-    public void filterMapData(List<String> input) {
+    public Property getAssessment(double longitude, double latitude) {
+        return model.getAssessment(longitude, latitude);
 
     }
 
