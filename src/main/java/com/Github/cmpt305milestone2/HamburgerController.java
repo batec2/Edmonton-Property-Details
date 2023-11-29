@@ -1,5 +1,7 @@
 package com.Github.cmpt305milestone2;
 
+import com.Github.cmpt305milestone2.Views.AssessmentsView;
+import com.Github.cmpt305milestone2.Views.HeatMapView;
 import javafx.beans.InvalidationListener;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;

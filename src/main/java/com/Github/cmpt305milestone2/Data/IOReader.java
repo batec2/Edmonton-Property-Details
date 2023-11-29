@@ -113,4 +113,34 @@ public class IOReader {
         }
         return treeList;
     }
+
+    public static List<Crime> crimeReader(String fileName){
+        File fileIn;
+        Scanner scanner = null;
+        ArrayList<Crime> crimeList = new ArrayList<>();
+
+        try{
+            fileIn = new File(fileName);
+            scanner = new Scanner(fileIn);
+        }
+        catch (Exception ex){
+            System.out.println("Error: Can't Open File");
+            return null;
+        }
+        scanner.useDelimiter("\n");
+        //Skips header, if there is no line returns null
+        if(scanner.hasNext()){
+            scanner.next(); //Skips header
+        }
+        else{
+            System.out.println("Error Query Response Empty");
+            return null;
+        }
+        //Reads in Query into properties
+        while (scanner.hasNext()){
+            Crime crime = new Crime(scanner.next());
+            crimeList.add(crime);
+        }
+        return crimeList;
+    }
 }

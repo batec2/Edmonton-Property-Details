@@ -2,16 +2,6 @@ package com.Github.cmpt305milestone2;
 
 import com.Github.cmpt305milestone2.Data.Property;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
-
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
