@@ -304,7 +304,7 @@ public class HeatMapView {
         Point point;
 
         SimpleMarkerSymbol.Style markerStyle = SimpleMarkerSymbol.Style.CIRCLE;
-        float markerSize = 5f;
+        float markerSize = 4f;
 
         // create an opaque orange point symbol with a opaque blue outline symbol
         SimpleMarkerSymbol markerSymbolRed =
