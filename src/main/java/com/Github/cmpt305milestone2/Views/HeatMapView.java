@@ -290,7 +290,7 @@ public class HeatMapView {
         mapView.getGraphicsOverlays().add(graphicsOverlay);
 
         SimpleMarkerSymbol.Style markerStyle = SimpleMarkerSymbol.Style.CIRCLE;
-        float markerSize = 5f;
+        float markerSize = 4f;
 
         if (neighbourhood.isEmpty() && assessClass.isEmpty()) {
             this.controller.resetData();

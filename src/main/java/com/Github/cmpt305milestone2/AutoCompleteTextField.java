@@ -16,8 +16,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
- * This class is a TextField which implements an "autocomplete" functionality, based on a supplied list of entries.
- * @author Caleb Brinkman
+ * Class for an auto-completing text-field
+ * Based on a class made by Caleb Brinkman posted at https://gist.github.com/floralvikings/10290131
  */
 public class AutoCompleteTextField extends TextField
 {
@@ -41,6 +41,7 @@ public class AutoCompleteTextField extends TextField
                 } else
                 {
                     LinkedList<String> searchResult = new LinkedList<>();
+                    //This line modified to work with our entry fields.
                     searchResult.addAll(entries.subSet(getText().toUpperCase(), getText().toUpperCase() + Character.MAX_VALUE));
                     if (entries.size() > 0)
                     {
@@ -78,7 +79,6 @@ public class AutoCompleteTextField extends TextField
      */
     private void populatePopup(List<String> searchResult) {
         List<CustomMenuItem> menuItems = new LinkedList<>();
-        // If you'd like more entries, modify this line.
         int maxEntries = 10;
         int count = Math.min(searchResult.size(), maxEntries);
         for (int i = 0; i < count; i++)

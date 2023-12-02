@@ -1,6 +1,7 @@
 package com.Github.cmpt305milestone2;
 
 import com.Github.cmpt305milestone2.Views.AssessmentsView;
+import com.Github.cmpt305milestone2.Views.ChartsView;
 import com.Github.cmpt305milestone2.Views.HeatMapView;
 import javafx.beans.InvalidationListener;
 import javafx.scene.Scene;
@@ -11,17 +12,18 @@ public class HamburgerController{
     BorderPane mainPane;
     AssessmentsView aView;
     HeatMapView mapView;
-
+    ChartsView chartsView;
     BorderPane rootPane;
 
     Scene scene;
 
     Stage stage;
 
-    public HamburgerController(BorderPane mainPane, AssessmentsView aView, HeatMapView mapView, Stage stage) {
+    public HamburgerController(BorderPane mainPane, AssessmentsView aView, HeatMapView mapView, ChartsView chartsView, Stage stage) {
         this.mainPane = mainPane;
         this.aView = aView;
         this.mapView = mapView;
+        this.chartsView = chartsView;
         this.stage = stage;
     }
 
@@ -30,6 +32,8 @@ public class HamburgerController{
             mainPane = aView.asBorderPane();
         } else if (option == 'm') {
             mainPane = mapView.asBorderPane();
+        } else if (option == 's') {
+            mainPane = chartsView.asBorderPane();
         }
         rootPane.setCenter(mainPane);
         stage.setScene(scene);

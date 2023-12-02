@@ -146,7 +146,7 @@ public class AssessmentsView {
         TextField neighbourhoodTextField = new TextField("");
 
         //Assessment Class
-        ArrayList<String> assessClassComboItems = new ArrayList<>(
+        List<String> assessClassComboItems = new ArrayList<>(
                 Arrays.asList(
                         "", "COMMERCIAL","RESIDENTIAL","OTHER RESIDENTIAL","NONRES MUNICIPAL/RES EDUCATION","FARMLAND"
                 )

@@ -11,11 +11,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 public class HamburgerView{
@@ -27,11 +25,20 @@ public class HamburgerView{
         BorderPane mainContent = new BorderPane();
         sidebar = new BorderPane();
 
+        String tableString = "Property Assessments Table";
+        String mapString = "Interactive Map View";
+        String statString = "Statistical Graphs and Charts";
+        String trollString = "Send Autonomous Robot to Dismember Enemies";
         JFXButton[] jfxButtons = {
-                new JFXButton("Table View"),
-                new JFXButton("Map View"),
-                new JFXButton("Buy Drugs"),};
+                new JFXButton(tableString),
+                new JFXButton(mapString),
+                new JFXButton(statString),
+                new JFXButton(trollString)};
 
+        Label newline = new Label("");
+        Label copyright = new Label("\u00a9 2023 Dan Simons Productions");
+        copyright.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        copyright.setStyle("-fx-text-fill: black");
         JFXHamburger hamburger = new JFXHamburger();
         HamburgerNextArrowBasicTransition transition = new HamburgerNextArrowBasicTransition(hamburger);
         transition.setRate(-1);
@@ -47,10 +54,12 @@ public class HamburgerView{
                 for (JFXButton jfxButton : jfxButtons) {
                     jfxButton.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                 }
+                copyright.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             } else {
                 for (JFXButton jfxButton : jfxButtons) {
                     jfxButton.setContentDisplay(ContentDisplay.LEFT);
                 }
+                copyright.setContentDisplay(ContentDisplay.LEFT);
             }
         });
 
@@ -61,6 +70,8 @@ public class HamburgerView{
 
         vBox.getChildren().add(hamburger);
         vBox.getChildren().addAll(jfxButtons);
+        vBox.getChildren().add(newline);
+        vBox.getChildren().add(copyright);
 
         for (JFXButton jfxButton : jfxButtons) {
             jfxButton.setMaxWidth(Double.MAX_VALUE);
@@ -69,11 +80,14 @@ public class HamburgerView{
             VBox.setVgrow(jfxButton, Priority.ALWAYS);
             jfxButton.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             jfxButton.setOnMouseClicked(event -> {
-                if(jfxButton.getText().equals("Table View")){
+                if(jfxButton.getText().equals(tableString)){
                     controller.setView('t');
                 }
-                else if(jfxButton.getText().equals("Map View")) {
+                else if(jfxButton.getText().equals(mapString)) {
                     controller.setView('m');
+                }
+                if(jfxButton.getText().equals(statString)) {
+                    controller.setView('s');
                 }
             });
         }

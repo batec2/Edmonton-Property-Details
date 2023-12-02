@@ -2,6 +2,7 @@ package com.Github.cmpt305milestone2;
 
 import atlantafx.base.theme.CupertinoDark;
 import com.Github.cmpt305milestone2.Views.AssessmentsView;
+import com.Github.cmpt305milestone2.Views.ChartsView;
 import com.Github.cmpt305milestone2.Views.HamburgerView;
 import com.Github.cmpt305milestone2.Views.HeatMapView;
 import javafx.application.Application;
@@ -20,7 +21,7 @@ public class MainApplication extends Application {
     HamburgerView burgerView;
     HamburgerController burgerController;
     HeatMapView mapView;
-
+    ChartsView chartView;
     BorderPane mainPane;
     BorderPane rootPane;
     /**
@@ -38,8 +39,9 @@ public class MainApplication extends Application {
         assController = new AssessmentsController(assModel);
         assView = new AssessmentsView(assController, assModel);
         mapView = new HeatMapView(assController, assModel);
+        chartView = new ChartsView(assController, assModel);
         mainPane = assView.asBorderPane();
-        burgerController = new HamburgerController(mainPane, assView, mapView, stage);
+        burgerController = new HamburgerController(mainPane, assView, mapView, chartView, stage);
         burgerView = new HamburgerView(burgerController);
         stage.setTitle("Edmonton Property Assessments");
         rootPane.setLeft(burgerView.getSidebar());
