@@ -126,7 +126,7 @@ public class DatabaseDAO{
     public List<Property> filterLongitudeLatitude(double longitude,double latitude) throws SQLException{
         QueryBuilder qBuilder = new QueryBuilder().addWhere();
         currentQuery = qBuilder
-                .add("longitude=",String.valueOf(longitude))
+                .add("","longitude",String.valueOf(longitude))
                 .add("AND","latitude",String.valueOf(latitude))
                 .add("ORDER BY","CAST(account_number AS INTEGER)")
                 .add("LIMIT",limit)
@@ -220,4 +220,5 @@ public class DatabaseDAO{
     public void setLimit(int limit) {
         this.limit = limit;
     }
+
 }

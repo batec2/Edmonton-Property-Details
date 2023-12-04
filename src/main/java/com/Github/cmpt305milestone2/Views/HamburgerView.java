@@ -1,30 +1,24 @@
 package com.Github.cmpt305milestone2.Views;
 
-import com.Github.cmpt305milestone2.HamburgerController;
+import com.Github.cmpt305milestone2.Controllers.HamburgerController;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.transitions.hamburger.HamburgerNextArrowBasicTransition;
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.stage.Stage;
-
-import java.io.FileInputStream;
 
 public class HamburgerView{
 
     BorderPane sidebar;
 
     public HamburgerView(HamburgerController controller) {
-        double iconSize = 50;
+        double iconSize = 40;
         BorderPane mainContent = new BorderPane();
         sidebar = new BorderPane();
         ImageView tableIcon = new ImageView("file:files/icon_table.png");
@@ -55,7 +49,7 @@ public class HamburgerView{
         HamburgerNextArrowBasicTransition transition = new HamburgerNextArrowBasicTransition(hamburger);
         transition.setRate(-1);
 
-        hamburger.setAlignment(Pos.CENTER_LEFT);
+        hamburger.setAlignment(Pos.CENTER);
         hamburger.setPadding(new Insets(5));
         hamburger.setStyle("-fx-background-color: #2D2633;");
 

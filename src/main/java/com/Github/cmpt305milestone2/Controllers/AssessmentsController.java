@@ -1,5 +1,6 @@
-package com.Github.cmpt305milestone2;
+package com.Github.cmpt305milestone2.Controllers;
 
+import com.Github.cmpt305milestone2.AssessmentsModel;
 import com.Github.cmpt305milestone2.Data.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import java.util.List;
@@ -20,7 +21,7 @@ public class AssessmentsController {
      * Takes a AssessmentsModel object
      * @param model model that holds data for application
      */
-    AssessmentsController(AssessmentsModel model){
+    public AssessmentsController(AssessmentsModel model){
         this.model = model;
     }
 
