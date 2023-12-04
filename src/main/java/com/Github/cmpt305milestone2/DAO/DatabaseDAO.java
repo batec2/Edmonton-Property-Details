@@ -138,6 +138,38 @@ public class DatabaseDAO{
     }
 
     /**
+     * Gets count from a query
+     * @param query query to get count from
+     * @return int count
+     */
+    public int getCount(String query){
+        int count;
+        try{
+            count = database.getCount(query);
+        }
+        catch (SQLException e){
+            System.out.println("SQL Error"+e);
+            return 0;
+        }
+        return count;
+    }
+
+    /**
+     * Gets a list of neighbourhoods
+     * @return List of neighbourhoods
+     */
+    public List<String> getNeighbourhoods(){
+        List<String> neighbourhoods;
+        try{
+            neighbourhoods = database.getColumn("SELECT DISTINCT neighbourhood","neighbourhood");
+        }
+        catch(SQLException e){
+            return new ArrayList<>();
+        }
+        return neighbourhoods;
+    }
+
+    /**
      * Gets the current offset
      * @return int offset
      */
