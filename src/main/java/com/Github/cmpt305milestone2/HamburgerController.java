@@ -32,7 +32,7 @@ public class HamburgerController{
             mainPane = aView.asBorderPane();
         } else if (option == 'm') {
             mainPane = mapView.asBorderPane();
-        } else if (option == 's') {
+        } else if (option == 'c') {
             mainPane = chartsView.asBorderPane();
         }
         rootPane.setCenter(mainPane);

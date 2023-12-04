@@ -11,41 +11,53 @@ import javafx.scene.Scene;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
+
+import java.io.FileInputStream;
 
 public class HamburgerView{
 
     BorderPane sidebar;
 
     public HamburgerView(HamburgerController controller) {
-
+        double iconSize = 50;
         BorderPane mainContent = new BorderPane();
         sidebar = new BorderPane();
-
+        ImageView tableIcon = new ImageView("file:files/icon_table.png");
+        tableIcon.setFitWidth(iconSize);
+        tableIcon.setFitHeight(iconSize);
         String tableString = "Property Assessments Table";
+
+        ImageView mapIcon = new ImageView("file:files/icon_map.png");
+        mapIcon.setFitWidth(iconSize);
+        mapIcon.setFitHeight(iconSize);
         String mapString = "Interactive Map View";
-        String statString = "Statistical Graphs and Charts";
-        String trollString = "Send Autonomous Robot to Dismember Enemies";
+
+        ImageView chartIcon = new ImageView("file:files/icon_chart.png");
+        chartIcon.setFitWidth(iconSize);
+        chartIcon.setFitHeight(iconSize);
+        String chartString = "Graphs and Charts";
+
         JFXButton[] jfxButtons = {
-                new JFXButton(tableString),
-                new JFXButton(mapString),
-                new JFXButton(statString),
-                new JFXButton(trollString)};
+                new JFXButton(tableString, tableIcon),
+                new JFXButton(mapString, mapIcon),
+                new JFXButton(chartString, chartIcon)};
 
         Label newline = new Label("");
         Label copyright = new Label("\u00a9 2023 Dan Simons Productions");
         copyright.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-        copyright.setStyle("-fx-text-fill: black");
+        copyright.setStyle("-fx-text-fill: white");
         JFXHamburger hamburger = new JFXHamburger();
         HamburgerNextArrowBasicTransition transition = new HamburgerNextArrowBasicTransition(hamburger);
         transition.setRate(-1);
 
         hamburger.setAlignment(Pos.CENTER_LEFT);
         hamburger.setPadding(new Insets(5));
-        hamburger.setStyle("-fx-background-color: #fff;");
+        hamburger.setStyle("-fx-background-color: #2D2633;");
 
         hamburger.setOnMouseClicked(event -> {
             transition.setRate(transition.getRate() * -1);
@@ -53,19 +65,24 @@ public class HamburgerView{
             if (transition.getRate() == -1) {
                 for (JFXButton jfxButton : jfxButtons) {
                     jfxButton.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                    jfxButton.setAlignment(Pos.CENTER_LEFT);
+                    jfxButton.setStyle("-fx-text-fill: white");
                 }
                 copyright.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             } else {
                 for (JFXButton jfxButton : jfxButtons) {
                     jfxButton.setContentDisplay(ContentDisplay.LEFT);
+                    jfxButton.setAlignment(Pos.CENTER_LEFT);
+                    jfxButton.setStyle("-fx-text-fill: white");
                 }
                 copyright.setContentDisplay(ContentDisplay.LEFT);
+                copyright.setAlignment(Pos.CENTER);
             }
         });
 
         ScrollPane scrollPane = new ScrollPane();
         VBox vBox = new VBox();
-        scrollPane.setStyle("-fx-background-color: #D3D3D3;");
+        scrollPane.setStyle("-fx-background-color: #2D2633;");
         scrollPane.setContent(vBox);
 
         vBox.getChildren().add(hamburger);
@@ -86,8 +103,8 @@ public class HamburgerView{
                 else if(jfxButton.getText().equals(mapString)) {
                     controller.setView('m');
                 }
-                if(jfxButton.getText().equals(statString)) {
-                    controller.setView('s');
+                if(jfxButton.getText().equals(chartString)) {
+                    controller.setView('c');
                 }
             });
         }
