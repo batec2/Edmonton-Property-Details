@@ -4,9 +4,11 @@ import com.Github.cmpt305milestone2.DAO.CrimeDataDAO;
 import com.Github.cmpt305milestone2.DAO.DeprecatedDAO.CsvPropertyAssessmentDAO;
 import com.Github.cmpt305milestone2.DAO.FruitTreesDAO;
 import com.Github.cmpt305milestone2.DAO.DeprecatedDAO.PropertyAssessmentsDAO;
+import com.Github.cmpt305milestone2.DAO.WeedStoreDAO;
 import com.Github.cmpt305milestone2.Data.Crime;
 import com.Github.cmpt305milestone2.Data.FruitTree;
 import com.Github.cmpt305milestone2.Data.Property;
+import com.Github.cmpt305milestone2.Data.WeedStore;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -26,7 +28,12 @@ public class Database {
             "species_common,genus,species,cultivar,diameter_breast_height,condition_percent,planted_date," +
             "owner,bears_edible_fruit,type_of_edible_fruit,amount,latitude,longitude,location,point_location) VALUES ";
 
-    String insertCrimeString = "BEGIN; INSERT INTO Crime (longitude,latitude,id,reported_date,occurrence_category,occurrence_group,occurrence_type_group,intersection,reported_day,reported_month,reported_year,date_reported) VALUES ";
+    String insertCrimeString = "BEGIN; INSERT INTO Crime (longitude,latitude,id,reported_date,occurrence_category," +
+            "occurrence_group,occurrence_type_group,intersection,reported_day," +
+            "reported_month,reported_year,date_reported) VALUES ";
+    String insertWeedString = "BEGIN; INSERT INTO WeedStore (category ,trade_name ,address ,licence_number ," +
+            "licence_status ,issue_date ,expiry_date ,business_improvement_area ,neighbourhood_ID ,neighbourhood ,ward ," +
+            "latitude ,longitude ,location ,count ,geometry_point) VALUES ";
 
     public Database() throws SQLException{
         openConnection();
@@ -124,10 +131,39 @@ public class Database {
         }
     }
 
+    public void createWeedTable() throws SQLException{
+        WeedStoreDAO dao = new WeedStoreDAO();
+        statement.executeUpdate(
+                "create table if not exists WeedStore (category text,trade_name text,address text,licence_number text," +
+                        "licence_status text,issue_date text,expiry_date text,business_improvement_area text," +
+                        "neighbourhood_ID text,neighbourhood text,ward text,latitude text,longitude text,location text," +
+                        "count text,geometry_point text,id integer PRIMARY KEY)");
+
+        List<WeedStore> weedList = dao.getAll();
+        StringBuilder stringBuilder = new StringBuilder(insertWeedString);
+        int i = 1;
+        for(WeedStore item:weedList)
+        {
+            stringBuilder.append((i%1000==0)||(i==weedList.size())?"(" + item.toStringNull() + ")":"(" + item.toStringNull() + "),");
+            if((i%1000==0)||(i==weedList.size())) {
+                System.out.println(i);
+                stringBuilder.append("ON CONFLICT(id) DO NOTHING; COMMIT;");
+                statement.executeUpdate(stringBuilder.toString());
+                stringBuilder = new StringBuilder(insertWeedString);
+            }
+            i++;
+        }
+    }
+
     public void dropTables()throws SQLException{
         statement.executeUpdate("drop table if exists PropertyAssessments");
         statement.executeUpdate("drop table if exists FruitTrees");
         statement.executeUpdate("drop table if exists Crime");
+        statement.executeUpdate("drop table if exists WeedStore");
+    }
+
+    public void dropWeed() throws SQLException{
+        statement.executeUpdate("drop table if exists WeedStore");
     }
 
     private void openConnection()throws SQLException{
