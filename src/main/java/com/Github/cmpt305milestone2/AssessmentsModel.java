@@ -137,6 +137,6 @@ public class AssessmentsModel {
 
 
     public List<String> getNeighbourhoods() {
-        return dao.getNeighbourhoods();
+        return neighbourhoods;
     }
 }

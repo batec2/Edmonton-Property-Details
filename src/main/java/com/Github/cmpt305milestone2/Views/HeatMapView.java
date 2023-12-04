@@ -55,7 +55,6 @@ public class HeatMapView {
     private AssessmentsController controller;
     private AssessmentsModel model;
     private MapView mapView;
-    private List<String> neighbourhoods;
     private List<Spinner> spinners;
 
     private ListenableFuture<IdentifyGraphicsOverlayResult> identifyGraphics;
@@ -69,8 +68,7 @@ public class HeatMapView {
     public HeatMapView(AssessmentsController controller, AssessmentsModel model){
         this.controller = controller;
         this.model = model;
-        this.neighbourhoods = model.getNeighbourhoods();
-        Collections.sort(neighbourhoods);
+
         setStage();
     }
 
@@ -126,6 +124,8 @@ public class HeatMapView {
                         "", "COMMERCIAL","RESIDENTIAL","OTHER RESIDENTIAL","NONRES MUNICIPAL/RES EDUCATION","FARMLAND"
                 )
         );
+        List<String> neighbourhoods = model.getNeighbourhoods();
+        Collections.sort(neighbourhoods);
 
         Label neighbourhoodLabel  = new Label("Neighbourhood:");
         AutoCompleteTextField neighbourhoodTextField = new AutoCompleteTextField();

@@ -161,11 +161,13 @@ public class DatabaseDAO{
     public List<String> getNeighbourhoods(){
         List<String> neighbourhoods;
         try{
-            neighbourhoods = database.getColumn("SELECT DISTINCT neighbourhood","neighbourhood");
+            neighbourhoods = database.getColumn("SELECT DISTINCT neighbourhood FROM PropertyAssessments","neighbourhood");
         }
         catch(SQLException e){
+            System.out.println("ERROR");
             return new ArrayList<>();
         }
+
         return neighbourhoods;
     }
 
