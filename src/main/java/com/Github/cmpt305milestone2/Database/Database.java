@@ -58,6 +58,37 @@ public class Database {
         return properties;
     }
 
+    /**
+     * Querys the table and gets the count column, Must name count as count
+     * @param query Query example - SELECT COUNT(DISTINCT(neighbourhood)) as count from PropertyAssessments
+     * @return Returns a int containing the count
+     * @throws SQLException Exception
+     */
+    public int getCount(String query) throws SQLException{
+        ResultSet resultSet = statement.executeQuery(query);
+        return resultSet.getInt("count");
+    }
+
+    /**
+     * Takes a query and gets a specific column from the query
+     * @param query Query example - SELECT DISTINCT(neighbourhood) from PropertyAssessments
+     * @param column Column name example - neighbourhood
+     * @return Returns a list of strings containing values in the column
+     * @throws SQLException Exception
+     */
+    public List<String> getColumn(String query,String column) throws SQLException{
+        ResultSet resultSet = statement.executeQuery(query);
+        List<String> neighbourhoods = new ArrayList<>();
+
+        while(resultSet.next())
+        {
+            if(resultSet.getString(column)!=null){
+                neighbourhoods.add(resultSet.getString(column));
+            }
+        }
+        return neighbourhoods;
+    }
+
     public void createPropertyTable() throws SQLException{
         PropertyAssessmentsDAO dao = new CsvPropertyAssessmentDAO("files/Property_Assessment_Data_2023.csv");
         statement.executeUpdate(
