@@ -1,8 +1,9 @@
 package com.Github.cmpt305milestone2.Views;
 
-import com.Github.cmpt305milestone2.AssessmentsController;
+import com.Github.cmpt305milestone2.Controllers.AssessmentsController;
 import com.Github.cmpt305milestone2.AssessmentsModel;
 import com.Github.cmpt305milestone2.AutoCompleteTextField;
+import com.Github.cmpt305milestone2.Controllers.ChartsController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -22,7 +23,7 @@ public class ChartsView {
     private VBox vBoxLeft;
     private VBox inputFields;
     private VBox chartVBox;
-    private AssessmentsController controller;
+    private ChartsController controller;
     private AssessmentsModel model;
 
     /**
@@ -30,7 +31,7 @@ public class ChartsView {
      * @param controller Controller object that takes actions from view and sends to model
      * @param model Model object that contains app data
      */
-    public ChartsView(AssessmentsController controller, AssessmentsModel model){
+    public ChartsView(ChartsController controller, AssessmentsModel model){
         this.controller = controller;
         this.model = model;
         this.chartVBox = new VBox();
@@ -100,7 +101,11 @@ public class ChartsView {
 
         //Compare neighbourhoods
         VBox barGraphValueByNeighbourhood = setValueByNeighbourhoodBarGraphVBox();
-        VBox pieChartValueByNeighbourhood = setValueByNeighbourhoodPieChartVBox();
+        VBox pieChartValueByNeighbourhood = setByNeighbourhoodPieChartVBox();
+        VBox pieChartByAssessmentClassVBox = setByAssessmentClassPieChartVBox();
+        VBox barGraphByAssessmentClassVBox = setByAssessmentClassBarGraphVBox();
+
+        pieChartByAssessmentClassVBox.setSpacing(10);
         barGraphValueByNeighbourhood.setSpacing(10);
         VBox barGraphFields = new VBox();
         barGraphFields.setSpacing(10);
@@ -117,6 +122,9 @@ public class ChartsView {
                 } else if(chartCombo.getValue().equals("Value Ranges - By Neighbourhood")) {
                     this.inputFields.getChildren().add(barGraphValueByNeighbourhood);
                     this.chartVBox.getChildren().clear();
+                } else if(chartCombo.getValue().equals("Values Ranges - By Assessment Class")) {
+                    this.inputFields.getChildren().add(barGraphByAssessmentClassVBox);
+                    this.chartVBox.getChildren().clear();
                 }
             } else if (typeCombo.getValue().equals("Pie Chart")) {
                 if(chartCombo.getValue().equals("Value Ranges - Show All")) {
@@ -124,6 +132,9 @@ public class ChartsView {
                     view.setCenter(this.chartVBox);
                 } else if(chartCombo.getValue().equals("Value Ranges - By Neighbourhood")) {
                     this.inputFields.getChildren().add(pieChartValueByNeighbourhood);
+                    this.chartVBox.getChildren().clear();
+                } else if(chartCombo.getValue().equals("Values Ranges - By Assessment Class")) {
+                    this.inputFields.getChildren().add(pieChartByAssessmentClassVBox);
                     this.chartVBox.getChildren().clear();
                 }
             }
@@ -136,7 +147,6 @@ public class ChartsView {
      */
     private VBox setValueByNeighbourhoodBarGraphVBox() {
         List<String> neighbourhoods = model.getNeighbourhoods();
-        Collections.sort(neighbourhoods);
 
         Label neighbourhood1Label = new Label("Neighbourhood 1");
         AutoCompleteTextField neighbourhood1TextField = new AutoCompleteTextField();
@@ -183,9 +193,8 @@ public class ChartsView {
                     graphButton);
     }
 
-    private VBox setValueByNeighbourhoodPieChartVBox() {
+    private VBox setByNeighbourhoodPieChartVBox() {
         List<String> neighbourhoods = model.getNeighbourhoods();
-        Collections.sort(neighbourhoods);
 
         Label neighbourhoodLabel = new Label("Neighbourhood");
         AutoCompleteTextField neighbourhoodTextField = new AutoCompleteTextField();
@@ -209,6 +218,50 @@ public class ChartsView {
                 graphButton);
     }
 
+    private VBox setByAssessmentClassBarGraphVBox() {
+        List<String> assessClassComboItems = new ArrayList<>(
+                Arrays.asList("COMMERCIAL","RESIDENTIAL","OTHER RESIDENTIAL","NONRES MUNICIPAL/RES EDUCATION","FARMLAND"));
+
+        Label aClassLabel = new Label("Assessment Class");
+
+        ComboBox assessClassCombo = new ComboBox<>(FXCollections.observableArrayList(assessClassComboItems));
+
+
+        Button graphButton = new Button("Show Chart");
+
+        graphButton.setOnAction(e -> {
+            String aClass = assessClassCombo.getValue().toString();
+
+            this.chartVBox = setByAssessmentClassBarGraph(aClass);
+
+            view.setCenter(this.chartVBox);
+        });
+
+        return new VBox(aClassLabel, assessClassCombo, graphButton);
+    }
+
+    private VBox setByAssessmentClassPieChartVBox() {
+        List<String> assessClassComboItems = new ArrayList<>(
+                Arrays.asList("COMMERCIAL","RESIDENTIAL","OTHER RESIDENTIAL","NONRES MUNICIPAL/RES EDUCATION","FARMLAND"));
+
+        Label aClassLabel = new Label("Assessment Class");
+
+        ComboBox assessClassCombo = new ComboBox<>(FXCollections.observableArrayList(assessClassComboItems));
+
+
+        Button graphButton = new Button("Show Chart");
+
+        graphButton.setOnAction(e -> {
+            String aClass = assessClassCombo.getValue().toString();
+
+            this.chartVBox = setValueByAssessmentClassPieChart(aClass);
+
+            view.setCenter(this.chartVBox);
+        });
+
+        return new VBox(aClassLabel, assessClassCombo, graphButton);
+    }
+
     private VBox setValueAllBarGraph() {
         chartVBox.getChildren().clear();
 
@@ -220,12 +273,12 @@ public class ChartsView {
         XYChart.Series series = new XYChart.Series();
         series.setName("All Property Values");
 
-        series.getData().add(new XYChart.Data("Less than $100,000", 10));
-        series.getData().add(new XYChart.Data("$100,000 to $249,999", 20));
-        series.getData().add(new XYChart.Data("$250,000 to $499,999", 30));
-        series.getData().add(new XYChart.Data("$500,000 to $749,999", 40));
-        series.getData().add(new XYChart.Data("$750,000 to $999,999", 50));
-        series.getData().add(new XYChart.Data("More than $1,000,000", 60));
+        series.getData().add(new XYChart.Data("Less than $100,000", model.countByValue(0, 100000, null, null)));
+        series.getData().add(new XYChart.Data("$100,000 to $249,999", model.countByValue(100000, 250000, null, null)));
+        series.getData().add(new XYChart.Data("$250,000 to $499,999", model.countByValue(250000, 500000, null, null)));
+        series.getData().add(new XYChart.Data("$500,000 to $749,999", model.countByValue(500000, 750000, null, null)));
+        series.getData().add(new XYChart.Data("$750,000 to $999,999", model.countByValue(750000, 1000000, null, null)));
+        series.getData().add(new XYChart.Data("More than $1,000,000", model.countByValue(1000000, null, null, null)));
         barChart.getData().add(series);
 
         vBox.getChildren().add(barChart);
@@ -241,69 +294,59 @@ public class ChartsView {
         NumberAxis yAxis = new NumberAxis();
         BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
         VBox vBox = new VBox();
-        /*
-        //setup valueRanges
-        XYChart.Series series1 = new XYChart.Series();
-        series1.setName("< $100,000");
 
-        XYChart.Series series2 = new XYChart.Series();
-        series2.setName("$100,001 - $250,000");
-
-        XYChart.Series series3 = new XYChart.Series();
-        series3.setName("$250,001 - $500,000");
-
-        XYChart.Series series4 = new XYChart.Series();
-        series4.setName("$500,001 - $750,000");
-
-        XYChart.Series series5 = new XYChart.Series();
-        series5.setName("$500,001 - $750,000");
-
-        XYChart.Series series6 = new XYChart.Series();
-        series6.setName("$750,001 - $1,000,000");
-
-        //get data and add
-        for (String neighbourhood : neighbourhoods) {
-            //if (!neighbourhood.isEmpty()) {
-                series1.getData().add(new XYChart.Data(neighbourhood, 10));
-                series2.getData().add(new XYChart.Data(neighbourhood, 20));
-                series3.getData().add(new XYChart.Data(neighbourhood, 30));
-                series4.getData().add(new XYChart.Data(neighbourhood, 40));
-                series5.getData().add(new XYChart.Data(neighbourhood, 50));
-                series6.getData().add(new XYChart.Data(neighbourhood, 60));
-            //}
-        }
-
-        barChart.getData().addAll(series1, series2, series3, series4, series5, series6);
-        */
         for(String neighbourhood: neighbourhoods) {
             if(!neighbourhood.isBlank()) {
                 XYChart.Series series = new XYChart.Series();
                 series.setName(neighbourhood);
-                series.getData().add(new XYChart.Data("Less than $100,000", 10));
-                series.getData().add(new XYChart.Data("$100,000 to $249,999", 20));
-                series.getData().add(new XYChart.Data("$250,000 to $499,999", 30));
-                series.getData().add(new XYChart.Data("$500,000 to $749,999", 40));
-                series.getData().add(new XYChart.Data("$750,000 to $999,999", 50));
-                series.getData().add(new XYChart.Data("More than $1,000,000", 60));
+                series.getData().add(new XYChart.Data("Less than $100,000", model.countByValue(0, 100000, neighbourhood, null)));
+                series.getData().add(new XYChart.Data("$100,000 to $249,999", model.countByValue(100000, 250000, neighbourhood, null)));
+                series.getData().add(new XYChart.Data("$250,000 to $499,999", model.countByValue(250000, 500000, neighbourhood, null)));
+                series.getData().add(new XYChart.Data("$500,000 to $749,999", model.countByValue(500000, 750000, neighbourhood, null)));
+                series.getData().add(new XYChart.Data("$750,000 to $999,999", model.countByValue(750000, 1000000, neighbourhood, null)));
+                series.getData().add(new XYChart.Data("More than $1,000,000", model.countByValue(1000000, null, neighbourhood, null)));
                 barChart.getData().add(series);
             }
         }
         vBox.getChildren().add(barChart);
         vBox.setAlignment(Pos.CENTER);
         return vBox;
+    }
 
+    private VBox setByAssessmentClassBarGraph(String aClass){
+        chartVBox.getChildren().clear();
+
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+        VBox vBox = new VBox();
+
+        XYChart.Series series = new XYChart.Series();
+        series.setName(aClass);
+
+        series.getData().add(new XYChart.Data("Less than $100,000", model.countByValue(0, 100000, null, aClass)));
+        series.getData().add(new XYChart.Data("$100,000 to $249,999", model.countByValue(100000, 250000, null, aClass)));
+        series.getData().add(new XYChart.Data("$250,000 to $499,999", model.countByValue(250000, 500000, null, aClass)));
+        series.getData().add(new XYChart.Data("$500,000 to $749,999", model.countByValue(500000, 750000, null, aClass)));
+        series.getData().add(new XYChart.Data("$750,000 to $999,999", model.countByValue(750000, 1000000, null, aClass)));
+        series.getData().add(new XYChart.Data("More than $1,000,000", model.countByValue(1000000, null, null, aClass)));
+        barChart.getData().add(series);
+
+        vBox.getChildren().add(barChart);
+        vBox.setAlignment(Pos.CENTER);
+        return vBox;
     }
 
     private VBox setValueAllPieChart() {
         VBox vBox = new VBox();
-
+        int total = model.countByValue(0, null, null, null);
         ObservableList<PieChart.Data> chartData = FXCollections.observableArrayList(
-                        new PieChart.Data("Less than $100,000", 1),
-                        new PieChart.Data("$100,000 to $249,999", 1),
-                        new PieChart.Data("$250,000 to $499,999", 1),
-                        new PieChart.Data("$500,000 to $749,999", 1),
-                        new PieChart.Data("$750,000 to $999,999", 1),
-                        new PieChart.Data("More than $1,000,000", 1));
+                        new PieChart.Data("Less than $100,000", (double) model.countByValue(0, 100000, null, null)/total),
+                        new PieChart.Data("$100,000 to $249,999", (double) model.countByValue(100000, 250000, null, null)/total),
+                        new PieChart.Data("$250,000 to $499,999", (double) model.countByValue(250000, 500000, null, null)/total),
+                        new PieChart.Data("$500,000 to $749,999", (double) model.countByValue(500000, 750000, null, null)/total),
+                        new PieChart.Data("$750,000 to $999,999", (double) model.countByValue(750000, 100000, null, null)/total),
+                        new PieChart.Data("More than $1,000,000", (double) model.countByValue(1000000, null, null, null)/total));
         PieChart chart = new PieChart(chartData);
         chart.setTitle("All Property Values");
         vBox.getChildren().add(chart);
@@ -313,16 +356,33 @@ public class ChartsView {
 
     private VBox setValueByNeighbourhoodPieChart(String selectedNeighbourhood) {
         VBox vBox = new VBox();
-
+        int total = model.countByValue(0, null, selectedNeighbourhood, null);
         ObservableList<PieChart.Data> chartData = FXCollections.observableArrayList(
-                new PieChart.Data("Less than $100,000", 1),
-                new PieChart.Data("$100,000 to $249,999", 2),
-                new PieChart.Data("$250,000 to $499,999", 3),
-                new PieChart.Data("$500,000 to $749,999", 4),
-                new PieChart.Data("$750,000 to $999,999", 5),
-                new PieChart.Data("More than $1,000,000", 6));
+                new PieChart.Data("Less than $100,000", (double) model.countByValue(0, 100000, selectedNeighbourhood, null)/total),
+                new PieChart.Data("$100,000 to $249,999", (double) model.countByValue(100000, 250000, selectedNeighbourhood, null)/total),
+                new PieChart.Data("$250,000 to $499,999", (double) model.countByValue(250000, 500000, selectedNeighbourhood, null)/total),
+                new PieChart.Data("$500,000 to $749,999", (double) model.countByValue(500000, 750000, selectedNeighbourhood, null)/total),
+                new PieChart.Data("$750,000 to $999,999", (double) model.countByValue(750000, 100000, selectedNeighbourhood, null)/total),
+                new PieChart.Data("More than $1,000,000", (double) model.countByValue(1000000, null, selectedNeighbourhood, null)/total));
         PieChart chart = new PieChart(chartData);
         chart.setTitle(selectedNeighbourhood);
+        vBox.getChildren().add(chart);
+        vBox.setAlignment(Pos.CENTER);
+        return vBox;
+    }
+
+    private VBox setValueByAssessmentClassPieChart(String aClass) {
+        VBox vBox = new VBox();
+        int total = model.countByValue(0, null,null, aClass);
+        ObservableList<PieChart.Data> chartData = FXCollections.observableArrayList(
+                new PieChart.Data("Less than $100,000", (double) model.countByValue(0, 100000, null, aClass)/total),
+                new PieChart.Data("$100,000 to $249,999", (double) model.countByValue(100000, 250000, null, aClass)/total),
+                new PieChart.Data("$250,000 to $499,999", (double) model.countByValue(250000, 500000, null, aClass)/total),
+                new PieChart.Data("$500,000 to $749,999", (double) model.countByValue(500000, 750000, null, aClass)/total),
+                new PieChart.Data("$750,000 to $999,999", (double) model.countByValue(750000, 1000000, null, aClass)/total),
+                new PieChart.Data("More than $1,000,000", (double) model.countByValue(1000000, null, null, aClass)/total));
+        PieChart chart = new PieChart(chartData);
+        chart.setTitle(aClass);
         vBox.getChildren().add(chart);
         vBox.setAlignment(Pos.CENTER);
         return vBox;

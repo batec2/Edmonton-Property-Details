@@ -16,4 +16,6 @@ module com.example.cmpt305milestone2 {
     opens com.Github.cmpt305milestone2.Data to javafx.fxml;
     exports com.Github.cmpt305milestone2.DAO.DeprecatedDAO;
     opens com.Github.cmpt305milestone2.DAO.DeprecatedDAO to javafx.fxml;
+    exports com.Github.cmpt305milestone2.Controllers;
+    opens com.Github.cmpt305milestone2.Controllers to javafx.fxml;
 }

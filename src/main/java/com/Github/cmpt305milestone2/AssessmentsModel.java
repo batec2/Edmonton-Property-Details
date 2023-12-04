@@ -10,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -30,6 +31,7 @@ public class AssessmentsModel {
         dao = new DatabaseDAO();
         List<Property> properties = dao.getAll();
         neighbourhoods = dao.getNeighbourhoods();
+        Collections.sort(neighbourhoods);
         data = FXCollections.observableArrayList(properties);
         //loadCsv();
     }
@@ -136,7 +138,46 @@ public class AssessmentsModel {
     }
 
 
+    /**
+     * Gets a list of all neighbourhood names in the database
+     * @return List of neighbourhood names
+     */
     public List<String> getNeighbourhoods() {
         return neighbourhoods;
+    }
+
+    /**
+     * Gets a count of all properties with assessed value greater than min and less than max.  Additionally is able
+     * to be filtered by neighbourhood or assessment class
+     * @param min minumum assessed value
+     * @param max maximum assessed value + 1, null for no limit
+     * @param neighbourhood neighbourhood name, null for all neighbourhoods
+     * @param aClass assessment class, null for all assesment classes
+     * @return count of properties meeting the criteria
+     */
+    public int countByValue(Integer min, Integer max, String neighbourhood, String aClass) {
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT COUNT(account_number) as count from PropertyAssessments where assessed_value >=")
+                .append(min);
+        if(max != null) {
+            query.append(" AND assessed_value <")
+                    .append(max);
+        }
+        if(neighbourhood != null) {
+            query.append(" AND neighbourhood = '")
+                    .append(neighbourhood)
+                    .append("'");
+        }
+        if(aClass != null) {
+            query.append(" AND (mill_class_1 = '")
+                    .append(aClass)
+                    .append("' OR mill_class_2 = '")
+                    .append(aClass)
+                    .append("' OR mill_class_3 = '")
+                    .append(aClass)
+                    .append("')");
+        }
+        System.out.println(query);
+        return dao.getCount(query.toString());
     }
 }

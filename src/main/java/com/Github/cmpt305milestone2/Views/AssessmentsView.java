@@ -1,8 +1,9 @@
 package com.Github.cmpt305milestone2.Views;
 
 import atlantafx.base.controls.ToggleSwitch;
-import com.Github.cmpt305milestone2.AssessmentsController;
+import com.Github.cmpt305milestone2.Controllers.AssessmentsController;
 import com.Github.cmpt305milestone2.AssessmentsModel;
+import com.Github.cmpt305milestone2.AutoCompleteTextField;
 import com.Github.cmpt305milestone2.Data.Money;
 import com.Github.cmpt305milestone2.Data.Property;
 import javafx.beans.property.SimpleObjectProperty;
@@ -135,15 +136,9 @@ public class AssessmentsView {
         //Neighbourhood
         Label neighbourhoodLabel  = new Label("Neighbourhood:");
 
-        /*
         AutoCompleteTextField neighbourhoodTextField = new AutoCompleteTextField();
-        new Thread(() -> {
-            List<String> neighbourhoods = model.getNeighbourhoods();
-            Collections.sort(neighbourhoods);
-            neighbourhoodTextField.getEntries().addAll(neighbourhoods);
-        }).start();
-         */
-        TextField neighbourhoodTextField = new TextField("");
+        List<String> neighbourhoods = model.getNeighbourhoods();
+        neighbourhoodTextField.getEntries().addAll(neighbourhoods);
 
         //Assessment Class
         List<String> assessClassComboItems = new ArrayList<>(

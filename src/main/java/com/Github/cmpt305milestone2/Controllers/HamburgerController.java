@@ -1,4 +1,4 @@
-package com.Github.cmpt305milestone2;
+package com.Github.cmpt305milestone2.Controllers;
 
 import com.Github.cmpt305milestone2.Views.AssessmentsView;
 import com.Github.cmpt305milestone2.Views.ChartsView;

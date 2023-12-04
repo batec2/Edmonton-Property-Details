@@ -1,6 +1,6 @@
 package com.Github.cmpt305milestone2.Views;
 
-import com.Github.cmpt305milestone2.AssessmentsController;
+import com.Github.cmpt305milestone2.Controllers.AssessmentsController;
 import com.Github.cmpt305milestone2.AssessmentsModel;
 import com.Github.cmpt305milestone2.AutoCompleteTextField;
 import com.Github.cmpt305milestone2.Data.Money;
@@ -8,10 +8,7 @@ import com.Github.cmpt305milestone2.Data.Property;
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.geometry.Point;
-import com.esri.arcgisruntime.geometry.PointCollection;
-import com.esri.arcgisruntime.geometry.Polygon;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
-import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.BasemapStyle;
 import com.esri.arcgisruntime.mapping.Viewpoint;
@@ -19,29 +16,21 @@ import com.esri.arcgisruntime.mapping.view.Graphic;
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.IdentifyGraphicsOverlayResult;
 import com.esri.arcgisruntime.mapping.view.MapView;
-import com.esri.arcgisruntime.symbology.SimpleFillSymbol;
-import com.esri.arcgisruntime.symbology.SimpleLineSymbol;
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -125,7 +114,6 @@ public class HeatMapView {
                 )
         );
         List<String> neighbourhoods = model.getNeighbourhoods();
-        Collections.sort(neighbourhoods);
 
         Label neighbourhoodLabel  = new Label("Neighbourhood:");
         AutoCompleteTextField neighbourhoodTextField = new AutoCompleteTextField();
@@ -141,66 +129,38 @@ public class HeatMapView {
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        double labelWidth = 150;
-        double fieldWidth = 125;
+
         Label redLabel = new Label("Red (Max): ");
-        //redLabel.setPrefWidth(labelWidth);
         Spinner<Integer> redSpinner = new Spinner<>(0,250000,200000,25000);
         redSpinner.getValueFactory().setValue(250000);
         redSpinner.setEditable(true);
-        //TextField redTextField = new TextField();
-        //redTextField.setPrefWidth(fieldWidth);
-        //redTextField.setText("250000");
-        //HBox hBoxRed = new HBox(redLabel,redTextField);
-        //hBoxRed.setSpacing(10);
 
         Label orangeLabel = new Label("Orange (Max): ");
-        //orangeLabel.setPrefWidth(labelWidth);
         Spinner<Integer> orangeSpinner = new Spinner<>(250001,500000,400000,25000);
         orangeSpinner.setEditable(true);
-        //TextField orangeTextField = new TextField();
-        //orangeTextField.setPrefWidth(fieldWidth);
-        //orangeTextField.setText("500000");
-        //HBox hBoxOrange = new HBox(orangeLabel,orangeTextField);
-        //hBoxOrange.setSpacing(10);
 
         Label yellowLabel = new Label("Yellow (Max): ");
-        //yellowLabel.setPrefWidth(labelWidth);
         Spinner<Integer> yellowSpinner = new Spinner<>(500001,750000,600000,25000);
         orangeSpinner.setEditable(true);
-        //TextField yellowTextField = new TextField();
-        //yellowTextField.setPrefWidth(fieldWidth);
-        //yellowTextField.setText("750000");
-        //HBox hBoxYellow = new HBox(yellowLabel,yellowTextField);
-        //hBoxYellow.setSpacing(10);
 
         Label ygLabel = new Label("Yellow-Green (Max): ");
-        //ygLabel.setPrefWidth(labelWidth);
         Spinner<Integer> ygSpinner = new Spinner<>(750001,1250000,800000,25000);
         ygSpinner.setEditable(true);
-        //TextField ygTextField = new TextField();
-        //ygTextField.setPrefWidth(fieldWidth);
-        //ygTextField.setText("1000000");
-        //HBox hBoxYG = new HBox(ygLabel,ygTextField);
-        //hBoxYG.setSpacing(10);
 
         grid.add(redLabel,0,0);
-        //grid.add(redTextField, 1, 0);
         grid.add(redSpinner, 1, 0);
         grid.add(orangeLabel,0,1);
-        //grid.add(orangeTextField,1,1);
         grid.add(orangeSpinner,1,1);
         grid.add(yellowLabel,0, 2);
-        //grid.add(yellowTextField,1,2);
         grid.add(yellowSpinner,1,2);
         grid.add(ygLabel,0,3);
-        //grid.add(ygTextField,1,3);
         grid.add(ygSpinner,1,3);
         Label greenLabel = new Label("Green defaults to rest.");
 
         //Search button
         Button searchButton = new Button("Search");
         searchButton.disableProperty().bind(controller.getLoading());//Disables button while data is loading
+
         //Gets all the values in the input texts and gets new list
         searchButton.setOnAction(e->{
             String neighbourhood = neighbourhoodTextField.getText();
@@ -273,7 +233,6 @@ public class HeatMapView {
         mapView.setMap(map);
         mapView.setViewpoint(new Viewpoint(53.5461, -113.4937, 72223.819286));
 
-        //updateMap("","",List.of("250000","500000","750000","1000000"));
         updateMap("","",List.of(200000,400000,600000,800000));
         this.mapVBox = new VBox(mapView);
         VBox.setVgrow(mapView, Priority.ALWAYS);
@@ -356,7 +315,6 @@ public class HeatMapView {
 
                 dialog.setTitle("Property Information");
                 dialog.getDialogPane().setContent(dialogContent(p));
-                //dialog.setContentText(p.toString());
                 dialog.showAndWait();
             }
         }
