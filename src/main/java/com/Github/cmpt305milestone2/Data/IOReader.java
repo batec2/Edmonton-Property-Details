@@ -85,18 +85,8 @@ public class IOReader {
     }
 
     public static List<FruitTree> treeReader(String fileName){
-        File fileIn;
-        Scanner scanner = null;
+        Scanner scanner = openFile(fileName);
         ArrayList<FruitTree> treeList = new ArrayList<>();
-
-        try{
-            fileIn = new File(fileName);
-            scanner = new Scanner(fileIn);
-        }
-        catch (Exception ex){
-            System.out.println("Error: Can't Open File");
-            return null;
-        }
         scanner.useDelimiter("\n");
         //Skips header, if there is no line returns null
         if(scanner.hasNext()){
@@ -115,18 +105,8 @@ public class IOReader {
     }
 
     public static List<Crime> crimeReader(String fileName){
-        File fileIn;
-        Scanner scanner = null;
+        Scanner scanner = openFile(fileName);
         ArrayList<Crime> crimeList = new ArrayList<>();
-
-        try{
-            fileIn = new File(fileName);
-            scanner = new Scanner(fileIn);
-        }
-        catch (Exception ex){
-            System.out.println("Error: Can't Open File");
-            return null;
-        }
         scanner.useDelimiter("\n");
         //Skips header, if there is no line returns null
         if(scanner.hasNext()){
@@ -142,5 +122,39 @@ public class IOReader {
             crimeList.add(crime);
         }
         return crimeList;
+    }
+
+    public static List<WeedStore> weedReader(String fileName){
+        Scanner scanner = openFile(fileName);
+        ArrayList<WeedStore> weedList = new ArrayList<>();
+        scanner.useDelimiter("\n");
+        //Skips header, if there is no line returns null
+        if(scanner.hasNext()){
+            scanner.next(); //Skips header
+        }
+        else{
+            System.out.println("Error Query Response Empty");
+            return null;
+        }
+        //Reads in Query into properties
+        while (scanner.hasNext()){
+            WeedStore weed = new WeedStore(scanner.next());
+            weedList.add(weed);
+        }
+        return weedList;
+    }
+
+    private static Scanner openFile(String fileName){
+        File fileIn;
+        Scanner scanner = null;
+        try{
+            fileIn = new File(fileName);
+            scanner = new Scanner(fileIn);
+        }
+        catch (Exception ex){
+            System.out.println("Error: Can't Open File");
+            return null;
+        }
+        return scanner;
     }
 }

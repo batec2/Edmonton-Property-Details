@@ -11,7 +11,8 @@ import java.util.regex.Pattern;
 
 
 public class DatabaseDAO{
-    private int limit = 500;//Amount of data received per API request
+
+    private int limit = -1;//Amount of data received per API request
     private int offset = 0;//Offset of the data for paging
     private String currentQuery;
     private List<String> currentItems;
@@ -122,6 +123,20 @@ public class DatabaseDAO{
         return currentItems.stream().allMatch(String::isBlank)?this.getAll():this.getSearchResults(currentItems);
     }
 
+    public List<Property> filterLongitudeLatitude(double longitude,double latitude) throws SQLException{
+        QueryBuilder qBuilder = new QueryBuilder().addWhere();
+        currentQuery = qBuilder
+                .add("longitude=",String.valueOf(longitude))
+                .add("AND","latitude",String.valueOf(latitude))
+                .add("ORDER BY","CAST(account_number AS INTEGER)")
+                .add("LIMIT",limit)
+                .add("OFFSET",offset)
+                .buildQuery();
+
+        List<Property> properties = database.queryPropertyAssessments(currentQuery);
+        return properties==null?new ArrayList<>():properties;
+    }
+
     /**
      * Gets the current offset
      * @return int offset
@@ -162,5 +177,13 @@ public class DatabaseDAO{
             }
         }
         return true;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
     }
 }
