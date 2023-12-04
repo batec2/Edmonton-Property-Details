@@ -21,14 +21,17 @@ public class AssessmentsModel {
     private DatabaseDAO dao;
     private CsvPropertyAssessmentDAO csvDao;
     private SimpleBooleanProperty csvLoaded = new SimpleBooleanProperty(true);
+
+    private List<String> neighbourhoods;
     /**
      * Initializes to start with API DAO as the default, as well gets all data as initial table data
      */
     public AssessmentsModel() throws SQLException {
         dao = new DatabaseDAO();
         List<Property> properties = dao.getAll();
+        neighbourhoods = dao.getNeighbourhoods();
         data = FXCollections.observableArrayList(properties);
-        loadCsv();
+        //loadCsv();
     }
 
     /**
@@ -100,6 +103,7 @@ public class AssessmentsModel {
     /**
      * Loads the csv into the CSV DAO, uses thread to slow down on startup
      */
+    @Deprecated
     private void loadCsv(){
         //new Thread(()->{
             csvDao = new CsvPropertyAssessmentDAO("files/Property_Assessment_Data_2023.csv");
@@ -126,6 +130,6 @@ public class AssessmentsModel {
 
 
     public List<String> getNeighbourhoods() {
-        return csvDao.getNeighbourhoods();
+        return dao.getNeighbourhoods();
     }
 }

@@ -163,4 +163,9 @@ public class DatabaseDAO{
         }
         return true;
     }
+
+    public List<String> getNeighbourhoods() {
+        ArrayList<String> neighbourhoods = new ArrayList(List.of("Placeholder", "Placeholder2"));
+        return neighbourhoods;
+    }
 }
