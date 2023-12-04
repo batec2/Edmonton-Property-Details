@@ -4,7 +4,7 @@ public class InitDB {
     public static void main(String[] args) {
         try {
             Database db = new Database();
-            db.dropTables();
+            //db.dropTables();
             System.out.println("Getting Property Data!");
             db.createPropertyTable();
             System.out.println("Finished Populating Properties!");
@@ -13,9 +13,14 @@ public class InitDB {
             System.out.println("Finished Populating Fruit Trees!");
             System.out.println("Getting Crime Data!");
             db.createCrimeTable();
+            System.out.println("Finished Populating Crime Data!");
+            System.out.println("Getting Weed Store Data!");
+            db.createWeedTable();
+            System.out.println("Finished Populating Weed Store Data!");
             db.closeConnection();
         }
         catch (Exception e){
+            e.printStackTrace();
             System.out.println("Error: "+e);
         }
     }

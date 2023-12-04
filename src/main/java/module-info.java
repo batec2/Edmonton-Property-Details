@@ -1,7 +1,6 @@
 module com.example.cmpt305milestone2 {
     requires javafx.controls;
     requires javafx.fxml;
-    requires MaterialFX;
     requires org.jetbrains.annotations;
     requires java.net.http;
     requires atlantafx.base;

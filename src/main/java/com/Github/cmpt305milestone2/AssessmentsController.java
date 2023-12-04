@@ -29,15 +29,15 @@ public class AssessmentsController {
      * model is finishes updating
      */
     public void resetData(){
-        //loading.set(true);
-        //new Thread(()->{
-        try {
-            model.updateAll();
-        }
-        catch (Exception e){
-            System.out.println(e);
-        }
-        //loading.set(false);
+        loading.set(true);
+            //new Thread(()->{
+            try {
+                model.updateAll();
+            }
+            catch (Exception e){
+                System.out.println(e);
+            }
+            loading.set(false);
         //}).start();
     }
 

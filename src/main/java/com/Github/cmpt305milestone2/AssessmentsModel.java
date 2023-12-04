@@ -72,7 +72,14 @@ public class AssessmentsModel {
     }
 
     public Property getAssessment(double longitude, double latitude) {
-        return csvDao.getAssessment(longitude, latitude);
+        try{
+            System.out.println(dao.filterLongitudeLatitude(longitude,latitude).get(0));
+            return dao.filterLongitudeLatitude(longitude,latitude).get(0);
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+        return null;
     }
     /**
      * Only available when using the api DAO,
