@@ -3,6 +3,7 @@ package com.Github.cmpt305milestone2.Views;
 import com.Github.cmpt305milestone2.Controllers.AssessmentsController;
 import com.Github.cmpt305milestone2.AssessmentsModel;
 import com.Github.cmpt305milestone2.AutoCompleteTextField;
+import com.Github.cmpt305milestone2.Data.FruitTree;
 import com.Github.cmpt305milestone2.Data.Money;
 import com.Github.cmpt305milestone2.Data.Property;
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
@@ -19,20 +20,24 @@ import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 /**
  * View object for Application, sets UI objects and behaviour on UI objects when interacted with by the user
@@ -45,9 +50,13 @@ public class HeatMapView {
     private AssessmentsController controller;
     private AssessmentsModel model;
     private MapView mapView;
-
+    private List<Spinner> spinners;
     private ListenableFuture<IdentifyGraphicsOverlayResult> identifyGraphics;
-
+    Spinner<Integer> redSpinner,orangeSpinner,yellowSpinner,ygSpinner;
+    AutoCompleteTextField neighbourhoodTextField;
+    TextField crimeTextField,fruitTextField,weedTextField;
+    ComboBox<String> assessClassCombo;
+    ImageView loading;
 
     /**
      * Takes refrences to model and controller objects, as-well sets UI
@@ -75,6 +84,11 @@ public class HeatMapView {
      */
     private void setStage(){
         this.view = new BorderPane();
+        //view.setPadding(new Insets(0,0,0,40));
+
+        if(!controller.getIsCSV()) {
+            //controller.switchDao(true);
+        }
 
         setMap();
         view.setCenter(this.mapVBox);
@@ -97,48 +111,71 @@ public class HeatMapView {
         this.vBoxLeft.setPadding(new Insets(10));
     }
 
-    /**
-     * Creates and sets input fields behaviour, takes input for filtering dataset, search and reset buttons
-     * are bound to booleans in the model to prevent multiple button presses
-     */
-    private void setInputFields(){
-        //Assessment Class
+    private void setTextfields(){
+        List<String> neighbourhoods = model.getNeighbourhoods();
+        neighbourhoodTextField = new AutoCompleteTextField();
+        neighbourhoodTextField.getEntries().addAll(neighbourhoods);
+
+        weedTextField = new TextField();
+        weedTextField.setMaxWidth(1000);
+
+        crimeTextField = new TextField();
+        crimeTextField.setMaxWidth(1000);
+
+        fruitTextField = new TextField();
+        fruitTextField.setMaxWidth(1000);
+    }
+
+    private void setComboBox(){
         ArrayList<String> assessClassComboItems = new ArrayList<>(
                 Arrays.asList(
                         "", "COMMERCIAL","RESIDENTIAL","OTHER RESIDENTIAL","NONRES MUNICIPAL/RES EDUCATION","FARMLAND"
                 )
         );
-        List<String> neighbourhoods = model.getNeighbourhoods();
-
-        Label neighbourhoodLabel  = new Label("Neighbourhood:");
-        AutoCompleteTextField neighbourhoodTextField = new AutoCompleteTextField();
-        neighbourhoodTextField.getEntries().addAll(neighbourhoods);
-
-        Label assessClassLabel = new Label("Assessment Class");
-        ComboBox<String> assessClassCombo = new ComboBox<>(FXCollections.observableArrayList(assessClassComboItems));
+        assessClassCombo = new ComboBox<>(FXCollections.observableArrayList(assessClassComboItems));
         assessClassCombo.getSelectionModel().selectFirst();
         assessClassCombo.setMaxWidth(1000);
+    }
+
+    private void setSpinners(){
+        redSpinner = new Spinner<>(0,250000,200000,25000);
+        redSpinner.getValueFactory().setValue(250000);
+        redSpinner.setEditable(true);
+
+        orangeSpinner = new Spinner<>(250001,500000,400000,25000);
+        orangeSpinner.setEditable(true);
+
+        yellowSpinner = new Spinner<>(500001,750000,600000,25000);
+        orangeSpinner.setEditable(true);
+
+        ygSpinner = new Spinner<>(750001,1250000,800000,25000);
+        ygSpinner.setEditable(true);
+    }
+    /**
+     * Creates and sets input fields behaviour, takes input for filtering dataset, search and reset buttons
+     * are bound to booleans in the model to prevent multiple button presses
+     */
+    private void setInputFields(){
+        setTextfields();
+        setComboBox();
+        setSpinners();
+        setLoading();
+        Label neighbourhoodLabel  = new Label("Neighbourhood:");
+        Label assessClassLabel = new Label("Assessment Class");
+        Label weedLabel = new Label("Cannabis Stores");
+        Label crimeLabel = new Label("Crime Rate");
+        Label fruitLabel = new Label("Fruit Trees");
 
         //Colour Ranges
         Label colourRanges = new Label("Colour Ranges");
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
+
         Label redLabel = new Label("Red (Max): ");
-        Spinner<Integer> redSpinner = new Spinner<>(0,250000,200000,25000);
-        redSpinner.setEditable(true);
-
         Label orangeLabel = new Label("Orange (Max): ");
-        Spinner<Integer> orangeSpinner = new Spinner<>(250001,500000,400000,25000);
-        orangeSpinner.setEditable(true);
-
         Label yellowLabel = new Label("Yellow (Max): ");
-        Spinner<Integer> yellowSpinner = new Spinner<>(500001,750000,600000,25000);
-        orangeSpinner.setEditable(true);
-
         Label ygLabel = new Label("Yellow-Green (Max): ");
-        Spinner<Integer> ygSpinner = new Spinner<>(750001,1250000,800000,25000);
-        ygSpinner.setEditable(true);
 
         grid.add(redLabel,0,0);
         grid.add(redSpinner, 1, 0);
@@ -169,8 +206,8 @@ public class HeatMapView {
         //Reset button
         Button resetButton = new Button("Reset");
         resetButton.disableProperty().bind(controller.getLoading());//Disables button while data is loading
+
         resetButton.setOnAction(e->{
-            this.controller.resetData();
             resetFields();
             searchButton.fire();
         });
@@ -183,10 +220,18 @@ public class HeatMapView {
                 neighbourhoodTextField,
                 assessClassLabel,
                 assessClassCombo,
+                weedLabel,
+                weedTextField,
+                fruitLabel,
+                fruitTextField,
+                crimeLabel,
+                crimeTextField,
                 colourRanges,
                 grid,
                 greenLabel,
-                hBoxResetSearch);
+                hBoxResetSearch,
+                loading
+        );
         this.inputFields.setSpacing(10);
     }
 
@@ -194,24 +239,15 @@ public class HeatMapView {
      * Resets all input fields to blank
      */
     private void resetFields(){
-        //text fields not in separate nodes
-        this.inputFields.getChildren()
-                .filtered(n->n instanceof TextField)
-                .forEach(n->((TextField)n).setText(""));
-        //Sets combo box to first select which is blank
-        this.inputFields.getChildren()
-                .filtered(n->n instanceof ComboBox<?>)
-                .forEach(n->((ComboBox<?>)n).getSelectionModel().selectFirst());
-        //clears the min and max text fields
-        this.inputFields.getChildren()
-                .filtered(n->n instanceof HBox)
-                .forEach(n->((HBox)n).getChildren()
-                        .filtered(field->field instanceof TextField)
-                        .forEach(field->((TextField)field).setText("")));
+        neighbourhoodTextField.setText("");
+        assessClassCombo.getSelectionModel().selectFirst();
+        weedTextField.setText("");
+        fruitTextField.setText("");
     }
 
     /**
-     * Sets up the map view frame
+     * Sets Columns and cell values as well binds table to model so table is automatically updated with changes
+     * to the model
      */
     private void setMap(){
         String apiKey = "AAPK8c0d65d196244da28b26d6a3098f40582ZNJ5DF-VyaB3dmS_2wwjcZDrFAKwZ6HMw9iM-qhfl4J9KmdCk3-UU15Sa7ukWnx";
@@ -225,20 +261,17 @@ public class HeatMapView {
         mapView.setMap(map);
         mapView.setViewpoint(new Viewpoint(53.5461, -113.4937, 72223.819286));
 
-        updateMap("","",List.of(200000,400000,600000,800000));
+        //updateMap("","",List.of(200000,400000,600000,800000));
         this.mapVBox = new VBox(mapView);
         VBox.setVgrow(mapView, Priority.ALWAYS);
 
 
     }
 
-    /**
-     *
-     * @param neighbourhood
-     * @param assessClass
-     * @param ranges
-     */
-    private void updateMap(@NotNull String neighbourhood, String assessClass, List<Integer> ranges) {
+
+    private void updateMap(@NotNull String neighbourhood, String assessClass, List<Integer>/*<String>*/ ranges) {
+        //Semaphore to prevent dots from drawing until list is updated with new data
+        Semaphore sem = controller.getSem();
         mapView.getGraphicsOverlays().clear();
 
         // create a graphics overlay for properties and add it to the map view
@@ -246,36 +279,54 @@ public class HeatMapView {
         mapView.getGraphicsOverlays().add(graphicsOverlay);
 
         SimpleMarkerSymbol.Style markerStyle = SimpleMarkerSymbol.Style.CIRCLE;
-        float markerSize = 4.5f;
+        float markerSize = 4f;
 
         if (neighbourhood.isEmpty() && assessClass.isEmpty()) {
-            this.controller.resetData();
+            this.controller.resetData(sem);
+            loading.setVisible(true);
         }
         else{
             ArrayList<String> input = new ArrayList<>(Arrays.asList("", "", neighbourhood, assessClass, "", ""));
-            this.controller.filterData(input);
+            this.controller.filterData(input,sem);
+            loading.setVisible(true);
         }
-        new Thread(()->{
-            for(Property property : model.getData()) {
-                double longitude = Double.parseDouble(property.getLongitude());
-                double latitude = Double.parseDouble(property.getLatitude());
-                int value = property.getAssessedValue().intValue();
-                Color color;
 
-                if (value <ranges.get(0)) {
-                    color = Color.RED;
-                } else if (value <ranges.get(1)) {
-                    color = Color.ORANGE;
-                } else if (value <ranges.get(2)) {
-                    color = Color.YELLOW;;
-                } else if (value <ranges.get(3)) {
-                    color = Color.YELLOWGREEN;
-                } else {
-                    color = Color.GREEN;
+        //List<Property> data = model.getData();
+        new Thread(()->{
+            try {
+                sem.acquire();
+                loading.setVisible(false);
+                List<Property> data = model.getData();
+                for (Property property:data) {
+                    double longitude = Double.parseDouble(property.getLongitude());
+                    double latitude = Double.parseDouble(property.getLatitude());
+                    int value = property.getAssessedValue().intValue();
+                    Color color;
+
+                    if (value < ranges.get(0)) {
+                        color = Color.RED;
+                    } else if (value < ranges.get(1)) {
+                        color = Color.ORANGE;
+                    } else if (value < ranges.get(2)) {
+                        color = Color.YELLOW;
+                        ;
+                    } else if (value < ranges.get(3)) {
+                        color = Color.YELLOWGREEN;
+                    } else {
+                        color = Color.GREEN;
+                    }
+                    Graphic graphic =   new Graphic(
+                            new Point(longitude, latitude, SpatialReferences.getWgs84()),
+                            new SimpleMarkerSymbol(markerStyle, color, markerSize));
+                    graphic.getAttributes().put("NAME",property.getAccountNum());
+
+                    graphicsOverlay.getGraphics().add(graphic);
                 }
-                graphicsOverlay.getGraphics().add(new Graphic(
-                                 new Point(longitude, latitude, SpatialReferences.getWgs84()),
-                                 new SimpleMarkerSymbol(markerStyle, color, markerSize)));
+                sem.release();
+            }
+            catch (Exception e){
+                System.err.println(e);
+                sem.release();
             }
         }).start();
         mapView.setOnMouseClicked(e -> {
@@ -346,11 +397,19 @@ public class HeatMapView {
         return grid;
     }
     /**
-     * Destroys the map view, ensuring it is disposed of when the application is stopped.
+     * Gets the map view object, doesn't deep copy as this is used to
+     * @return
      */
     public void destroyMapView() {
         if(this.mapView != null) {
             this.mapView.dispose();
         }
+    }
+
+    public void setLoading(){
+        //image that shows
+        Image image = new Image(new File("files/YouTube_loading_symbol_3_(transparent).gif").toURI().toString());
+        loading = new ImageView(image);
+        loading.setVisible(false);
     }
 }
