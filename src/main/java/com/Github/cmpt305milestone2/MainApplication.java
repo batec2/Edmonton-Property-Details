@@ -48,7 +48,7 @@ public class MainApplication extends Application {
         mapView = new HeatMapView(assessmentsController, assessmentsModel);
 
         chartsController = new ChartsController(assessmentsModel);
-        chartView = new ChartsView(chartsController, assessmentsModel);
+        chartView = new ChartsView(chartsController);
 
         burgerController = new HamburgerController(mainPane, assessmentsView, mapView, chartView, stage);
         burgerView = new HamburgerView(burgerController);
