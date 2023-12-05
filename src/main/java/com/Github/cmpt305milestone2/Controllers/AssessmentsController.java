@@ -4,6 +4,7 @@ import com.Github.cmpt305milestone2.AssessmentsModel;
 import com.Github.cmpt305milestone2.Data.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 /**
  * Controller for application talks to model, controller threads functions in order to prevent
@@ -42,6 +43,22 @@ public class AssessmentsController {
         //}).start();
     }
 
+    public void resetData(Semaphore sem){
+        //loading.set(true);
+        new Thread(()->{
+            try {
+                sem.acquire();
+                resetData();
+                sem.release();
+            }
+            catch (Exception e){
+                System.out.println(e);
+                sem.release();
+            }
+            //loading.set(false);
+        }).start();
+    }
+
     /**
      * Passes Input from UI to the model to be filtered,sets leading to true until
      * model is finishes updating
@@ -68,6 +85,28 @@ public class AssessmentsController {
         }
         //loading.set(false);
         //}).start();
+    }
+
+    /**
+     * Passes Input from UI to the model to be filtered,sets leading to true until
+     * model is finishes updating
+     * @param input List of strings contained filters
+     */
+    public void filterData(List<String> input, Semaphore sem){
+        //loading.set(true);
+        new Thread(()->{
+            try{
+                sem.acquire();
+                filterData(input);
+                sem.release();
+            }
+            catch (Exception e){
+                System.out.println(e);
+                sem.release();
+                return;
+            }
+        //loading.set(false);
+        }).start();
     }
 
     public Property getAssessment(double longitude, double latitude) {

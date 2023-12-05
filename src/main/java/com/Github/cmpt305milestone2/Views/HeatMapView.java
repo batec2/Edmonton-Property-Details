@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 /**
  * View object for Application, sets UI objects and behaviour on UI objects when interacted with by the user
@@ -177,7 +178,7 @@ public class HeatMapView {
         Button resetButton = new Button("Reset");
         resetButton.disableProperty().bind(controller.getLoading());//Disables button while data is loading
         resetButton.setOnAction(e->{
-            this.controller.resetData();
+            //this.controller.resetData();
             resetFields();
             searchButton.fire();
         });
@@ -242,6 +243,7 @@ public class HeatMapView {
 
 
     private void updateMap(@NotNull String neighbourhood, String assessClass, List<Integer>/*<String>*/ ranges) {
+        Semaphore sem = new Semaphore(1);
         mapView.getGraphicsOverlays().clear();
 
         // create a graphics overlay for properties and add it to the map view
@@ -252,34 +254,44 @@ public class HeatMapView {
         float markerSize = 4f;
 
         if (neighbourhood.isEmpty() && assessClass.isEmpty()) {
-            this.controller.resetData();
+            this.controller.resetData(sem);
         }
         else{
             ArrayList<String> input = new ArrayList<>(Arrays.asList("", "", neighbourhood, assessClass, "", ""));
-            this.controller.filterData(input);
+            this.controller.filterData(input,sem);
         }
+        //List<Property> data = model.getData();
         new Thread(()->{
-            for(Property property : model.getData()) {
-                double longitude = Double.parseDouble(property.getLongitude());
-                double latitude = Double.parseDouble(property.getLatitude());
-                int value = property.getAssessedValue().intValue();
-                Color color;
+            try {
+                sem.acquire();
+                for (Property property : model.getData()) {
+                    double longitude = Double.parseDouble(property.getLongitude());
+                    double latitude = Double.parseDouble(property.getLatitude());
+                    int value = property.getAssessedValue().intValue();
+                    Color color;
 
-                if (value <ranges.get(0)) {
-                    color = Color.RED;
-                } else if (value <ranges.get(1)) {
-                    color = Color.ORANGE;
-                } else if (value <ranges.get(2)) {
-                    color = Color.YELLOW;;
-                } else if (value <ranges.get(3)) {
-                    color = Color.YELLOWGREEN;
-                } else {
-                    color = Color.GREEN;
+                    if (value < ranges.get(0)) {
+                        color = Color.RED;
+                    } else if (value < ranges.get(1)) {
+                        color = Color.ORANGE;
+                    } else if (value < ranges.get(2)) {
+                        color = Color.YELLOW;
+                        ;
+                    } else if (value < ranges.get(3)) {
+                        color = Color.YELLOWGREEN;
+                    } else {
+                        color = Color.GREEN;
+                    }
+                    graphicsOverlay.getGraphics().add(
+                            new Graphic(
+                                    new Point(longitude, latitude, SpatialReferences.getWgs84()),
+                                    new SimpleMarkerSymbol(markerStyle, color, markerSize)));
                 }
-                graphicsOverlay.getGraphics().add(
-                        new Graphic(
-                                new Point(longitude, latitude, SpatialReferences.getWgs84()),
-                                new SimpleMarkerSymbol(markerStyle, color, markerSize)));
+                sem.release();
+            }
+            catch (Exception e){
+                System.err.println(e);
+                sem.release();
             }
         }).start();
         mapView.setOnMouseClicked(e -> {
