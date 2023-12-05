@@ -1,6 +1,9 @@
 package com.Github.cmpt305milestone2;
 
 import atlantafx.base.theme.CupertinoDark;
+import com.Github.cmpt305milestone2.Controllers.AssessmentsController;
+import com.Github.cmpt305milestone2.Controllers.ChartsController;
+import com.Github.cmpt305milestone2.Controllers.HamburgerController;
 import com.Github.cmpt305milestone2.Views.AssessmentsView;
 import com.Github.cmpt305milestone2.Views.ChartsView;
 import com.Github.cmpt305milestone2.Views.HamburgerView;
@@ -15,13 +18,15 @@ import java.sql.SQLException;
 
 public class MainApplication extends Application {
 
-    AssessmentsModel assModel;
-    AssessmentsView assView;
-    AssessmentsController assController;
+    AssessmentsModel assessmentsModel;
+    AssessmentsView assessmentsView;
+    AssessmentsController assessmentsController;
     HamburgerView burgerView;
     HamburgerController burgerController;
     HeatMapView mapView;
     ChartsView chartView;
+
+    ChartsController chartsController;
     BorderPane mainPane;
     BorderPane rootPane;
     /**
@@ -35,14 +40,21 @@ public class MainApplication extends Application {
         //CSS themes from here -> https://github.com/mkpaz/atlantafx
         Application.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
         rootPane = new BorderPane();
-        assModel = new AssessmentsModel();
-        assController = new AssessmentsController(assModel);
-        assView = new AssessmentsView(assController, assModel);
-        mapView = new HeatMapView(assController, assModel);
-        chartView = new ChartsView(assController, assModel);
-        mainPane = assView.asBorderPane();
-        burgerController = new HamburgerController(mainPane, assView, mapView, chartView, stage);
+
+        assessmentsModel = new AssessmentsModel();
+        assessmentsController = new AssessmentsController(assessmentsModel);
+        assessmentsView = new AssessmentsView(assessmentsController, assessmentsModel);
+
+        mapView = new HeatMapView(assessmentsController, assessmentsModel);
+
+        chartsController = new ChartsController(assessmentsModel);
+        chartView = new ChartsView(chartsController);
+
+        burgerController = new HamburgerController(mainPane, assessmentsView, mapView, chartView, stage);
         burgerView = new HamburgerView(burgerController);
+
+        mainPane = assessmentsView.asBorderPane();
+
         stage.setTitle("Edmonton Property Assessments");
         rootPane.setLeft(burgerView.getSidebar());
         rootPane.setCenter(mainPane);

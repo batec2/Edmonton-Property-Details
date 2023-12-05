@@ -4,7 +4,7 @@ public class InitDB {
     public static void main(String[] args) {
         try {
             Database db = new Database();
-            //db.dropTables();
+            db.dropTables();
             System.out.println("Getting Property Data!");
             db.createPropertyTable();
             System.out.println("Finished Populating Properties!");

@@ -1,8 +1,10 @@
-package com.Github.cmpt305milestone2;
+package com.Github.cmpt305milestone2.Controllers;
 
+import com.Github.cmpt305milestone2.AssessmentsModel;
 import com.Github.cmpt305milestone2.Data.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 /**
  * Controller for application talks to model, controller threads functions in order to prevent
@@ -13,14 +15,14 @@ public class AssessmentsController {
     private SimpleBooleanProperty loadingNext = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty loadingPrev = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty loading = new SimpleBooleanProperty(false);
-
+    Semaphore sem = new Semaphore(1);
     private boolean isCSV = false;
 
     /**
      * Takes a AssessmentsModel object
      * @param model model that holds data for application
      */
-    AssessmentsController(AssessmentsModel model){
+    public AssessmentsController(AssessmentsModel model){
         this.model = model;
     }
 
@@ -30,15 +32,27 @@ public class AssessmentsController {
      */
     public void resetData(){
         loading.set(true);
-            //new Thread(()->{
+        try {
+            model.updateAll();
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+        loading.set(false);
+    }
+
+    public void resetData(Semaphore sem){
+        new Thread(()->{
             try {
-                model.updateAll();
+                sem.acquire();
+                resetData();
+                sem.release();
             }
             catch (Exception e){
                 System.out.println(e);
+                sem.release();
             }
-            loading.set(false);
-        //}).start();
+        }).start();
     }
 
     /**
@@ -47,8 +61,7 @@ public class AssessmentsController {
      * @param input List of strings contained filters
      */
     public void filterData(List<String> input){
-        //loading.set(true);
-        //new Thread(()->{
+        loading.set(true);
         if(input.stream().allMatch(String::isBlank)){
             try {
                 model.updateAll();
@@ -65,8 +78,26 @@ public class AssessmentsController {
                 System.out.println(e);
             }
         }
-        //loading.set(false);
-        //}).start();
+        loading.set(false);
+    }
+
+    /**
+     * Passes Input from UI to the model to be filtered,sets leading to true until
+     * model is finishes updating
+     * @param input List of strings contained filters
+     */
+    public void filterData(List<String> input, Semaphore sem){
+        new Thread(()->{
+            try{
+                sem.acquire();
+                filterData(input);
+                sem.release();
+            }
+            catch (Exception e){
+                System.out.println(e);
+                sem.release();
+            }
+        }).start();
     }
 
     public Property getAssessment(double longitude, double latitude) {
@@ -159,4 +190,8 @@ public class AssessmentsController {
     }
 
     public boolean getIsCSV() {return isCSV; }
+
+    public Semaphore getSem(){
+        return sem;
+    }
 }
