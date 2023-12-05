@@ -50,6 +50,8 @@ public class DatabaseDAO{
      * @return Returns a filtered list of properties sorted by account number
      */
     public List<Property> getSearchResults(List<String> input) throws SQLException {
+        //input list ordering : account number, address, neighbourhood, assessClass, min value, max value, weedRadius,
+        //                      treeType, treeRadius, crimeType, crimeRadius
         currentItems = sanitizeInput(input);//replaces single quotes
         if(!checkInput(input)){
             return new ArrayList<>();
@@ -167,8 +169,35 @@ public class DatabaseDAO{
             System.out.println("ERROR");
             return new ArrayList<>();
         }
-
         return neighbourhoods;
+    }
+
+    /**
+     * Gets list of edible fruit tree types
+     * @return list of fruit tree types
+     */
+    public List<String> getFruitTreeTypes() {
+        List<String> treeTypes;
+        try{
+            treeTypes = database.getColumn("SELECT DISTINCT type_of_edible_fruit FROM FruitTrees","type_of_edible_fruit");
+        }
+        catch(SQLException e){
+            System.out.println("ERROR");
+            return new ArrayList<>();
+        }
+        return treeTypes;
+    }
+
+    public List<String> getCrimeTypes() {
+        List<String> crimeTypes;
+        try{
+            crimeTypes = database.getColumn("SELECT DISTINCT occurrence_type_group FROM Crime","occurrence_type_group");
+        }
+        catch(SQLException e){
+            System.out.println("ERROR");
+            return new ArrayList<>();
+        }
+        return crimeTypes;
     }
 
     /**

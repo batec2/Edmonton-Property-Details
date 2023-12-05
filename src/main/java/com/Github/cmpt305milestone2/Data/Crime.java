@@ -61,7 +61,7 @@ public class Crime {
                 .append(occurrence_group.isBlank()?"Null":occurrence_group.replace("'","''"))
                 .append(occurrence_group.isBlank()?",":"',")
                 .append(occurrence_type_group.isBlank()?"":"'")
-                .append(occurrence_type_group.isBlank()?"Null":occurrence_type_group.replace("'","''"))
+                .append(occurrence_type_group.isBlank()?"Null":occurrence_type_group.replace("'","''").toUpperCase())
                 .append(occurrence_type_group.isBlank()?",":"',")
                 .append(intersection.isBlank()?"":"'")
                 .append(intersection.isBlank()?"Null":intersection.replace("'","''"))

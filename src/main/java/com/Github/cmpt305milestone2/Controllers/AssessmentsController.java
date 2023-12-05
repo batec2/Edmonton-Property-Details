@@ -194,4 +194,12 @@ public class AssessmentsController {
     public Semaphore getSem(){
         return sem;
     }
+
+    public List<String> getNeighbourhoods() {
+        return model.getNeighbourhoods();
+    }
+
+    public List<String> getCrimeTypes() { return model.getCrimeTypes();};
+
+    public List<String> getFruitTreeTypes() {return model.getFruitTreeTypes();}
 }

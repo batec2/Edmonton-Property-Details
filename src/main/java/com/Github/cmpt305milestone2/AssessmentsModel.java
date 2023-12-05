@@ -23,7 +23,7 @@ public class AssessmentsModel {
     private CsvPropertyAssessmentDAO csvDao;
     private SimpleBooleanProperty csvLoaded = new SimpleBooleanProperty(true);
 
-    private List<String> neighbourhoods;
+    private List<String> neighbourhoods, crimeTypes, fruitTreeTypes;
     /**
      * Initializes to start with API DAO as the default, as well gets all data as initial table data
      */
@@ -32,6 +32,10 @@ public class AssessmentsModel {
         List<Property> properties = dao.getAll();
         neighbourhoods = dao.getNeighbourhoods();
         Collections.sort(neighbourhoods);
+        crimeTypes = dao.getCrimeTypes();
+        Collections.sort(crimeTypes);
+        fruitTreeTypes = dao.getFruitTreeTypes();
+        Collections.sort(fruitTreeTypes);
         data = FXCollections.observableArrayList(properties);
         //loadCsv();
     }
@@ -83,6 +87,7 @@ public class AssessmentsModel {
         }
         return null;
     }
+
     /**
      * Only available when using the api DAO,
      * increments the data forward retrieved from the API DAO and updates the table
@@ -147,6 +152,17 @@ public class AssessmentsModel {
     }
 
     /**
+     * Gets a list of all crime types
+     * @return list of crime types
+     */
+    public List<String> getCrimeTypes() { return crimeTypes;};
+
+    /**
+     * Gets a list of all edible fruit tree types
+     * @return list of fruit tree types
+     */
+    public List<String> getFruitTreeTypes() { return fruitTreeTypes; }
+    /**
      * Gets a count of all properties with assessed value greater than min and less than max.  Additionally is able
      * to be filtered by neighbourhood or assessment class
      * @param min minumum assessed value
@@ -155,6 +171,7 @@ public class AssessmentsModel {
      * @param aClass assessment class, null for all assesment classes
      * @return count of properties meeting the criteria
      */
+
     public int countByValue(Integer min, Integer max, String neighbourhood, String aClass) {
         StringBuilder query = new StringBuilder();
         query.append("SELECT COUNT(account_number) as count from PropertyAssessments where assessed_value >=")
