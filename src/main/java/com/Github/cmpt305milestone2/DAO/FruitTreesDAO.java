@@ -13,4 +13,5 @@ public class FruitTreesDAO {
     public List<FruitTree> getAll() {
         return IOReader.treeReader("files/Trees_20231124.csv");
     }
+
 }

@@ -137,7 +137,7 @@ public class AssessmentsView {
         Label neighbourhoodLabel  = new Label("Neighbourhood:");
 
         AutoCompleteTextField neighbourhoodTextField = new AutoCompleteTextField();
-        List<String> neighbourhoods = model.getNeighbourhoods();
+        List<String> neighbourhoods = controller.getNeighbourhoods();
         neighbourhoodTextField.getEntries().addAll(neighbourhoods);
 
         //Assessment Class
@@ -184,7 +184,8 @@ public class AssessmentsView {
             String assessClass = assessClassCombo.getValue();
             String min = minTextField.getText();
             String max = maxTextField.getText();
-            ArrayList<String> input = new ArrayList<>(Arrays.asList(account,address,neighbourhood,assessClass,min,max));
+            ArrayList<String> input = new ArrayList<>(Arrays.asList(account,address,neighbourhood,assessClass,min,max,
+                    "","","","",""));
             this.controller.filterData(input);
         });
         //Adds all elements to the inputFields VBox

@@ -96,7 +96,7 @@ public class FruitTree {
                 .append(bearsEdibleFruit.isBlank()?"Null":bearsEdibleFruit.replace("'","''"))
                 .append(bearsEdibleFruit.isBlank()?",":"',")
                 .append(typeEdibleFruit.isBlank()?"":"'")
-                .append(typeEdibleFruit.isBlank()?"Null":typeEdibleFruit.replace("'","''"))
+                .append(typeEdibleFruit.isBlank()?"Null":typeEdibleFruit.replace("'","''").toUpperCase())
                 .append(typeEdibleFruit.isBlank()?",":"',")
                 .append(count.isBlank()?"":"'")
                 .append(count.isBlank()?"Null":count.replace("'","''"))

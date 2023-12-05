@@ -57,13 +57,15 @@ public class ChartsController {
                     series.getData().add(new XYChart.Data("More than $1,000,000",
                             model.countByValue(1000000, null, neighbourhood, null)));
                     barChart.getData().add(series);
+                    barChart.setTitle("PROPERTY VALUES - BY NEIGHBOURHOOD");
                 }
             }
         } else {
             XYChart.Series series = new XYChart.Series();
             if (assessmentClass == null) {
-                series.setName("All Property Values");
+                barChart.setTitle("PROPERTY VALUES - ALL");
             } else {
+                barChart.setTitle("PROPERTY VALUES - BY ASSESSMENT CLASS");
                 series.setName(assessmentClass);
             }
             series.getData().add(new XYChart.Data("Less than $100,000",
@@ -105,13 +107,17 @@ public class ChartsController {
                 new PieChart.Data("More than $1,000,000",
                         (double) model.countByValue(1000000, null, neighbourhood, assessmentClass)/total));
         PieChart chart = new PieChart(chartData);
+        StringBuilder title = new StringBuilder("PROPERTY VALUES - ");
         if(neighbourhood == null && assessmentClass == null) {
-            chart.setTitle("All Property Values");
-        } else if (assessmentClass == null) {
-            chart.setTitle(neighbourhood);
-        } else {
-            chart.setTitle(assessmentClass);
+            title.append("ALL");
         }
+        if (assessmentClass != null) {
+            title.append(assessmentClass).append(" PROPERTIES");
+        }
+        if (neighbourhood != null) {
+            title.append(neighbourhood).append(" NEIGHBOURHOOD");
+        }
+        chart.setTitle(title.toString());
         return chart;
     }
 }

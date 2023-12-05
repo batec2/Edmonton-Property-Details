@@ -24,7 +24,7 @@ public class HamburgerView{
         ImageView tableIcon = new ImageView("file:files/icon_table.png");
         tableIcon.setFitWidth(iconSize);
         tableIcon.setFitHeight(iconSize);
-        String tableString = "Property Assessments Table";
+        String tableString = "Assessments Table";
 
         ImageView mapIcon = new ImageView("file:files/icon_map.png");
         mapIcon.setFitWidth(iconSize);
