@@ -25,13 +25,17 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
@@ -52,6 +56,7 @@ public class HeatMapView {
     AutoCompleteTextField neighbourhoodTextField;
     TextField crimeTextField,fruitTextField,weedTextField;
     ComboBox<String> assessClassCombo;
+    ImageView loading;
 
     /**
      * Takes refrences to model and controller objects, as-well sets UI
@@ -154,7 +159,7 @@ public class HeatMapView {
         setTextfields();
         setComboBox();
         setSpinners();
-
+        setLoading();
         Label neighbourhoodLabel  = new Label("Neighbourhood:");
         Label assessClassLabel = new Label("Assessment Class");
         Label weedLabel = new Label("Cannabis Stores");
@@ -224,7 +229,9 @@ public class HeatMapView {
                 colourRanges,
                 grid,
                 greenLabel,
-                hBoxResetSearch);
+                hBoxResetSearch,
+                loading
+        );
         this.inputFields.setSpacing(10);
     }
 
@@ -254,7 +261,7 @@ public class HeatMapView {
         mapView.setMap(map);
         mapView.setViewpoint(new Viewpoint(53.5461, -113.4937, 72223.819286));
 
-        updateMap("","",List.of(200000,400000,600000,800000));
+        //updateMap("","",List.of(200000,400000,600000,800000));
         this.mapVBox = new VBox(mapView);
         VBox.setVgrow(mapView, Priority.ALWAYS);
 
@@ -276,16 +283,21 @@ public class HeatMapView {
 
         if (neighbourhood.isEmpty() && assessClass.isEmpty()) {
             this.controller.resetData(sem);
+            loading.setVisible(true);
         }
         else{
             ArrayList<String> input = new ArrayList<>(Arrays.asList("", "", neighbourhood, assessClass, "", ""));
             this.controller.filterData(input,sem);
+            loading.setVisible(true);
         }
+
         //List<Property> data = model.getData();
         new Thread(()->{
             try {
                 sem.acquire();
-                for (Property property : model.getData()) {
+                loading.setVisible(false);
+                List<Property> data = model.getData();
+                for (Property property:data) {
                     double longitude = Double.parseDouble(property.getLongitude());
                     double latitude = Double.parseDouble(property.getLatitude());
                     int value = property.getAssessedValue().intValue();
@@ -303,10 +315,12 @@ public class HeatMapView {
                     } else {
                         color = Color.GREEN;
                     }
-                    graphicsOverlay.getGraphics().add(
-                            new Graphic(
-                                    new Point(longitude, latitude, SpatialReferences.getWgs84()),
-                                    new SimpleMarkerSymbol(markerStyle, color, markerSize)));
+                    Graphic graphic =   new Graphic(
+                            new Point(longitude, latitude, SpatialReferences.getWgs84()),
+                            new SimpleMarkerSymbol(markerStyle, color, markerSize));
+                    graphic.getAttributes().put("NAME",property.getAccountNum());
+
+                    graphicsOverlay.getGraphics().add(graphic);
                 }
                 sem.release();
             }
@@ -390,5 +404,12 @@ public class HeatMapView {
         if(this.mapView != null) {
             this.mapView.dispose();
         }
+    }
+
+    public void setLoading(){
+        //image that shows
+        Image image = new Image(new File("files/YouTube_loading_symbol_3_(transparent).gif").toURI().toString());
+        loading = new ImageView(image);
+        loading.setVisible(false);
     }
 }
