@@ -3,6 +3,7 @@ package com.Github.cmpt305milestone2.Views;
 import com.Github.cmpt305milestone2.Controllers.AssessmentsController;
 import com.Github.cmpt305milestone2.AssessmentsModel;
 import com.Github.cmpt305milestone2.AutoCompleteTextField;
+import com.Github.cmpt305milestone2.Data.FruitTree;
 import com.Github.cmpt305milestone2.Data.Money;
 import com.Github.cmpt305milestone2.Data.Property;
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
@@ -46,9 +47,11 @@ public class HeatMapView {
     private AssessmentsModel model;
     private MapView mapView;
     private List<Spinner> spinners;
-
     private ListenableFuture<IdentifyGraphicsOverlayResult> identifyGraphics;
-
+    Spinner<Integer> redSpinner,orangeSpinner,yellowSpinner,ygSpinner;
+    AutoCompleteTextField neighbourhoodTextField;
+    TextField crimeTextField,fruitTextField,weedTextField;
+    ComboBox<String> assessClassCombo;
 
     /**
      * Takes refrences to model and controller objects, as-well sets UI
@@ -103,27 +106,60 @@ public class HeatMapView {
         this.vBoxLeft.setPadding(new Insets(10));
     }
 
-    /**
-     * Creates and sets input fields behaviour, takes input for filtering dataset, search and reset buttons
-     * are bound to booleans in the model to prevent multiple button presses
-     */
-    private void setInputFields(){
-        //Assessment Class
+    private void setTextfields(){
+        List<String> neighbourhoods = model.getNeighbourhoods();
+        neighbourhoodTextField = new AutoCompleteTextField();
+        neighbourhoodTextField.getEntries().addAll(neighbourhoods);
+
+        weedTextField = new TextField();
+        weedTextField.setMaxWidth(1000);
+
+        crimeTextField = new TextField();
+        crimeTextField.setMaxWidth(1000);
+
+        fruitTextField = new TextField();
+        fruitTextField.setMaxWidth(1000);
+    }
+
+    private void setComboBox(){
         ArrayList<String> assessClassComboItems = new ArrayList<>(
                 Arrays.asList(
                         "", "COMMERCIAL","RESIDENTIAL","OTHER RESIDENTIAL","NONRES MUNICIPAL/RES EDUCATION","FARMLAND"
                 )
         );
-        List<String> neighbourhoods = model.getNeighbourhoods();
-
-        Label neighbourhoodLabel  = new Label("Neighbourhood:");
-        AutoCompleteTextField neighbourhoodTextField = new AutoCompleteTextField();
-        neighbourhoodTextField.getEntries().addAll(neighbourhoods);
-
-        Label assessClassLabel = new Label("Assessment Class");
-        ComboBox<String> assessClassCombo = new ComboBox<>(FXCollections.observableArrayList(assessClassComboItems));
+        assessClassCombo = new ComboBox<>(FXCollections.observableArrayList(assessClassComboItems));
         assessClassCombo.getSelectionModel().selectFirst();
         assessClassCombo.setMaxWidth(1000);
+    }
+
+    private void setSpinners(){
+        redSpinner = new Spinner<>(0,250000,200000,25000);
+        redSpinner.getValueFactory().setValue(250000);
+        redSpinner.setEditable(true);
+
+        orangeSpinner = new Spinner<>(250001,500000,400000,25000);
+        orangeSpinner.setEditable(true);
+
+        yellowSpinner = new Spinner<>(500001,750000,600000,25000);
+        orangeSpinner.setEditable(true);
+
+        ygSpinner = new Spinner<>(750001,1250000,800000,25000);
+        ygSpinner.setEditable(true);
+    }
+    /**
+     * Creates and sets input fields behaviour, takes input for filtering dataset, search and reset buttons
+     * are bound to booleans in the model to prevent multiple button presses
+     */
+    private void setInputFields(){
+        setTextfields();
+        setComboBox();
+        setSpinners();
+
+        Label neighbourhoodLabel  = new Label("Neighbourhood:");
+        Label assessClassLabel = new Label("Assessment Class");
+        Label weedLabel = new Label("Cannabis Stores");
+        Label crimeLabel = new Label("Crime Rate");
+        Label fruitLabel = new Label("Fruit Trees");
 
         //Colour Ranges
         Label colourRanges = new Label("Colour Ranges");
@@ -132,21 +168,9 @@ public class HeatMapView {
         grid.setAlignment(Pos.CENTER);
 
         Label redLabel = new Label("Red (Max): ");
-        Spinner<Integer> redSpinner = new Spinner<>(0,250000,200000,25000);
-        redSpinner.getValueFactory().setValue(250000);
-        redSpinner.setEditable(true);
-
         Label orangeLabel = new Label("Orange (Max): ");
-        Spinner<Integer> orangeSpinner = new Spinner<>(250001,500000,400000,25000);
-        orangeSpinner.setEditable(true);
-
         Label yellowLabel = new Label("Yellow (Max): ");
-        Spinner<Integer> yellowSpinner = new Spinner<>(500001,750000,600000,25000);
-        orangeSpinner.setEditable(true);
-
         Label ygLabel = new Label("Yellow-Green (Max): ");
-        Spinner<Integer> ygSpinner = new Spinner<>(750001,1250000,800000,25000);
-        ygSpinner.setEditable(true);
 
         grid.add(redLabel,0,0);
         grid.add(redSpinner, 1, 0);
@@ -177,8 +201,8 @@ public class HeatMapView {
         //Reset button
         Button resetButton = new Button("Reset");
         resetButton.disableProperty().bind(controller.getLoading());//Disables button while data is loading
+
         resetButton.setOnAction(e->{
-            //this.controller.resetData();
             resetFields();
             searchButton.fire();
         });
@@ -191,6 +215,12 @@ public class HeatMapView {
                 neighbourhoodTextField,
                 assessClassLabel,
                 assessClassCombo,
+                weedLabel,
+                weedTextField,
+                fruitLabel,
+                fruitTextField,
+                crimeLabel,
+                crimeTextField,
                 colourRanges,
                 grid,
                 greenLabel,
@@ -202,20 +232,10 @@ public class HeatMapView {
      * Resets all input fields to blank
      */
     private void resetFields(){
-        //text fields not in separate nodes
-        this.inputFields.getChildren()
-                .filtered(n->n instanceof TextField)
-                .forEach(n->((TextField)n).setText(""));
-        //Sets combo box to first select which is blank
-        this.inputFields.getChildren()
-                .filtered(n->n instanceof ComboBox<?>)
-                .forEach(n->((ComboBox<?>)n).getSelectionModel().selectFirst());
-        //clears the min and max text fields
-        this.inputFields.getChildren()
-                .filtered(n->n instanceof HBox)
-                .forEach(n->((HBox)n).getChildren()
-                        .filtered(field->field instanceof TextField)
-                        .forEach(field->((TextField)field).setText("")));
+        neighbourhoodTextField.setText("");
+        assessClassCombo.getSelectionModel().selectFirst();
+        weedTextField.setText("");
+        fruitTextField.setText("");
     }
 
     /**
@@ -243,7 +263,8 @@ public class HeatMapView {
 
 
     private void updateMap(@NotNull String neighbourhood, String assessClass, List<Integer>/*<String>*/ ranges) {
-        Semaphore sem = new Semaphore(1);
+        //Semaphore to prevent dots from drawing until list is updated with new data
+        Semaphore sem = controller.getSem();
         mapView.getGraphicsOverlays().clear();
 
         // create a graphics overlay for properties and add it to the map view
