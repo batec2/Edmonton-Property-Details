@@ -6,6 +6,11 @@ import javafx.collections.ObservableList;
 import javafx.scene.chart.*;
 import java.util.List;
 
+/**
+ * Controller for a ChartsView object. Enables getting list of neighbourhoods for autocomplete text fields and input
+ * checking, getting a bar graph, and getting a pie chart.
+ * Author: Neal Hamacher
+ */
 public class ChartsController {
     private AssessmentsModel model;
 
@@ -13,10 +18,21 @@ public class ChartsController {
         this.model = model;
     }
 
+    /**
+     * Gets a list of all neighbourhoods from the database
+     * @return List of neighbourhoods
+     */
     public List<String> getNeighbourhoods() {
         return model.getNeighbourhoods();
     }
 
+    /**
+     * Makes and returns a bar graph showing number property assessments falling into different ranges of assessed
+     * values. Can be configured to show all properties, up to five neighbourhoods, or a particular assessment class.
+     * @param neighbourhoods neighbourhoods to filter by, null if filtering by assessment class or showing all
+     * @param assessmentClass assessment class to filter by, null if filtering by neighbourhoods or showing all
+     * @return bar graph showing properties divided into assessed value ranges
+     */
     public BarChart<String, Number> getBarGraph(List<String> neighbourhoods, String assessmentClass) {
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
@@ -67,6 +83,12 @@ public class ChartsController {
         return barChart;
     }
 
+    /**
+     *
+     * @param neighbourhood neighbourhood to filter by, null if not applicable
+     * @param assessmentClass assessment class to filter by, null if not applicable
+     * @return pie chart of assessed val
+     */
     public PieChart getPieChart(String neighbourhood, String assessmentClass) {
         int total = model.countByValue(0, null, null, null);
         ObservableList<PieChart.Data> chartData = FXCollections.observableArrayList(

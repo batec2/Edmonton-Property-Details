@@ -19,6 +19,7 @@ import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -44,7 +45,6 @@ public class HeatMapView {
     private AssessmentsController controller;
     private AssessmentsModel model;
     private MapView mapView;
-    private List<Spinner> spinners;
 
     private ListenableFuture<IdentifyGraphicsOverlayResult> identifyGraphics;
 
@@ -75,11 +75,6 @@ public class HeatMapView {
      */
     private void setStage(){
         this.view = new BorderPane();
-        //view.setPadding(new Insets(0,0,0,40));
-
-        if(!controller.getIsCSV()) {
-            //controller.switchDao(true);
-        }
 
         setMap();
         view.setCenter(this.mapVBox);
@@ -129,10 +124,8 @@ public class HeatMapView {
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-
         Label redLabel = new Label("Red (Max): ");
         Spinner<Integer> redSpinner = new Spinner<>(0,250000,200000,25000);
-        redSpinner.getValueFactory().setValue(250000);
         redSpinner.setEditable(true);
 
         Label orangeLabel = new Label("Orange (Max): ");
@@ -218,8 +211,7 @@ public class HeatMapView {
     }
 
     /**
-     * Sets Columns and cell values as well binds table to model so table is automatically updated with changes
-     * to the model
+     * Sets up the map view frame
      */
     private void setMap(){
         String apiKey = "AAPK8c0d65d196244da28b26d6a3098f40582ZNJ5DF-VyaB3dmS_2wwjcZDrFAKwZ6HMw9iM-qhfl4J9KmdCk3-UU15Sa7ukWnx";
@@ -240,8 +232,13 @@ public class HeatMapView {
 
     }
 
-
-    private void updateMap(@NotNull String neighbourhood, String assessClass, List<Integer>/*<String>*/ ranges) {
+    /**
+     *
+     * @param neighbourhood
+     * @param assessClass
+     * @param ranges
+     */
+    private void updateMap(@NotNull String neighbourhood, String assessClass, List<Integer> ranges) {
         mapView.getGraphicsOverlays().clear();
 
         // create a graphics overlay for properties and add it to the map view
@@ -249,7 +246,7 @@ public class HeatMapView {
         mapView.getGraphicsOverlays().add(graphicsOverlay);
 
         SimpleMarkerSymbol.Style markerStyle = SimpleMarkerSymbol.Style.CIRCLE;
-        float markerSize = 4f;
+        float markerSize = 4.5f;
 
         if (neighbourhood.isEmpty() && assessClass.isEmpty()) {
             this.controller.resetData();
@@ -276,10 +273,9 @@ public class HeatMapView {
                 } else {
                     color = Color.GREEN;
                 }
-                graphicsOverlay.getGraphics().add(
-                        new Graphic(
-                                new Point(longitude, latitude, SpatialReferences.getWgs84()),
-                                new SimpleMarkerSymbol(markerStyle, color, markerSize)));
+                graphicsOverlay.getGraphics().add(new Graphic(
+                                 new Point(longitude, latitude, SpatialReferences.getWgs84()),
+                                 new SimpleMarkerSymbol(markerStyle, color, markerSize)));
             }
         }).start();
         mapView.setOnMouseClicked(e -> {
@@ -350,8 +346,7 @@ public class HeatMapView {
         return grid;
     }
     /**
-     * Gets the map view object, doesn't deep copy as this is used to
-     * @return
+     * Destroys the map view, ensuring it is disposed of when the application is stopped.
      */
     public void destroyMapView() {
         if(this.mapView != null) {
