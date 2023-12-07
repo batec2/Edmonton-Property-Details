@@ -15,10 +15,13 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
 
-
+/**
+ * Main function for the JavaFX application.
+ * Author: Neal Hamacher, Crush Bate, Dan Simons
+ */
 public class MainApplication extends Application {
 
-    AssessmentsModel assessmentsModel;
+    Model assessmentsModel;
     AssessmentsView assessmentsView;
     AssessmentsController assessmentsController;
     HamburgerView burgerView;
@@ -35,13 +38,19 @@ public class MainApplication extends Application {
      * @throws IOException
      */
 
+    /**
+     * Initializes the models, viewers, and controllers for the JavaFX application
+     * @param stage The stage returned from the JavaFX launch process
+     * @throws IOException
+     * @throws SQLException
+     */
     @Override
     public void start(Stage stage) throws IOException, SQLException {
         //CSS themes from here -> https://github.com/mkpaz/atlantafx
         Application.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
         rootPane = new BorderPane();
 
-        assessmentsModel = new AssessmentsModel();
+        assessmentsModel = new Model();
         assessmentsController = new AssessmentsController(assessmentsModel);
         assessmentsView = new AssessmentsView(assessmentsController, assessmentsModel);
 
@@ -66,10 +75,17 @@ public class MainApplication extends Application {
         stage.show();
     }
 
+    /**
+     * Launches the JavaFX Application
+     * @param args Command line args
+     */
     public static void main(String[] args) {
         launch();
     }
 
+    /**
+     * Stops the JavaFX application
+     */
     @Override
     public void stop() {
         this.mapView.destroyMapView();

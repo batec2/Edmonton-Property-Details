@@ -1,6 +1,6 @@
 package com.Github.cmpt305milestone2.Controllers;
 
-import com.Github.cmpt305milestone2.AssessmentsModel;
+import com.Github.cmpt305milestone2.Model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.*;
@@ -12,9 +12,9 @@ import java.util.List;
  * Author: Neal Hamacher
  */
 public class ChartsController {
-    private AssessmentsModel model;
+    private Model model;
 
-    public ChartsController(AssessmentsModel model) {
+    public ChartsController(Model model) {
         this.model = model;
     }
 
@@ -86,7 +86,8 @@ public class ChartsController {
     }
 
     /**
-     *
+     * Builds and returns a pie chart showing property value percentages for all properties, a specific neighbourhood,
+     * or a particular assessment class
      * @param neighbourhood neighbourhood to filter by, null if not applicable
      * @param assessmentClass assessment class to filter by, null if not applicable
      * @return pie chart of assessed val

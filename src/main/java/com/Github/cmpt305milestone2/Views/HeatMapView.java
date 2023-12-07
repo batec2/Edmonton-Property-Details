@@ -1,7 +1,7 @@
 package com.Github.cmpt305milestone2.Views;
 
 import com.Github.cmpt305milestone2.Controllers.AssessmentsController;
-import com.Github.cmpt305milestone2.AssessmentsModel;
+import com.Github.cmpt305milestone2.Model;
 import com.Github.cmpt305milestone2.AutoCompleteTextField;
 import com.Github.cmpt305milestone2.Data.Money;
 import com.Github.cmpt305milestone2.Data.Property;
@@ -21,7 +21,6 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -31,9 +30,12 @@ import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -45,7 +47,7 @@ public class HeatMapView {
     private VBox inputFields;
     private VBox mapVBox;
     private AssessmentsController controller;
-    private AssessmentsModel model;
+    private Model model;
     private MapView mapView;
     private ListenableFuture<IdentifyGraphicsOverlayResult> identifyGraphics;
     Spinner<Integer> redSpinner,orangeSpinner,yellowSpinner,ygSpinner, fruitSpinner, weedSpinner, crimeSpinner;
@@ -61,7 +63,7 @@ public class HeatMapView {
      * @param controller Controller object that takes actions from view and sends to model
      * @param model Model object that contains app data
      */
-    public HeatMapView(AssessmentsController controller, AssessmentsModel model){
+    public HeatMapView(AssessmentsController controller, Model model){
         this.controller = controller;
         this.model = model;
 
@@ -72,21 +74,13 @@ public class HeatMapView {
      * Returns Root node(BorderPane)
      * @return BorderPane root node
      */
-    public Parent asParent() {
-        return view ;
-    }
-
     public BorderPane asBorderPane() { return view;}
+
     /**
      * Sets the items for the root node
      */
     private void setStage(){
         this.view = new BorderPane();
-        //view.setPadding(new Insets(0,0,0,40));
-
-        if(!controller.getIsCSV()) {
-            //controller.switchDao(true);
-        }
 
         setMap();
         view.setCenter(this.mapVBox);
@@ -304,7 +298,7 @@ public class HeatMapView {
      * to the model
      */
     private void setMap(){
-        String apiKey = "AAPK8c0d65d196244da28b26d6a3098f40582ZNJ5DF-VyaB3dmS_2wwjcZDrFAKwZ6HMw9iM-qhfl4J9KmdCk3-UU15Sa7ukWnx";
+        String apiKey = loadApiKey();
         ArcGISRuntimeEnvironment.setApiKey(apiKey);
 
         mapView = new MapView();
@@ -322,7 +316,26 @@ public class HeatMapView {
 
     }
 
+    /**
+     * Loads the ArcGIS API key from text file located in files directory
+     * @return API key
+     */
+    private String loadApiKey() {
+        try {
+            Scanner keyScanner = new Scanner(Paths.get("files/apiKey.txt"));
+            return keyScanner.nextLine();
+        }
+        catch(IOException e) {
+            System.out.println("Couldn't load API Key.");
+            return "";
+        }
+    }
 
+    /**
+     * Updates the points on the heat map based on filter criteria and colour coding
+     * @param inputs List of filter criteria
+     * @param ranges Assessed value cutoffs for colour coding of properties
+     */
     private void updateMap(@NotNull List<String> inputs, List<Integer> ranges) {
         //Semaphore to prevent dots from drawing until list is updated with new data
         Semaphore sem = controller.getSem();
@@ -334,7 +347,7 @@ public class HeatMapView {
         mapView.getGraphicsOverlays().add(graphicsOverlay);
 
         SimpleMarkerSymbol.Style markerStyle = SimpleMarkerSymbol.Style.CIRCLE;
-        float markerSize = 5f;
+        float markerSize = 4f;
 
         for(String input : inputs) {
             if(!input.isBlank()) {
