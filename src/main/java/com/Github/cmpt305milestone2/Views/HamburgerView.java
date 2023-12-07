@@ -13,6 +13,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
+/**
+ * Viewer for the hambuger menu
+ * Author: Neal Hamacher
+ */
 public class HamburgerView{
 
     BorderPane sidebar;

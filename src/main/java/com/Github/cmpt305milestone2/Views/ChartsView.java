@@ -232,7 +232,7 @@ public class ChartsView {
     }
 
     /**
-     *
+     * Builds a VBox for the main pane that contains a bar graph
      * @param neighbourhoods
      * @param assessmentClass
      * @return

@@ -1,9 +1,7 @@
 package com.Github.cmpt305milestone2;
 
 import com.Github.cmpt305milestone2.DAO.DatabaseDAO;
-import com.Github.cmpt305milestone2.DAO.DeprecatedDAO.ApiPropertyAssessmentDAO;
 import com.Github.cmpt305milestone2.DAO.DeprecatedDAO.CsvPropertyAssessmentDAO;
-import com.Github.cmpt305milestone2.DAO.DeprecatedDAO.PropertyAssessmentsDAO;
 import com.Github.cmpt305milestone2.Data.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -17,7 +15,7 @@ import java.util.List;
 /**
  * Model for application that contains data to be displayed, has access to two DAOs, an API DAO, and CSV DAO
  */
-public class AssessmentsModel {
+public class Model {
     private ObservableList<Property> data;
     private DatabaseDAO dao;
     private CsvPropertyAssessmentDAO csvDao;
@@ -27,7 +25,7 @@ public class AssessmentsModel {
     /**
      * Initializes to start with API DAO as the default, as well gets all data as initial table data
      */
-    public AssessmentsModel() throws SQLException {
+    public Model() throws SQLException {
         dao = new DatabaseDAO();
         List<Property> properties = dao.getAll();
         neighbourhoods = dao.getNeighbourhoods();
@@ -77,6 +75,12 @@ public class AssessmentsModel {
         data.setAll(items);
     }
 
+    /**
+     * Gets a property assessment based on its location
+     * @param longitude Longitude (N/S) of the property
+     * @param latitude Latitude (E/W) of the property
+     * @return the property assessment at the given location
+     */
     public Property getAssessment(double longitude, double latitude) {
         try{
             System.out.println(dao.filterLongitudeLatitude(longitude,latitude).get(0));
@@ -162,6 +166,7 @@ public class AssessmentsModel {
      * @return list of fruit tree types
      */
     public List<String> getFruitTreeTypes() { return fruitTreeTypes; }
+
     /**
      * Gets a count of all properties with assessed value greater than min and less than max.  Additionally is able
      * to be filtered by neighbourhood or assessment class
@@ -171,7 +176,6 @@ public class AssessmentsModel {
      * @param aClass assessment class, null for all assesment classes
      * @return count of properties meeting the criteria
      */
-
     public int countByValue(Integer min, Integer max, String neighbourhood, String aClass) {
         StringBuilder query = new StringBuilder();
         query.append("SELECT COUNT(account_number) as count from PropertyAssessments where assessed_value >=")

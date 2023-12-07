@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 public class AssessmentsApplication extends Application {
 
-    AssessmentsModel model;
+    Model model;
     AssessmentsView view;
     AssessmentsController controller;
 
@@ -27,7 +27,7 @@ public class AssessmentsApplication extends Application {
     public void start(Stage stage) throws IOException, SQLException {
         //CSS themes from here -> https://github.com/mkpaz/atlantafx
         Application.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
-        model = new AssessmentsModel();
+        model = new Model();
         controller = new AssessmentsController(model);
         view = new AssessmentsView(controller,model);
         stage.setTitle("Edmonton Property Assessments");
