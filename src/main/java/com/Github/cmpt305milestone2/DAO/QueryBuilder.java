@@ -21,10 +21,22 @@ public class QueryBuilder {
         this.query = endpoint+"?$query=SELECT *,(COALESCE(suite, '')||' '||house_number||' '||street_name) AS address ";
     }
 
+    /**
+     *
+     */
     public QueryBuilder() {
         this.query = "SELECT *,(COALESCE(suite, '')||' '||house_number||' '||street_name) AS address FROM PropertyAssessments ";
     }
 
+    /**
+     *
+     * @param subQuery
+     * @param weedDist
+     * @param fruitDist
+     * @param fruit
+     * @param crimeDist
+     * @param crime
+     */
     public QueryBuilder(QueryBuilder subQuery,String weedDist,String fruitDist,String fruit,String crimeDist, String crime) {
         this.query = "SELECT *";
         if(!weedDist.isBlank()){
@@ -57,14 +69,33 @@ public class QueryBuilder {
         return this;
     }
 
+    /**
+     * Returns a string containing the subquery that calculates how many crimes are within the range of a property
+     * @param distance Max distance from a property that a crime can be
+     * @param crime Type of crime
+     * @return Returns a string containing a subquery
+     */
     public String addCrimeFilter(String distance,String crime) {
         return ",(SELECT COUNT(id) FROM Crime "+calcLatLong+distance+" AND occurrence_type_group='"+crime+"' LIMIT 1) as crime ";
     }
 
+    /**
+     * Returns a string containing the subquery that calculates how many fruit trees bearing a certain fruit are within
+     * the range of a property
+     * @param distance Max distance a fruit tree away from a property
+     * @param fruit Type of fruit
+     * @return Returns a string containing a subquery
+     */
     public String addFruitTree(String distance,String fruit) {
         return ",(SELECT COUNT(id) FROM FruitTrees "+calcLatLong+distance+" AND type_of_edible_fruit='"+fruit+"' LIMIT 1) as fruit ";
     }
 
+    /**
+     * Returns a string containing the subquery that calculates how many cannabis stores are within the range of
+     * a property
+     * @param distance Distance that cannabis stores need to fall within
+     * @return Returns a string containing a subquery
+     */
     public String addAddWeedStore(String distance) {
         return ",(SELECT COUNT(id) FROM WeedStore "+calcLatLong+distance+") AS weed ";
     }
