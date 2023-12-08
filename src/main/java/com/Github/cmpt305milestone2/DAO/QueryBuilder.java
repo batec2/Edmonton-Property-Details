@@ -58,11 +58,14 @@ public class QueryBuilder {
     }
 
     public String addCrimeFilter(String distance,String crime) {
-        return ",(SELECT COUNT(id) FROM Crime "+calcLatLong+distance+" AND occurrence_type_group='"+crime+"') AS crime ";
+        return ",(SELECT COUNT(id) " +
+                "FROM (SELECT id,latitude,longitude,occurrence_type_group FROM Crime WHERE  AND occurrence_type_group='"+crime+"' GROUP BY latitude,longitude,occurrence_type_group) "
+                +calcLatLong+ distance+ ") AS crime ";
     }
 
     public String addFruitTree(String distance,String fruit) {
-        return ",(SELECT COUNT(id) FROM FruitTrees "+calcLatLong+distance+" AND type_of_edible_fruit='"+fruit+"') AS fruit ";
+        return ",(SELECT COUNT(id) FROM (SELECT id, latitude,longitude,type_of_edible_fruit FROM FruitTrees WHERE type_of_edible_fruit='"+fruit+"') "
+                +calcLatLong+distance+") AS fruit ";
     }
 
     public String addAddWeedStore(String distance) {

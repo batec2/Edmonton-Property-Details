@@ -14,6 +14,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is used to initalize the database and is responsible for sending queries to the DB
+ * and returning query results
+ */
 public class Database {
 
     private Connection connection = null;
@@ -35,16 +39,22 @@ public class Database {
             "licence_status ,issue_date ,expiry_date ,business_improvement_area ,neighbourhood_ID ,neighbourhood ,ward ," +
             "latitude ,longitude ,location ,count ,geometry_point) VALUES ";
 
+    /**
+     * Creates a connection to the Database
+     * @throws SQLException
+     */
     public Database() throws SQLException{
         openConnection();
         statement = connection.createStatement();
-        statement.setQueryTimeout(30);  // set timeout to 30 sec.
+        statement.setQueryTimeout(0);  // set timeout to 30 sec.
     }
 
-    public ResultSet customQuery(String query) throws SQLException{
-        return statement.executeQuery(query);
-    }
-
+    /**
+     * Sends a query to the database and returns a list of properties
+     * @param query String query with sql syntax
+     * @return Returns a list of properties from the query
+     * @throws SQLException
+     */
     public List<Property> queryPropertyAssessments(String query) throws SQLException{
         ResultSet resultSet = statement.executeQuery(query);
         ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
@@ -93,6 +103,10 @@ public class Database {
         return neighbourhoods;
     }
 
+    /**
+     * Creates the table in the DB containing all
+     * @throws SQLException
+     */
     public void createPropertyTable() throws SQLException{
         PropertyAssessmentsDAO dao = new CsvPropertyAssessmentDAO("files/Property_Assessment_Data_2023.csv");
         statement.executeUpdate(
