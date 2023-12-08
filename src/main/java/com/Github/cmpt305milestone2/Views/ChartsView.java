@@ -231,6 +231,12 @@ public class ChartsView {
         return new VBox(aClassLabel, assessClassCombo, graphButton);
     }
 
+    /**
+     * Builds a VBox for the main pane that contains a bar graph
+     * @param neighbourhoods
+     * @param assessmentClass
+     * @return
+     */
     private VBox setBarGraph(List<String> neighbourhoods, String assessmentClass) {
         chartVBox.getChildren().clear();
 

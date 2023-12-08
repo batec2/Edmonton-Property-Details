@@ -2,7 +2,7 @@ package com.Github.cmpt305milestone2.Views;
 
 import atlantafx.base.controls.ToggleSwitch;
 import com.Github.cmpt305milestone2.Controllers.AssessmentsController;
-import com.Github.cmpt305milestone2.AssessmentsModel;
+import com.Github.cmpt305milestone2.Model;
 import com.Github.cmpt305milestone2.AutoCompleteTextField;
 import com.Github.cmpt305milestone2.Data.Money;
 import com.Github.cmpt305milestone2.Data.Property;
@@ -34,14 +34,14 @@ public class AssessmentsView {
     private HBox hBoxPager;
     private VBox tableVBox;
     private AssessmentsController controller;
-    private AssessmentsModel model;
+    private Model model;
 
     /**
      * Takes refrences to model and controller objects, as-well sets UI
      * @param controller Controller object that takes actions from view and sends to model
      * @param model Model object that contains app data
      */
-    public AssessmentsView(AssessmentsController controller,AssessmentsModel model){
+    public AssessmentsView(AssessmentsController controller, Model model){
         this.controller = controller;
         this.model = model;
         setStage();
@@ -137,7 +137,7 @@ public class AssessmentsView {
         Label neighbourhoodLabel  = new Label("Neighbourhood:");
 
         AutoCompleteTextField neighbourhoodTextField = new AutoCompleteTextField();
-        List<String> neighbourhoods = model.getNeighbourhoods();
+        List<String> neighbourhoods = controller.getNeighbourhoods();
         neighbourhoodTextField.getEntries().addAll(neighbourhoods);
 
         //Assessment Class
@@ -184,7 +184,8 @@ public class AssessmentsView {
             String assessClass = assessClassCombo.getValue();
             String min = minTextField.getText();
             String max = maxTextField.getText();
-            ArrayList<String> input = new ArrayList<>(Arrays.asList(account,address,neighbourhood,assessClass,min,max));
+            ArrayList<String> input = new ArrayList<>(Arrays.asList(account,address,neighbourhood,assessClass,min,max,
+                    "","","","",""));
             this.controller.filterData(input);
         });
         //Adds all elements to the inputFields VBox

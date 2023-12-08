@@ -1,6 +1,6 @@
 package com.Github.cmpt305milestone2.Controllers;
 
-import com.Github.cmpt305milestone2.AssessmentsModel;
+import com.Github.cmpt305milestone2.Model;
 import com.Github.cmpt305milestone2.Data.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.concurrent.Semaphore;
  * button spam from UI by setting observable values to true or false
  */
 public class AssessmentsController {
-    private AssessmentsModel model;
+    private Model model;
     private SimpleBooleanProperty loadingNext = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty loadingPrev = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty loading = new SimpleBooleanProperty(false);
@@ -22,7 +22,7 @@ public class AssessmentsController {
      * Takes a AssessmentsModel object
      * @param model model that holds data for application
      */
-    public AssessmentsController(AssessmentsModel model){
+    public AssessmentsController(Model model){
         this.model = model;
     }
 
@@ -194,4 +194,12 @@ public class AssessmentsController {
     public Semaphore getSem(){
         return sem;
     }
+
+    public List<String> getNeighbourhoods() {
+        return model.getNeighbourhoods();
+    }
+
+    public List<String> getCrimeTypes() { return model.getCrimeTypes();};
+
+    public List<String> getFruitTreeTypes() {return model.getFruitTreeTypes();}
 }

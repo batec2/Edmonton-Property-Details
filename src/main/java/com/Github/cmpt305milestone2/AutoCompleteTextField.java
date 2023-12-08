@@ -17,7 +17,7 @@ import java.util.TreeSet;
 
 /**
  * Class for an auto-completing text-field
- * Based on a class made by Caleb Brinkman posted at https://gist.github.com/floralvikings/10290131
+ * Heavily based on a class made by Caleb Brinkman posted at https://gist.github.com/floralvikings/10290131
  */
 public class AutoCompleteTextField extends TextField
 {
@@ -33,6 +33,13 @@ public class AutoCompleteTextField extends TextField
         entriesPopup = new ContextMenu();
         textProperty().addListener(new ChangeListener<String>()
         {
+            /**
+             * Listens for input into the auto complete text field, and pops up the list of suggestions while input
+             * is being entered into the text field
+             * @param observableValue
+             * @param s
+             * @param s2
+             */
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String s2) {
                 if (getText().length() == 0)
@@ -59,6 +66,12 @@ public class AutoCompleteTextField extends TextField
         });
 
         focusedProperty().addListener(new ChangeListener<Boolean>() {
+            /**
+             * Hides the auto suggestion pop-up window when the text field is no longer selected
+             * @param observableValue the observableValue whose value changed
+             * @param aBoolean the old value
+             * @param aBoolean2 the new value
+             */
             @Override
             public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean2) {
                 entriesPopup.hide();

@@ -1,9 +1,7 @@
 package com.Github.cmpt305milestone2;
 
 import com.Github.cmpt305milestone2.DAO.DatabaseDAO;
-import com.Github.cmpt305milestone2.DAO.DeprecatedDAO.ApiPropertyAssessmentDAO;
 import com.Github.cmpt305milestone2.DAO.DeprecatedDAO.CsvPropertyAssessmentDAO;
-import com.Github.cmpt305milestone2.DAO.DeprecatedDAO.PropertyAssessmentsDAO;
 import com.Github.cmpt305milestone2.Data.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -17,21 +15,25 @@ import java.util.List;
 /**
  * Model for application that contains data to be displayed, has access to two DAOs, an API DAO, and CSV DAO
  */
-public class AssessmentsModel {
+public class Model {
     private ObservableList<Property> data;
     private DatabaseDAO dao;
     private CsvPropertyAssessmentDAO csvDao;
     private SimpleBooleanProperty csvLoaded = new SimpleBooleanProperty(true);
 
-    private List<String> neighbourhoods;
+    private List<String> neighbourhoods, crimeTypes, fruitTreeTypes;
     /**
      * Initializes to start with API DAO as the default, as well gets all data as initial table data
      */
-    public AssessmentsModel() throws SQLException {
+    public Model() throws SQLException {
         dao = new DatabaseDAO();
         List<Property> properties = dao.getAll();
         neighbourhoods = dao.getNeighbourhoods();
         Collections.sort(neighbourhoods);
+        crimeTypes = dao.getCrimeTypes();
+        Collections.sort(crimeTypes);
+        fruitTreeTypes = dao.getFruitTreeTypes();
+        Collections.sort(fruitTreeTypes);
         data = FXCollections.observableArrayList(properties);
         //loadCsv();
     }
@@ -73,6 +75,12 @@ public class AssessmentsModel {
         data.setAll(items);
     }
 
+    /**
+     * Gets a property assessment based on its location
+     * @param longitude Longitude (N/S) of the property
+     * @param latitude Latitude (E/W) of the property
+     * @return the property assessment at the given location
+     */
     public Property getAssessment(double longitude, double latitude) {
         try{
             System.out.println(dao.filterLongitudeLatitude(longitude,latitude).get(0));
@@ -83,6 +91,7 @@ public class AssessmentsModel {
         }
         return null;
     }
+
     /**
      * Only available when using the api DAO,
      * increments the data forward retrieved from the API DAO and updates the table
@@ -145,6 +154,18 @@ public class AssessmentsModel {
     public List<String> getNeighbourhoods() {
         return neighbourhoods;
     }
+
+    /**
+     * Gets a list of all crime types
+     * @return list of crime types
+     */
+    public List<String> getCrimeTypes() { return crimeTypes;};
+
+    /**
+     * Gets a list of all edible fruit tree types
+     * @return list of fruit tree types
+     */
+    public List<String> getFruitTreeTypes() { return fruitTreeTypes; }
 
     /**
      * Gets a count of all properties with assessed value greater than min and less than max.  Additionally is able

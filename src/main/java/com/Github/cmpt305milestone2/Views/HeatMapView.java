@@ -1,15 +1,13 @@
 package com.Github.cmpt305milestone2.Views;
 
 import com.Github.cmpt305milestone2.Controllers.AssessmentsController;
-import com.Github.cmpt305milestone2.AssessmentsModel;
+import com.Github.cmpt305milestone2.Model;
 import com.Github.cmpt305milestone2.AutoCompleteTextField;
-import com.Github.cmpt305milestone2.Data.FruitTree;
 import com.Github.cmpt305milestone2.Data.Money;
 import com.Github.cmpt305milestone2.Data.Property;
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
-import com.esri.arcgisruntime.geometry.Point;
-import com.esri.arcgisruntime.geometry.SpatialReferences;
+import com.esri.arcgisruntime.geometry.*;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.BasemapStyle;
 import com.esri.arcgisruntime.mapping.Viewpoint;
@@ -23,7 +21,6 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -33,10 +30,12 @@ import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -48,22 +47,23 @@ public class HeatMapView {
     private VBox inputFields;
     private VBox mapVBox;
     private AssessmentsController controller;
-    private AssessmentsModel model;
+    private Model model;
     private MapView mapView;
-    private List<Spinner> spinners;
     private ListenableFuture<IdentifyGraphicsOverlayResult> identifyGraphics;
-    Spinner<Integer> redSpinner,orangeSpinner,yellowSpinner,ygSpinner;
-    AutoCompleteTextField neighbourhoodTextField;
-    TextField crimeTextField,fruitTextField,weedTextField;
+    Spinner<Integer> redSpinner,orangeSpinner,yellowSpinner,ygSpinner, fruitSpinner, weedSpinner, crimeSpinner;
+    AutoCompleteTextField neighbourhoodTextField, crimeTextField, fruitTextField;
     ComboBox<String> assessClassCombo;
+    CheckBox weedCheck;
     ImageView loading;
+
+
 
     /**
      * Takes refrences to model and controller objects, as-well sets UI
      * @param controller Controller object that takes actions from view and sends to model
      * @param model Model object that contains app data
      */
-    public HeatMapView(AssessmentsController controller, AssessmentsModel model){
+    public HeatMapView(AssessmentsController controller, Model model){
         this.controller = controller;
         this.model = model;
 
@@ -74,21 +74,13 @@ public class HeatMapView {
      * Returns Root node(BorderPane)
      * @return BorderPane root node
      */
-    public Parent asParent() {
-        return view ;
-    }
-
     public BorderPane asBorderPane() { return view;}
+
     /**
      * Sets the items for the root node
      */
     private void setStage(){
         this.view = new BorderPane();
-        //view.setPadding(new Insets(0,0,0,40));
-
-        if(!controller.getIsCSV()) {
-            //controller.switchDao(true);
-        }
 
         setMap();
         view.setCenter(this.mapVBox);
@@ -111,19 +103,20 @@ public class HeatMapView {
         this.vBoxLeft.setPadding(new Insets(10));
     }
 
-    private void setTextfields(){
-        List<String> neighbourhoods = model.getNeighbourhoods();
+    private void setTextFields(){
+        List<String> neighbourhoods = controller.getNeighbourhoods();
         neighbourhoodTextField = new AutoCompleteTextField();
         neighbourhoodTextField.getEntries().addAll(neighbourhoods);
 
-        weedTextField = new TextField();
-        weedTextField.setMaxWidth(1000);
-
-        crimeTextField = new TextField();
+        List<String> crimeTypes = controller.getCrimeTypes();
+        crimeTextField = new AutoCompleteTextField();
         crimeTextField.setMaxWidth(1000);
+        crimeTextField.getEntries().addAll(crimeTypes);
 
-        fruitTextField = new TextField();
+        List<String> fruitTreeTypes = controller.getFruitTreeTypes();
+        fruitTextField = new AutoCompleteTextField();
         fruitTextField.setMaxWidth(1000);
+        fruitTextField.getEntries().addAll(fruitTreeTypes);
     }
 
     private void setComboBox(){
@@ -138,8 +131,16 @@ public class HeatMapView {
     }
 
     private void setSpinners(){
+        weedSpinner = new Spinner<>(0,2000,0,10);
+        weedSpinner.setEditable(true);
+
+        fruitSpinner = new Spinner<>(0, 2000, 0, 10);
+        fruitSpinner.setEditable(true);
+
+        crimeSpinner = new Spinner<>(0, 2000, 0, 10);
+        crimeSpinner.setEditable(true);
+
         redSpinner = new Spinner<>(0,250000,200000,25000);
-        redSpinner.getValueFactory().setValue(250000);
         redSpinner.setEditable(true);
 
         orangeSpinner = new Spinner<>(250001,500000,400000,25000);
@@ -156,35 +157,50 @@ public class HeatMapView {
      * are bound to booleans in the model to prevent multiple button presses
      */
     private void setInputFields(){
-        setTextfields();
+        setTextFields();
         setComboBox();
         setSpinners();
         setLoading();
-        Label neighbourhoodLabel  = new Label("Neighbourhood:");
+        Label neighbourhoodLabel  = new Label("Neighbourhood");
         Label assessClassLabel = new Label("Assessment Class");
-        Label weedLabel = new Label("Cannabis Stores");
-        Label crimeLabel = new Label("Crime Rate");
+        this.weedCheck = new CheckBox("Near Cannabis Store?");
+        weedCheck.setIndeterminate(false);
+        Label weedDistance = new Label("Cannabis Store Distance (m) ");
         Label fruitLabel = new Label("Fruit Trees");
+        Label fruitDistance = new Label("Fruit Tree Distance (m) ");
+        Label crimeLabel = new Label("Nearby Criminal Activity");
+        Label crimeDistance = new Label("Crime Distance (m) ");
 
+        GridPane weedGrid = new GridPane();
+        weedGrid.setAlignment(Pos.CENTER);
+        weedGrid.addRow(0, weedDistance, weedSpinner);
+
+        GridPane fruitGrid = new GridPane();
+        fruitGrid.setAlignment(Pos.CENTER);
+        fruitGrid.addRow(0, fruitDistance, fruitSpinner);
+
+        GridPane crimeGrid = new GridPane();
+        crimeGrid.setAlignment(Pos.CENTER);
+        crimeGrid.addRow(0, crimeDistance, crimeSpinner);
         //Colour Ranges
         Label colourRanges = new Label("Colour Ranges");
 
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
+        GridPane valueRangeGrid = new GridPane();
+        valueRangeGrid.setAlignment(Pos.CENTER);
 
         Label redLabel = new Label("Red (Max): ");
         Label orangeLabel = new Label("Orange (Max): ");
         Label yellowLabel = new Label("Yellow (Max): ");
         Label ygLabel = new Label("Yellow-Green (Max): ");
 
-        grid.add(redLabel,0,0);
-        grid.add(redSpinner, 1, 0);
-        grid.add(orangeLabel,0,1);
-        grid.add(orangeSpinner,1,1);
-        grid.add(yellowLabel,0, 2);
-        grid.add(yellowSpinner,1,2);
-        grid.add(ygLabel,0,3);
-        grid.add(ygSpinner,1,3);
+        valueRangeGrid.add(redLabel,0,0);
+        valueRangeGrid.add(redSpinner, 1, 0);
+        valueRangeGrid.add(orangeLabel,0,1);
+        valueRangeGrid.add(orangeSpinner,1,1);
+        valueRangeGrid.add(yellowLabel,0, 2);
+        valueRangeGrid.add(yellowSpinner,1,2);
+        valueRangeGrid.add(ygLabel,0,3);
+        valueRangeGrid.add(ygSpinner,1,3);
         Label greenLabel = new Label("Green defaults to rest.");
 
         //Search button
@@ -195,13 +211,34 @@ public class HeatMapView {
         searchButton.setOnAction(e->{
             String neighbourhood = neighbourhoodTextField.getText();
             String assessClass = assessClassCombo.getValue();
-
+            String weedRadius;
+            if(weedCheck.isSelected()) {
+                weedRadius = weedSpinner.getValue().toString();
+            } else {
+                weedRadius = "";
+            }
+            String treeType = fruitTextField.getText();
+            String treeRadius;
+            if(treeType.isBlank()) {
+                treeRadius = "";
+            } else {
+                treeRadius = fruitSpinner.getValue().toString();
+            }
+            String crimeType = crimeTextField.getText();
+            String crimeRadius;
+            if(crimeType.isBlank()) {
+                crimeRadius = "";
+            } else {
+                crimeRadius = crimeSpinner.getValue().toString();
+            }
+            ArrayList<String> inputs = new ArrayList<>(Arrays.asList("", "", neighbourhood, assessClass, "", "", weedRadius,
+                    treeType, treeRadius, crimeType, crimeRadius));
             Integer red = redSpinner.getValue();
             Integer orange = orangeSpinner.getValue();
             Integer yellow = yellowSpinner.getValue();
             Integer yg = ygSpinner.getValue();
             ArrayList<Integer> ranges = new ArrayList<>(Arrays.asList(red,orange,yellow,yg));
-            updateMap(neighbourhood, assessClass, ranges);
+            updateMap(inputs, ranges);
         });
         //Reset button
         Button resetButton = new Button("Reset");
@@ -220,14 +257,16 @@ public class HeatMapView {
                 neighbourhoodTextField,
                 assessClassLabel,
                 assessClassCombo,
-                weedLabel,
-                weedTextField,
+                weedCheck,
+                weedGrid,
                 fruitLabel,
                 fruitTextField,
+                fruitGrid,
                 crimeLabel,
                 crimeTextField,
+                crimeGrid,
                 colourRanges,
-                grid,
+                valueRangeGrid,
                 greenLabel,
                 hBoxResetSearch,
                 loading
@@ -241,8 +280,17 @@ public class HeatMapView {
     private void resetFields(){
         neighbourhoodTextField.setText("");
         assessClassCombo.getSelectionModel().selectFirst();
-        weedTextField.setText("");
+        weedCheck.setSelected(false);
         fruitTextField.setText("");
+        crimeTextField.setText("");
+        weedSpinner.getValueFactory().setValue(0);
+        fruitSpinner.getValueFactory().setValue(0);
+        crimeSpinner.getValueFactory().setValue(0);
+        redSpinner.getValueFactory().setValue(200000);
+        orangeSpinner.getValueFactory().setValue(400000);
+        yellowSpinner.getValueFactory().setValue(600000);
+        ygSpinner.getValueFactory().setValue(800000);
+
     }
 
     /**
@@ -250,7 +298,7 @@ public class HeatMapView {
      * to the model
      */
     private void setMap(){
-        String apiKey = "AAPK8c0d65d196244da28b26d6a3098f40582ZNJ5DF-VyaB3dmS_2wwjcZDrFAKwZ6HMw9iM-qhfl4J9KmdCk3-UU15Sa7ukWnx";
+        String apiKey = loadApiKey();
         ArcGISRuntimeEnvironment.setApiKey(apiKey);
 
         mapView = new MapView();
@@ -268,11 +316,31 @@ public class HeatMapView {
 
     }
 
+    /**
+     * Loads the ArcGIS API key from text file located in files directory
+     * @return API key
+     */
+    private String loadApiKey() {
+        try {
+            Scanner keyScanner = new Scanner(Paths.get("files/apiKey.txt"));
+            return keyScanner.nextLine();
+        }
+        catch(IOException e) {
+            System.out.println("Couldn't load API Key.");
+            return "";
+        }
+    }
 
-    private void updateMap(@NotNull String neighbourhood, String assessClass, List<Integer>/*<String>*/ ranges) {
+    /**
+     * Updates the points on the heat map based on filter criteria and colour coding
+     * @param inputs List of filter criteria
+     * @param ranges Assessed value cutoffs for colour coding of properties
+     */
+    private void updateMap(@NotNull List<String> inputs, List<Integer> ranges) {
         //Semaphore to prevent dots from drawing until list is updated with new data
         Semaphore sem = controller.getSem();
         mapView.getGraphicsOverlays().clear();
+        boolean reset = true;
 
         // create a graphics overlay for properties and add it to the map view
         GraphicsOverlay graphicsOverlay = new GraphicsOverlay();
@@ -281,13 +349,17 @@ public class HeatMapView {
         SimpleMarkerSymbol.Style markerStyle = SimpleMarkerSymbol.Style.CIRCLE;
         float markerSize = 4f;
 
-        if (neighbourhood.isEmpty() && assessClass.isEmpty()) {
-            this.controller.resetData(sem);
-            loading.setVisible(true);
+        for(String input : inputs) {
+            if(!input.isBlank()) {
+                this.controller.resetData(sem);
+                loading.setVisible(true);
+                reset = false;
+                System.out.println(input);
+                break;
+            }
         }
-        else{
-            ArrayList<String> input = new ArrayList<>(Arrays.asList("", "", neighbourhood, assessClass, "", ""));
-            this.controller.filterData(input,sem);
+        if(!reset){
+            this.controller.filterData(inputs, sem);
             loading.setVisible(true);
         }
 

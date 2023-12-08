@@ -50,11 +50,68 @@ public class DatabaseDAO{
      * @return Returns a filtered list of properties sorted by account number
      */
     public List<Property> getSearchResults(List<String> input) throws SQLException {
+        //input list ordering : 0 account number, 1 address, 2neighbourhood, 3 assessClass, 4 min value, 5 max value, 6 weedRadius,
+        //                      7 treeType, 8 treeRadius, 9 crimeType, 10 crimeRadius
         currentItems = sanitizeInput(input);//replaces single quotes
         if(!checkInput(input)){
             return new ArrayList<>();
         }
-        QueryBuilder qBuilder = new QueryBuilder().addWhere();
+        QueryBuilder qBuilder = new QueryBuilder(getSubQuery(input),input.get(6),input.get(8),input.get(7),input.get(10),input.get(9));
+
+        if(!input.get(6).isBlank()||!input.get(9).isBlank()||!input.get(8).isBlank()){
+            qBuilder = qBuilder.addWhere();
+        }
+
+        boolean first = true;
+        for(int i=6;i<currentItems.size();i++){
+            switch(i){
+                case 6:
+                    if(!currentItems.get(i).isBlank()){
+                        qBuilder.addWeed(first);
+                        first=false;
+                    }
+                    break;
+                case 7:
+                    if(!currentItems.get(i).isBlank()){
+                        qBuilder.addFruit(first);
+                        first=false;
+                    }
+                    break;
+                case 9:
+                    if(!currentItems.get(i).isBlank()){
+                        qBuilder.addCrime(first);
+                        first=false;
+                    }
+                    break;
+            }
+        }
+
+        currentQuery = qBuilder
+                .add("ORDER BY","CAST(account_number AS INTEGER)")
+                .add("LIMIT",limit)
+                .add("OFFSET",offset)
+                .buildQuery();
+
+        List<Property> properties = database.queryPropertyAssessments(currentQuery);
+        return properties==null?new ArrayList<>():properties;
+    }
+
+    /**
+     * Takes a list of inputs from UI and creates a query based on inputs.
+     * After query is made it is sent to api to get matching items
+     * @param input Takes in a list of inputs to filter by
+     * @return Returns a filtered list of properties sorted by account number
+     */
+    public QueryBuilder getSubQuery(List<String> input) throws SQLException {
+        //input list ordering : 0 account number, 1 address, 2neighbourhood, 3 assessClass, 4 min value, 5 max value, 6 weedRadius,
+        //                      7 treeType, 8 treeRadius, 9 crimeType, 10 crimeRadius
+        currentItems = sanitizeInput(input);//replaces single quotes
+        QueryBuilder qBuilder = new QueryBuilder();
+
+        if(!checkAllBlank(input)){
+            qBuilder = qBuilder.addWhere();
+        }
+
         boolean first = true;
         for(int i=0;i<currentItems.size();i++){
             switch(i){
@@ -103,15 +160,9 @@ public class DatabaseDAO{
             }
         }
 
-        currentQuery = qBuilder
-                .add("ORDER BY","CAST(account_number AS INTEGER)")
-                .add("LIMIT",limit)
-                .add("OFFSET",offset)
-                .buildQuery();
-
-        List<Property> properties = database.queryPropertyAssessments(currentQuery);
-        return properties==null?new ArrayList<>():properties;
+        return qBuilder;
     }
+
 
     /**
      * Re-queries current query, if there are no filters it queries for all items and returns filtered items
@@ -167,8 +218,35 @@ public class DatabaseDAO{
             System.out.println("ERROR");
             return new ArrayList<>();
         }
-
         return neighbourhoods;
+    }
+
+    /**
+     * Gets list of edible fruit tree types
+     * @return list of fruit tree types
+     */
+    public List<String> getFruitTreeTypes() {
+        List<String> treeTypes;
+        try{
+            treeTypes = database.getColumn("SELECT DISTINCT type_of_edible_fruit FROM FruitTrees","type_of_edible_fruit");
+        }
+        catch(SQLException e){
+            System.out.println("ERROR");
+            return new ArrayList<>();
+        }
+        return treeTypes;
+    }
+
+    public List<String> getCrimeTypes() {
+        List<String> crimeTypes;
+        try{
+            crimeTypes = database.getColumn("SELECT DISTINCT occurrence_type_group FROM Crime","occurrence_type_group");
+        }
+        catch(SQLException e){
+            System.out.println("ERROR");
+            return new ArrayList<>();
+        }
+        return crimeTypes;
     }
 
     /**
@@ -213,6 +291,20 @@ public class DatabaseDAO{
         return true;
     }
 
+    /**
+     * Checks input for invalid special characters
+     * @param input List of strings
+     * @return Returns true if the inputs are valid, false otherwise
+     */
+    public boolean checkAllBlank(List<String> input){
+        for(String item:input){
+            if(!item.isBlank()){
+                return false;
+            }
+        }
+        return true;
+    }
+
     public int getLimit() {
         return limit;
     }
@@ -220,5 +312,7 @@ public class DatabaseDAO{
     public void setLimit(int limit) {
         this.limit = limit;
     }
+
+
 
 }
