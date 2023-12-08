@@ -50,13 +50,19 @@ public class DatabaseDAO{
      * @return Returns a filtered list of properties sorted by account number
      */
     public List<Property> getSearchResults(List<String> input) throws SQLException {
-        //input list ordering : account number, address, neighbourhood, assessClass, min value, max value, weedRadius,
-        //                      treeType, treeRadius, crimeType, crimeRadius
+        //input list ordering : 0 account number, 1 address, 2neighbourhood, 3 assessClass, 4 min value, 5 max value, 6 weedRadius,
+        //                      7 treeType, 8 treeRadius, 9 crimeType, 10 crimeRadius
         currentItems = sanitizeInput(input);//replaces single quotes
         if(!checkInput(input)){
             return new ArrayList<>();
         }
-        QueryBuilder qBuilder = new QueryBuilder().addWhere();
+        QueryBuilder qBuilder = new QueryBuilder(input.get(6),input.get(8),input.get(7),input.get(10),input.get(9));
+
+
+        if(!checkAllBlank(input)){
+            qBuilder = qBuilder.addWhere();
+        }
+
         boolean first = true;
         for(int i=0;i<currentItems.size();i++){
             switch(i){
@@ -102,6 +108,27 @@ public class DatabaseDAO{
                         first=false;
                     }
                     break;
+
+                case 6:
+                    if(!currentItems.get(i).isBlank()){
+                        qBuilder.addWeed(first);
+                        first=false;
+                    }
+                    break;
+                case 7:
+                    if(!currentItems.get(i).isBlank()){
+                        qBuilder.addFruit(first);
+                        first=false;
+                    }
+                    break;
+                case 9:
+                    if(!currentItems.get(i).isBlank()){
+                        qBuilder.addCrime(first);
+                        first=false;
+                    }
+                    break;
+
+
             }
         }
 
@@ -242,6 +269,20 @@ public class DatabaseDAO{
         return true;
     }
 
+    /**
+     * Checks input for invalid special characters
+     * @param input List of strings
+     * @return Returns true if the inputs are valid, false otherwise
+     */
+    public boolean checkAllBlank(List<String> input){
+        for(String item:input){
+            if(!item.isBlank()){
+                return false;
+            }
+        }
+        return true;
+    }
+
     public int getLimit() {
         return limit;
     }
@@ -249,5 +290,7 @@ public class DatabaseDAO{
     public void setLimit(int limit) {
         this.limit = limit;
     }
+
+
 
 }

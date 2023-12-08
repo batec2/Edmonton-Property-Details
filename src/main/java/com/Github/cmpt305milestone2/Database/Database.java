@@ -41,6 +41,10 @@ public class Database {
         statement.setQueryTimeout(30);  // set timeout to 30 sec.
     }
 
+    public ResultSet customQuery(String query) throws SQLException{
+        return statement.executeQuery(query);
+    }
+
     public List<Property> queryPropertyAssessments(String query) throws SQLException{
         ResultSet resultSet = statement.executeQuery(query);
         ResultSetMetaData resultSetMetaData = resultSet.getMetaData();

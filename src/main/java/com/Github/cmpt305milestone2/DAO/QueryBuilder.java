@@ -4,8 +4,8 @@ package com.Github.cmpt305milestone2.DAO;
  * Class for building queries to be sent to API, uses SQL-like syntax
  */
 public class QueryBuilder {
-    String query;
-
+    private String query;
+    private String calcLatLong = "WHERE SQRT((POWER((latitude-PropertyAssessments.latitude),2)*(4357.313207))+(POWER(((longitude)-(PropertyAssessments.longitude)),2)*(12226.60948)))*1000 <=";
     /**
      * Takes the url for the API calls to be sent to
      * @param endpoint URL for API
@@ -23,6 +23,21 @@ public class QueryBuilder {
         this.query = "SELECT *,(COALESCE(suite, '')||' '||house_number||' '||street_name) AS address FROM PropertyAssessments ";
     }
 
+    public QueryBuilder(String weedDist,String fruitDist,String fruit,String crimeDist, String crime) {
+        this.query = "SELECT *,(COALESCE(suite, '')||' '||house_number||' '||street_name) AS address ";
+        if(!weedDist.isBlank()){
+            this.query = query+this.addAddWeedStore(weedDist);
+        }
+        if(!fruitDist.isBlank()){
+            this.query = query+this.addFruitTree(fruitDist,fruit);
+        }
+        if(!crimeDist.isBlank()){
+            this.query = query+this.addCrimeFilter(crimeDist,crime);
+        }
+        this.query = query+"FROM PropertyAssessments ";
+    }
+
+
     /**
      * Adds a SQL function supported by SoQL for example ORDER BY to the current query
      * Example ORDER BY(sql) Col_Name(value)
@@ -39,6 +54,18 @@ public class QueryBuilder {
                 .append(value)
                 .append(" ").toString();
         return this;
+    }
+
+    public String addCrimeFilter(String distance,String crime) {
+        return ",(SELECT COUNT(id) FROM Crime "+calcLatLong+distance+" AND occurrence_type_group='"+crime+"') AS crime ";
+    }
+
+    public String addFruitTree(String distance,String fruit) {
+        return ",(SELECT COUNT(id) FROM FruitTrees "+calcLatLong+distance+" AND type_of_edible_fruit='"+fruit+"') AS fruit ";
+    }
+
+    public String addAddWeedStore(String distance) {
+        return ",(SELECT COUNT(id) FROM WeedStore "+calcLatLong+distance+") AS weed ";
     }
 
     /**
@@ -180,6 +207,40 @@ public class QueryBuilder {
     public QueryBuilder addAssessedMin(String value,boolean first){
         this.query = first?this.query+" "+"assessed_value>='"+value+"' "
                 :this.query+" "+"AND assessed_value>='"+value+"' ";
+        return this;
+    }
+
+    /**
+     * Adds a filter for minimum Assessed Value, an 'AND' is added if
+     * this is first filter to be added to query
+     * @param first boolean if this is the first filter to be added
+     * @return returns this QueryBuilder object
+     */
+    public QueryBuilder addFruit(boolean first){
+        this.query = first?this.query+" "+"fruit>=0 "
+                :this.query+" "+"AND fruit>=0 ";
+        return this;
+    }
+    /**
+     * Adds a filter for minimum Assessed Value, an 'AND' is added if
+     * this is first filter to be added to query
+     * @param first boolean if this is the first filter to be added
+     * @return returns this QueryBuilder object
+     */
+    public QueryBuilder addCrime(boolean first){
+        this.query = first?this.query+" "+"crime=0 "
+                :this.query+" "+"AND crime=0 ";
+        return this;
+    }
+    /**
+     * Adds a filter for minimum Assessed Value, an 'AND' is added if
+     * this is first filter to be added to query
+     * @param first boolean if this is the first filter to be added
+     * @return returns this QueryBuilder object
+     */
+    public QueryBuilder addWeed(boolean first){
+        this.query = first?this.query+" "+"weed>=0 "
+                :this.query+" "+"AND weed>=0 ";
         return this;
     }
     /**
