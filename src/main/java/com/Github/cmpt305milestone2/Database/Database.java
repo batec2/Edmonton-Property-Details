@@ -16,22 +16,22 @@ import java.util.List;
 
 public class Database {
 
-    Connection connection = null;
+    private Connection connection = null;
 
-    Statement statement;
+    private Statement statement;
 
-    String insertPropertyString = "BEGIN; INSERT INTO PropertyAssessments(account_number,suite,house_number,street_name,garage," +
+    private String insertPropertyString = "BEGIN; INSERT INTO PropertyAssessments(account_number,suite,house_number,street_name,garage," +
             " neighbourhood_id,neighbourhood,ward,assessed_value,latitude,longitude,point_location,tax_class_pct_1," +
             "tax_class_pct_2, tax_class_pct_3,mill_class_1,mill_class_2, mill_class_3) VALUES ";
 
-    String insertTreesString = "BEGIN; INSERT INTO FruitTrees (tree_id,neighbourhood_name,location_type,species_botanical," +
+    private String insertTreesString = "BEGIN; INSERT INTO FruitTrees (tree_id,neighbourhood_name,location_type,species_botanical," +
             "species_common,genus,species,cultivar,diameter_breast_height,condition_percent,planted_date," +
             "owner,bears_edible_fruit,type_of_edible_fruit,amount,latitude,longitude,location,point_location) VALUES ";
 
-    String insertCrimeString = "BEGIN; INSERT INTO Crime (longitude,latitude,id,reported_date,occurrence_category," +
+    private String insertCrimeString = "BEGIN; INSERT INTO Crime (longitude,latitude,id,reported_date,occurrence_category," +
             "occurrence_group,occurrence_type_group,intersection,reported_day," +
             "reported_month,reported_year,date_reported) VALUES ";
-    String insertWeedString = "BEGIN; INSERT INTO WeedStore (category ,trade_name ,address ,licence_number ," +
+    private String insertWeedString = "BEGIN; INSERT INTO WeedStore (category ,trade_name ,address ,licence_number ," +
             "licence_status ,issue_date ,expiry_date ,business_improvement_area ,neighbourhood_ID ,neighbourhood ,ward ," +
             "latitude ,longitude ,location ,count ,geometry_point) VALUES ";
 

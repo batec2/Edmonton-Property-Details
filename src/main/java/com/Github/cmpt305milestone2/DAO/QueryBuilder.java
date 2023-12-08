@@ -1,11 +1,13 @@
 package com.Github.cmpt305milestone2.DAO;
 
+import java.util.List;
+
 /**
  * Class for building queries to be sent to API, uses SQL-like syntax
  */
 public class QueryBuilder {
     private String query;
-    private String calcLatLong = "WHERE SQRT((POWER((latitude-PropertyAssessments.latitude),2)*(4357.313207))+(POWER(((longitude)-(PropertyAssessments.longitude)),2)*(12226.60948)))*1000 <=";
+    private String calcLatLong = "WHERE SQRT((POWER((latitude-filtered.latitude),2)*(4357.313207))+(POWER(((longitude)-(filtered.longitude)),2)*(12226.60948)))*1000 <=";
     /**
      * Takes the url for the API calls to be sent to
      * @param endpoint URL for API
@@ -23,8 +25,8 @@ public class QueryBuilder {
         this.query = "SELECT *,(COALESCE(suite, '')||' '||house_number||' '||street_name) AS address FROM PropertyAssessments ";
     }
 
-    public QueryBuilder(String weedDist,String fruitDist,String fruit,String crimeDist, String crime) {
-        this.query = "SELECT *,(COALESCE(suite, '')||' '||house_number||' '||street_name) AS address ";
+    public QueryBuilder(QueryBuilder subQuery,String weedDist,String fruitDist,String fruit,String crimeDist, String crime) {
+        this.query = "SELECT *";
         if(!weedDist.isBlank()){
             this.query = query+this.addAddWeedStore(weedDist);
         }
@@ -34,9 +36,8 @@ public class QueryBuilder {
         if(!crimeDist.isBlank()){
             this.query = query+this.addCrimeFilter(crimeDist,crime);
         }
-        this.query = query+"FROM PropertyAssessments ";
+        this.query= query+"FROM ("+subQuery.buildQuery()+") as filtered ";
     }
-
 
     /**
      * Adds a SQL function supported by SoQL for example ORDER BY to the current query
