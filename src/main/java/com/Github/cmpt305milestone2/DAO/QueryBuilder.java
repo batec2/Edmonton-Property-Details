@@ -217,8 +217,8 @@ public class QueryBuilder {
      * @return returns this QueryBuilder object
      */
     public QueryBuilder addFruit(boolean first){
-        this.query = first?this.query+" "+"fruit>=0 "
-                :this.query+" "+"AND fruit>=0 ";
+        this.query = first?this.query+" "+"fruit>0 "
+                :this.query+" "+"AND fruit>0 ";
         return this;
     }
     /**
@@ -239,8 +239,8 @@ public class QueryBuilder {
      * @return returns this QueryBuilder object
      */
     public QueryBuilder addWeed(boolean first){
-        this.query = first?this.query+" "+"weed>=0 "
-                :this.query+" "+"AND weed>=0 ";
+        this.query = first?this.query+" "+"weed>0 "
+                :this.query+" "+"AND weed>0 ";
         return this;
     }
     /**
