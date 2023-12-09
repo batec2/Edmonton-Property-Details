@@ -106,7 +106,7 @@ public class DatabaseDAO{
         currentItems = sanitizeInput(input);//replaces single quotes
         QueryBuilder qBuilder = new QueryBuilder();
 
-        if(!checkAllBlank(input)){
+        if(!checkAllBlank(input,0,6)){
             qBuilder = qBuilder.addWhere();
         }
         //Adds the filters from the input
@@ -304,9 +304,9 @@ public class DatabaseDAO{
      * @param input List of strings
      * @return Returns true if all strings in list are blank, false otherwise
      */
-    public boolean checkAllBlank(List<String> input){
-        for(String item:input){
-            if(!item.isBlank()){
+    public boolean checkAllBlank(List<String> input,int start,int end){
+        for(int i = start; i<end;i++){
+            if(!input.get(i).isBlank()){
                 return false;
             }
         }
