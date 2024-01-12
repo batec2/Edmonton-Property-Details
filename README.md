@@ -41,5 +41,5 @@ Crush Bate
 ```https://github.com/batec2```
 Neal Hamacher
 ```https://github.com/nealhamacher```
-Dan Simons
+Dan Simmons
 ```https://github.com/DanSimons```
