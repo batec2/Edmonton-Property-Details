@@ -103,6 +103,9 @@ public class HeatMapView {
         this.vBoxLeft.setPadding(new Insets(10));
     }
 
+    /**
+     * Sets the properties for the input text fields for neighbourhoods, crime,and fruittrees
+     */
     private void setTextFields(){
         List<String> neighbourhoods = controller.getNeighbourhoods();
         neighbourhoodTextField = new AutoCompleteTextField();
@@ -119,6 +122,9 @@ public class HeatMapView {
         fruitTextField.getEntries().addAll(fruitTreeTypes);
     }
 
+    /**
+     * Sets the properties of the combo boxes and sets the available selections within them
+     */
     private void setComboBox(){
         ArrayList<String> assessClassComboItems = new ArrayList<>(
                 Arrays.asList(
@@ -130,6 +136,10 @@ public class HeatMapView {
         assessClassCombo.setMaxWidth(1000);
     }
 
+    /**
+     * Sets the spinners where coulour ranges are selected, and radius for various filters
+     * Also sets the default value for the spinners
+     */
     private void setSpinners(){
         weedSpinner = new Spinner<>(0,2000,0,10);
         weedSpinner.setEditable(true);
@@ -348,7 +358,7 @@ public class HeatMapView {
 
         SimpleMarkerSymbol.Style markerStyle = SimpleMarkerSymbol.Style.CIRCLE;
         float markerSize = 4f;
-
+        //Checks for inputs
         for(String input : inputs) {
             if(!input.isBlank()) {
                 this.controller.resetData(sem);
@@ -362,8 +372,6 @@ public class HeatMapView {
             this.controller.filterData(inputs, sem);
             loading.setVisible(true);
         }
-
-        //List<Property> data = model.getData();
         new Thread(()->{
             try {
                 sem.acquire();
@@ -469,8 +477,7 @@ public class HeatMapView {
         return grid;
     }
     /**
-     * Gets the map view object, doesn't deep copy as this is used to
-     * @return
+     * Destorys the map view
      */
     public void destroyMapView() {
         if(this.mapView != null) {
@@ -478,6 +485,9 @@ public class HeatMapView {
         }
     }
 
+    /**
+     * Sets the gif that plays when a thread is getting information from the database
+     */
     public void setLoading(){
         //image that shows
         Image image = new Image(new File("files/YouTube_loading_symbol_3_(transparent).gif").toURI().toString());

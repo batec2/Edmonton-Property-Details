@@ -14,6 +14,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is used to initalize the database and is responsible for sending queries to the DB
+ * and returning query results
+ */
 public class Database {
 
     private Connection connection = null;
@@ -35,16 +39,23 @@ public class Database {
             "licence_status ,issue_date ,expiry_date ,business_improvement_area ,neighbourhood_ID ,neighbourhood ,ward ," +
             "latitude ,longitude ,location ,count ,geometry_point) VALUES ";
 
+
+    /**
+     * Creates a connection to the Database
+     * @throws SQLException
+     */
     public Database() throws SQLException{
         openConnection();
         statement = connection.createStatement();
-        statement.setQueryTimeout(30);  // set timeout to 30 sec.
+        statement.setQueryTimeout(0);  // set timeout to 30 sec.
     }
 
-    public ResultSet customQuery(String query) throws SQLException{
-        return statement.executeQuery(query);
-    }
-
+    /**
+     * Sends a query to the database and returns a list of properties
+     * @param query String query with sql syntax
+     * @return Returns a list of properties from the query
+     * @throws SQLException
+     */
     public List<Property> queryPropertyAssessments(String query) throws SQLException{
         ResultSet resultSet = statement.executeQuery(query);
         ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
@@ -93,6 +104,11 @@ public class Database {
         return neighbourhoods;
     }
 
+    /**
+     * Reads from a dataset containing the information of all property assessments in edmonton, and inserts
+     * each CSV line into a SQLite database
+     * @throws SQLException
+     */
     public void createPropertyTable() throws SQLException{
         PropertyAssessmentsDAO dao = new CsvPropertyAssessmentDAO("files/Property_Assessment_Data_2023.csv");
         statement.executeUpdate(
@@ -117,6 +133,11 @@ public class Database {
             i++;
         }
     }
+    /**
+     * Reads from a dataset containing the information of all Fruit trees in edmonton, and inserts
+     * each CSV line into a SQLite database
+     * @throws SQLException
+     */
     public void createTreesTable() throws SQLException{
         FruitTreesDAO dao = new FruitTreesDAO();
         statement.executeUpdate(
@@ -141,7 +162,11 @@ public class Database {
             i++;
         }
     }
-
+    /**
+     * Reads from a dataset containing the information of all Crime in edmonton, and inserts
+     * each CSV line into a SQLite database
+     * @throws SQLException
+     */
     public void createCrimeTable() throws SQLException{
         CrimeDataDAO dao = new CrimeDataDAO();
         statement.executeUpdate(
@@ -166,6 +191,11 @@ public class Database {
         }
     }
 
+    /**
+     * Reads from a dataset containing the information of all cannabis buisness licenses in edmonton, and inserts
+     * each CSV line into a SQLite database
+     * @throws SQLException
+     */
     public void createWeedTable() throws SQLException{
         WeedStoreDAO dao = new WeedStoreDAO();
         statement.executeUpdate(
@@ -190,6 +220,10 @@ public class Database {
         }
     }
 
+    /**
+     * Drops all the tables within the database
+     * @throws SQLException
+     */
     public void dropTables()throws SQLException{
         statement.executeUpdate("drop table if exists PropertyAssessments");
         statement.executeUpdate("drop table if exists FruitTrees");
@@ -197,15 +231,27 @@ public class Database {
         statement.executeUpdate("drop table if exists WeedStore");
     }
 
+    /**
+     * Drops the WeedStores table
+     * @throws SQLException
+     */
     public void dropWeed() throws SQLException{
         statement.executeUpdate("drop table if exists WeedStore");
     }
 
+    /**
+     * Opens a connection to the Database
+     * @throws SQLException
+     */
     private void openConnection()throws SQLException{
         // create a database connection
         this.connection = DriverManager.getConnection("jdbc:sqlite:PropertyAssessmentsApp.db");
     }
 
+    /**
+     * Closes the connection to the database
+     * @throws SQLException
+     */
     public void closeConnection()throws SQLException{
         if(connection != null){
             connection.close();

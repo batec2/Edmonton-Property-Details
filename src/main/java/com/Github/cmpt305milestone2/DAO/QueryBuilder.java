@@ -1,7 +1,4 @@
 package com.Github.cmpt305milestone2.DAO;
-
-import java.util.List;
-
 /**
  * Class for building queries to be sent to API, uses SQL-like syntax
  */
@@ -21,10 +18,22 @@ public class QueryBuilder {
         this.query = endpoint+"?$query=SELECT *,(COALESCE(suite, '')||' '||house_number||' '||street_name) AS address ";
     }
 
+    /**
+     * Creates a query builder with a normal SQL starter
+     */
     public QueryBuilder() {
         this.query = "SELECT *,(COALESCE(suite, '')||' '||house_number||' '||street_name) AS address FROM PropertyAssessments ";
     }
 
+    /**
+     * Creates Query builder with filters for weed,fruit,and crime
+     * @param subQuery Subquery filtering the properties
+     * @param weedDist distance of weed stores
+     * @param fruitDist distance of fruit
+     * @param fruit type of fruit
+     * @param crimeDist distance of crime
+     * @param crime type of crime
+     */
     public QueryBuilder(QueryBuilder subQuery,String weedDist,String fruitDist,String fruit,String crimeDist, String crime) {
         this.query = "SELECT *";
         if(!weedDist.isBlank()){
@@ -36,7 +45,7 @@ public class QueryBuilder {
         if(!crimeDist.isBlank()){
             this.query = query+this.addCrimeFilter(crimeDist,crime);
         }
-        this.query= query+"FROM ("+subQuery.buildQuery()+") as filtered ";
+        this.query= query+" FROM ("+subQuery.buildQuery()+") as filtered ";
     }
 
     /**
@@ -57,14 +66,33 @@ public class QueryBuilder {
         return this;
     }
 
+    /**
+     * Returns a string containing the subquery that calculates how many crimes are within the range of a property
+     * @param distance Max distance from a property that a crime can be
+     * @param crime Type of crime
+     * @return Returns a string containing a subquery
+     */
     public String addCrimeFilter(String distance,String crime) {
-        return ",(SELECT COUNT(id) FROM Crime "+calcLatLong+distance+" AND occurrence_type_group='"+crime+"') AS crime ";
+        return ",(SELECT COUNT(id) FROM Crime "+calcLatLong+distance+" AND occurrence_type_group='"+crime+"' LIMIT 1) as crime ";
     }
 
+    /**
+     * Returns a string containing the subquery that calculates how many fruit trees bearing a certain fruit are within
+     * the range of a property
+     * @param distance Max distance a fruit tree away from a property
+     * @param fruit Type of fruit
+     * @return Returns a string containing a subquery
+     */
     public String addFruitTree(String distance,String fruit) {
-        return ",(SELECT COUNT(id) FROM FruitTrees "+calcLatLong+distance+" AND type_of_edible_fruit='"+fruit+"') AS fruit ";
+        return ",(SELECT COUNT(id) FROM FruitTrees "+calcLatLong+distance+" AND type_of_edible_fruit='"+fruit+"' LIMIT 1) as fruit ";
     }
 
+    /**
+     * Returns a string containing the subquery that calculates how many cannabis stores are within the range of
+     * a property
+     * @param distance Distance that cannabis stores need to fall within
+     * @return Returns a string containing a subquery
+     */
     public String addAddWeedStore(String distance) {
         return ",(SELECT COUNT(id) FROM WeedStore "+calcLatLong+distance+") AS weed ";
     }
@@ -212,7 +240,7 @@ public class QueryBuilder {
     }
 
     /**
-     * Adds a filter for minimum Assessed Value, an 'AND' is added if
+     * Adds a filter for where there needs to be atleast 1 fruit Tree, an 'AND' is added if
      * this is first filter to be added to query
      * @param first boolean if this is the first filter to be added
      * @return returns this QueryBuilder object
@@ -223,7 +251,7 @@ public class QueryBuilder {
         return this;
     }
     /**
-     * Adds a filter for minimum Assessed Value, an 'AND' is added if
+     * Adds a filter for where there needs to be no crime, an 'AND' is added if
      * this is first filter to be added to query
      * @param first boolean if this is the first filter to be added
      * @return returns this QueryBuilder object
@@ -234,7 +262,7 @@ public class QueryBuilder {
         return this;
     }
     /**
-     * Adds a filter for minimum Assessed Value, an 'AND' is added if
+     * Adds a filter for where there needs to be atleast 1 weed store, an 'AND' is added if
      * this is first filter to be added to query
      * @param first boolean if this is the first filter to be added
      * @return returns this QueryBuilder object

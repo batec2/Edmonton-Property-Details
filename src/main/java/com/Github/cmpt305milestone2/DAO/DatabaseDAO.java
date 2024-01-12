@@ -61,7 +61,7 @@ public class DatabaseDAO{
         if(!input.get(6).isBlank()||!input.get(9).isBlank()||!input.get(8).isBlank()){
             qBuilder = qBuilder.addWhere();
         }
-
+        //Adds filters for cannabis stores/crime/and fruit
         boolean first = true;
         for(int i=6;i<currentItems.size();i++){
             switch(i){
@@ -85,22 +85,20 @@ public class DatabaseDAO{
                     break;
             }
         }
-
         currentQuery = qBuilder
                 .add("ORDER BY","CAST(account_number AS INTEGER)")
                 .add("LIMIT",limit)
                 .add("OFFSET",offset)
                 .buildQuery();
-
         List<Property> properties = database.queryPropertyAssessments(currentQuery);
         return properties==null?new ArrayList<>():properties;
     }
 
     /**
      * Takes a list of inputs from UI and creates a query based on inputs.
-     * After query is made it is sent to api to get matching items
+     * Creates a subquery to speed up large DB queries by filter the list before doing count
      * @param input Takes in a list of inputs to filter by
-     * @return Returns a filtered list of properties sorted by account number
+     * @return Returns a QueryBuilder with a ready sub-query
      */
     public QueryBuilder getSubQuery(List<String> input) throws SQLException {
         //input list ordering : 0 account number, 1 address, 2neighbourhood, 3 assessClass, 4 min value, 5 max value, 6 weedRadius,
@@ -108,10 +106,10 @@ public class DatabaseDAO{
         currentItems = sanitizeInput(input);//replaces single quotes
         QueryBuilder qBuilder = new QueryBuilder();
 
-        if(!checkAllBlank(input)){
+        if(!checkAllBlank(input,0,6)){
             qBuilder = qBuilder.addWhere();
         }
-
+        //Adds the filters from the input
         boolean first = true;
         for(int i=0;i<currentItems.size();i++){
             switch(i){
@@ -159,7 +157,6 @@ public class DatabaseDAO{
                     break;
             }
         }
-
         return qBuilder;
     }
 
@@ -174,6 +171,13 @@ public class DatabaseDAO{
         return currentItems.stream().allMatch(String::isBlank)?this.getAll():this.getSearchResults(currentItems);
     }
 
+    /**
+     * Filters for a specific Longitude and latitude inside the list
+     * @param longitude Longitude of a property
+     * @param latitude Latitude of a property
+     * @return Returns a list of properties that match
+     * @throws SQLException
+     */
     public List<Property> filterLongitudeLatitude(double longitude,double latitude) throws SQLException{
         QueryBuilder qBuilder = new QueryBuilder().addWhere();
         currentQuery = qBuilder
@@ -237,6 +241,10 @@ public class DatabaseDAO{
         return treeTypes;
     }
 
+    /**
+     * Gets a List of all type of crimes from the crime db
+     * @return a List of strings contain crime types
+     */
     public List<String> getCrimeTypes() {
         List<String> crimeTypes;
         try{
@@ -292,27 +300,32 @@ public class DatabaseDAO{
     }
 
     /**
-     * Checks input for invalid special characters
+     * Checks if there are no filter parameters
      * @param input List of strings
-     * @return Returns true if the inputs are valid, false otherwise
+     * @return Returns true if all strings in list are blank, false otherwise
      */
-    public boolean checkAllBlank(List<String> input){
-        for(String item:input){
-            if(!item.isBlank()){
+    public boolean checkAllBlank(List<String> input,int start,int end){
+        for(int i = start; i<end;i++){
+            if(!input.get(i).isBlank()){
                 return false;
             }
         }
         return true;
     }
 
+    /**
+     * Gets the current set limit
+     * @return int limit
+     */
     public int getLimit() {
         return limit;
     }
 
+    /**
+     * Sets a limit to the amount of rows from database
+     * @param limit int amount of rows
+     */
     public void setLimit(int limit) {
         this.limit = limit;
     }
-
-
-
 }

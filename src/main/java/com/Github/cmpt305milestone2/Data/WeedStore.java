@@ -3,24 +3,30 @@ package com.Github.cmpt305milestone2.Data;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Weed store that allows for data to be transfered from CSV to the sql database
+ */
 public class WeedStore {
-    String category;
-    String tradeName;
-    String address;
-    String licenseNumber;
-    String licenseStatus;
-    String issueDate;
-    String expiryDate;
-    String businessImprovementArea;
-    String neighbourhoodId;
-    String neighbourhood;
-    String ward;
-    String latitude;
-    String longitude;
-    String location;
-    String count;
-    String pointLocation;
-
+    private String category;
+    private String tradeName;
+    private String address;
+    private String licenseNumber;
+    private String licenseStatus;
+    private String issueDate;
+    private String expiryDate;
+    private String businessImprovementArea;
+    private String neighbourhoodId;
+    private String neighbourhood;
+    private String ward;
+    private String latitude;
+    private String longitude;
+    private String location;
+    private String count;
+    private String pointLocation;
+    /**
+     * String is expected to be formated in a CSV format, the string is then split with the help of
+     * regex
+     */
     public WeedStore(String data){
         //https://stackoverflow.com/questions/15738918/splitting-a-csv-file-with-quotes-as-text-delimiter-using-string-split
         List<String> dataList = Arrays.asList(data.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)"));
@@ -42,6 +48,11 @@ public class WeedStore {
         pointLocation=(dataList.size()==15)?"":dataList.get(15);
     }
 
+    /**
+     * Turns all values stored inside the class into a string that can be inserted into a SQL database use SQL, all
+     * empty values are replaced with a NULL
+     * @return Returns a string of all the values in the object
+     */
     public String toStringNull() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder

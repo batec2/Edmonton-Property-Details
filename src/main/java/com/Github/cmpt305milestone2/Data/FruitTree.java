@@ -2,7 +2,9 @@ package com.Github.cmpt305milestone2.Data;
 
 import java.util.Arrays;
 import java.util.List;
-
+/**
+ * FruitTree class that allows for data to be transfered from CSV to the sql database
+ */
 public class FruitTree {
     private String id;
     private String neighbourhood;
@@ -23,7 +25,10 @@ public class FruitTree {
     private String longitude;
     private String location;
     private String pointLocation;
-
+    /**
+     * String is expected to be formated in a CSV format, the string is then split with the help of
+     * regex
+     */
     public FruitTree(String data){
         //https://stackoverflow.com/questions/15738918/splitting-a-csv-file-with-quotes-as-text-delimiter-using-string-split
         List<String> dataList = Arrays.asList(data.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)"));
@@ -49,9 +54,9 @@ public class FruitTree {
     }
 
     /**
-     * Gets class member variables in a readable string
-     * @return
-     * String of all the member variables
+     * Turns all values stored inside the class into a string that can be inserted into a SQL database use SQL, all
+     * empty values are replaced with a NULL
+     * @return Returns a string of all the values in the object
      */
     public String toStringNull() {
         StringBuilder stringBuilder = new StringBuilder();

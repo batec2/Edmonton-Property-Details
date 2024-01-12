@@ -83,7 +83,11 @@ public class IOReader {
         }
         return propertyList;
     }
-
+    /**
+     * Opens a CSV and reads all information into FruitTree objects
+     * @param fileName File name of Trees
+     * @return Returns a list of FruitTree
+     */
     public static List<FruitTree> treeReader(String fileName){
         Scanner scanner = openFile(fileName);
         ArrayList<FruitTree> treeList = new ArrayList<>();
@@ -103,7 +107,11 @@ public class IOReader {
         }
         return treeList;
     }
-
+    /**
+     * Opens a CSV and reads all information into Crime objects
+     * @param fileName File name of Crime Occurrences
+     * @return Returns a list of Crime
+     */
     public static List<Crime> crimeReader(String fileName){
         Scanner scanner = openFile(fileName);
         ArrayList<Crime> crimeList = new ArrayList<>();
@@ -124,6 +132,11 @@ public class IOReader {
         return crimeList;
     }
 
+    /**
+     * Opens a CSV and reads all information into WeedStore objects
+     * @param fileName File name of Cannabis buisness licenses
+     * @return Returns a list of WeedStore
+     */
     public static List<WeedStore> weedReader(String fileName){
         Scanner scanner = openFile(fileName);
         ArrayList<WeedStore> weedList = new ArrayList<>();
@@ -144,6 +157,11 @@ public class IOReader {
         return weedList;
     }
 
+    /**
+     * Opens a file and returns a scanner to that file
+     * @param fileName String
+     * @return Scanner object
+     */
     private static Scanner openFile(String fileName){
         File fileIn;
         Scanner scanner = null;

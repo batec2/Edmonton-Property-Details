@@ -22,6 +22,7 @@ import javafx.scene.layout.VBox;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.Semaphore;
 
 /**
  * View object for Application, sets UI objects and behaviour on UI objects when interacted with by the user
@@ -35,6 +36,8 @@ public class AssessmentsView {
     private VBox tableVBox;
     private AssessmentsController controller;
     private Model model;
+    private Semaphore sem;
+    ImageView loading;
 
     /**
      * Takes refrences to model and controller objects, as-well sets UI
@@ -44,6 +47,7 @@ public class AssessmentsView {
     public AssessmentsView(AssessmentsController controller, Model model){
         this.controller = controller;
         this.model = model;
+        sem = controller.getSem();
         setStage();
     }
 
@@ -69,7 +73,7 @@ public class AssessmentsView {
         view.setLeft(this.vBoxLeft);
 
         setBoxPager();
-        view.setBottom(this.hBoxPager);
+        //view.setBottom(this.hBoxPager); //No longer needs pager
     }
 
     /**
@@ -80,10 +84,12 @@ public class AssessmentsView {
         filterLabel.setStyle("-fx-font-weight: bold;-fx-font-size: 24;");
 
         setInputFields();
+        setLoading();
 
         this.vBoxLeft = new VBox(
                 filterLabel,
-                this.inputFields);
+                this.inputFields,
+                this.loading);
 
         this.vBoxLeft.setSpacing(10);
         this.vBoxLeft.setPadding(new Insets(10));
@@ -167,7 +173,7 @@ public class AssessmentsView {
         Button resetButton = new Button("Reset");
         resetButton.disableProperty().bind(controller.getLoading());//Disables button while data is loading
         resetButton.setOnAction(e->{
-            this.controller.resetData();
+            this.controller.resetData(sem);
             resetFields();
         });
 
@@ -186,7 +192,7 @@ public class AssessmentsView {
             String max = maxTextField.getText();
             ArrayList<String> input = new ArrayList<>(Arrays.asList(account,address,neighbourhood,assessClass,min,max,
                     "","","","",""));
-            this.controller.filterData(input);
+            this.controller.filterData(input,sem);
         });
         //Adds all elements to the inputFields VBox
         this.inputFields = new VBox(
@@ -305,5 +311,14 @@ public class AssessmentsView {
         VBox placeholder = new VBox(imageView,noResults);
         placeholder.setAlignment(Pos.CENTER);
         return placeholder;
+    }
+    /**
+     * Sets the gif that plays when a thread is getting information from the database
+     */
+    public void setLoading(){
+        //image that shows
+        Image image = new Image(new File("files/YouTube_loading_symbol_3_(transparent).gif").toURI().toString());
+        loading = new ImageView(image);
+        loading.visibleProperty().bind(controller.getLoading());
     }
 }

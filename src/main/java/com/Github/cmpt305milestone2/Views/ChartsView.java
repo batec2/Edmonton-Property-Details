@@ -184,6 +184,10 @@ public class ChartsView {
                     graphButton);
     }
 
+    /**
+     * sets the input fields for piechart by neighbourhood
+     * @return Returns the vbox with elements for piechart by neighbourhood
+     */
     private VBox setVBoxPieChartByNeighbourhood() {
         List<String> neighbourhoods = controller.getNeighbourhoods();
 
@@ -207,6 +211,10 @@ public class ChartsView {
                 graphButton);
     }
 
+    /**
+     * sets the input fields for getting the data by assessment class
+     * @return returns a VBox
+     */
     private VBox setVBoxByAssessmentClass() {
         List<String> assessClassComboItems = new ArrayList<>(
                 Arrays.asList("COMMERCIAL","RESIDENTIAL","OTHER RESIDENTIAL","NONRES MUNICIPAL/RES EDUCATION","FARMLAND"));

@@ -41,6 +41,10 @@ public class AssessmentsController {
         loading.set(false);
     }
 
+    /**
+     * Resetdate with a semaphore
+     * @param sem semaphore to prevent thread from running u
+     */
     public void resetData(Semaphore sem){
         new Thread(()->{
             try {
@@ -82,8 +86,7 @@ public class AssessmentsController {
     }
 
     /**
-     * Passes Input from UI to the model to be filtered,sets leading to true until
-     * model is finishes updating
+     * Uses threading to filter data with a semaphore to prevent race conditions
      * @param input List of strings contained filters
      */
     public void filterData(List<String> input, Semaphore sem){
@@ -100,6 +103,12 @@ public class AssessmentsController {
         }).start();
     }
 
+    /**
+     * Gets a property by longitude and latitude
+     * @param longitude
+     * @param latitude
+     * @return returns a Property object
+     */
     public Property getAssessment(double longitude, double latitude) {
         return model.getAssessment(longitude, latitude);
 
@@ -189,17 +198,36 @@ public class AssessmentsController {
         return loading;
     }
 
+    /**
+     * gets if app is in CSV mode
+     * @return returns true if in CSV else false
+     */
+    @Deprecated
     public boolean getIsCSV() {return isCSV; }
 
+    /**
+     * Returns the models semaphore
+     * @return Sempahore object
+     */
     public Semaphore getSem(){
         return sem;
     }
-
+    /**
+     * Returns a list of neighbourhoods for autocomplete
+     * @return String list of neighbourhoods
+     */
     public List<String> getNeighbourhoods() {
         return model.getNeighbourhoods();
     }
-
+    /**
+     * Returns a list of crime types for autocomplete
+     * @return String list of crime
+     */
     public List<String> getCrimeTypes() { return model.getCrimeTypes();};
 
+    /**
+     * Returns a list of tree types for autocomplete
+     * @return String list of fruittrees
+     */
     public List<String> getFruitTreeTypes() {return model.getFruitTreeTypes();}
 }

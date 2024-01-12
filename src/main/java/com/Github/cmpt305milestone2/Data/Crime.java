@@ -2,21 +2,26 @@ package com.Github.cmpt305milestone2.Data;
 
 import java.util.Arrays;
 import java.util.List;
-
+/**
+ * Crime class that allows for data to be transfered from CSV to the sql database
+ */
 public class Crime {
-    String longitude;
-    String latitude;
-    String id;
-    String reported_date;
-    String occurrence_category;
-    String occurrence_group;
-    String occurrence_type_group;
-    String intersection;
-    String reported_day;
-    String reported_month;
-    String reported_year;
-    String date_reported;
-
+    private String longitude;
+    private String latitude;
+    private String id;
+    private String reported_date;
+    private String occurrence_category;
+    private String occurrence_group;
+    private String occurrence_type_group;
+    private String intersection;
+    private String reported_day;
+    private String reported_month;
+    private String reported_year;
+    private String date_reported;
+    /**
+     * String is expected to be formated in a CSV format, the string is then split with the help of
+     * regex
+     */
     public Crime(String data){
         //https://stackoverflow.com/questions/15738918/splitting-a-csv-file-with-quotes-as-text-delimiter-using-string-split
         List<String> dataList = Arrays.asList(data.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)"));
@@ -35,9 +40,9 @@ public class Crime {
     }
 
     /**
-     * Gets class member variables in a readable string
-     * @return
-     * String of all the member variables
+     * Turns all values stored inside the class into a string that can be inserted into a SQL database use SQL, all
+     * empty values are replaced with a NULL
+     * @return Returns a string of all the values in the object
      */
     public String toStringNull() {
         StringBuilder stringBuilder = new StringBuilder();
