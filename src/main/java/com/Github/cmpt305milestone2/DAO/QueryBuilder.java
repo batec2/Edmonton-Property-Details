@@ -1,7 +1,4 @@
 package com.Github.cmpt305milestone2.DAO;
-
-import java.util.List;
-
 /**
  * Class for building queries to be sent to API, uses SQL-like syntax
  */
@@ -22,20 +19,20 @@ public class QueryBuilder {
     }
 
     /**
-     *
+     * Creates a query builder with a normal SQL starter
      */
     public QueryBuilder() {
         this.query = "SELECT *,(COALESCE(suite, '')||' '||house_number||' '||street_name) AS address FROM PropertyAssessments ";
     }
 
     /**
-     *
-     * @param subQuery
-     * @param weedDist
-     * @param fruitDist
-     * @param fruit
-     * @param crimeDist
-     * @param crime
+     * Creates Query builder with filters for weed,fruit,and crime
+     * @param subQuery Subquery filtering the properties
+     * @param weedDist distance of weed stores
+     * @param fruitDist distance of fruit
+     * @param fruit type of fruit
+     * @param crimeDist distance of crime
+     * @param crime type of crime
      */
     public QueryBuilder(QueryBuilder subQuery,String weedDist,String fruitDist,String fruit,String crimeDist, String crime) {
         this.query = "SELECT *";
@@ -48,7 +45,7 @@ public class QueryBuilder {
         if(!crimeDist.isBlank()){
             this.query = query+this.addCrimeFilter(crimeDist,crime);
         }
-        this.query= query+"FROM ("+subQuery.buildQuery()+") as filtered ";
+        this.query= query+" FROM ("+subQuery.buildQuery()+") as filtered ";
     }
 
     /**
@@ -243,7 +240,7 @@ public class QueryBuilder {
     }
 
     /**
-     * Adds a filter for minimum Assessed Value, an 'AND' is added if
+     * Adds a filter for where there needs to be atleast 1 fruit Tree, an 'AND' is added if
      * this is first filter to be added to query
      * @param first boolean if this is the first filter to be added
      * @return returns this QueryBuilder object
@@ -254,7 +251,7 @@ public class QueryBuilder {
         return this;
     }
     /**
-     * Adds a filter for minimum Assessed Value, an 'AND' is added if
+     * Adds a filter for where there needs to be no crime, an 'AND' is added if
      * this is first filter to be added to query
      * @param first boolean if this is the first filter to be added
      * @return returns this QueryBuilder object
@@ -265,7 +262,7 @@ public class QueryBuilder {
         return this;
     }
     /**
-     * Adds a filter for minimum Assessed Value, an 'AND' is added if
+     * Adds a filter for where there needs to be atleast 1 weed store, an 'AND' is added if
      * this is first filter to be added to query
      * @param first boolean if this is the first filter to be added
      * @return returns this QueryBuilder object

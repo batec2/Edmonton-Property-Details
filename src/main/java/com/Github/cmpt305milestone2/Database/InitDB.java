@@ -2,10 +2,12 @@ package com.Github.cmpt305milestone2.Database;
 
 import java.sql.ResultSet;
 
+/**
+ * Initalizes the Database using CSVs
+ */
 public class InitDB {
     public static void main(String[] args) {
         try {
-
             Database db = new Database();
             db.dropTables();
             System.out.println("Getting Property Data!");

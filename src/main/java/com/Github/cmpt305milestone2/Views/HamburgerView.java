@@ -21,25 +21,30 @@ public class HamburgerView{
 
     BorderPane sidebar;
 
+    /**
+     * Creates the hamburger menu and the selections within it
+     * @param controller controller to enable navigation between pages
+     */
     public HamburgerView(HamburgerController controller) {
         double iconSize = 40;
         BorderPane mainContent = new BorderPane();
         sidebar = new BorderPane();
+        //Table icon
         ImageView tableIcon = new ImageView("file:files/icon_table.png");
         tableIcon.setFitWidth(iconSize);
         tableIcon.setFitHeight(iconSize);
         String tableString = "Assessments Table";
-
+        //Map Icon
         ImageView mapIcon = new ImageView("file:files/icon_map.png");
         mapIcon.setFitWidth(iconSize);
         mapIcon.setFitHeight(iconSize);
         String mapString = "Interactive Map View";
-
+        //Chart Icon
         ImageView chartIcon = new ImageView("file:files/icon_chart.png");
         chartIcon.setFitWidth(iconSize);
         chartIcon.setFitHeight(iconSize);
         String chartString = "Graphs and Charts";
-
+        //Buttons behind the icons
         JFXButton[] jfxButtons = {
                 new JFXButton(tableString, tableIcon),
                 new JFXButton(mapString, mapIcon),

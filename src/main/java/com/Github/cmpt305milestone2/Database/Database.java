@@ -39,6 +39,7 @@ public class Database {
             "licence_status ,issue_date ,expiry_date ,business_improvement_area ,neighbourhood_ID ,neighbourhood ,ward ," +
             "latitude ,longitude ,location ,count ,geometry_point) VALUES ";
 
+
     /**
      * Creates a connection to the Database
      * @throws SQLException
@@ -104,7 +105,8 @@ public class Database {
     }
 
     /**
-     * Creates the table in the DB containing all
+     * Reads from a dataset containing the information of all property assessments in edmonton, and inserts
+     * each CSV line into a SQLite database
      * @throws SQLException
      */
     public void createPropertyTable() throws SQLException{
@@ -131,6 +133,11 @@ public class Database {
             i++;
         }
     }
+    /**
+     * Reads from a dataset containing the information of all Fruit trees in edmonton, and inserts
+     * each CSV line into a SQLite database
+     * @throws SQLException
+     */
     public void createTreesTable() throws SQLException{
         FruitTreesDAO dao = new FruitTreesDAO();
         statement.executeUpdate(
@@ -155,7 +162,11 @@ public class Database {
             i++;
         }
     }
-
+    /**
+     * Reads from a dataset containing the information of all Crime in edmonton, and inserts
+     * each CSV line into a SQLite database
+     * @throws SQLException
+     */
     public void createCrimeTable() throws SQLException{
         CrimeDataDAO dao = new CrimeDataDAO();
         statement.executeUpdate(
@@ -180,6 +191,11 @@ public class Database {
         }
     }
 
+    /**
+     * Reads from a dataset containing the information of all cannabis buisness licenses in edmonton, and inserts
+     * each CSV line into a SQLite database
+     * @throws SQLException
+     */
     public void createWeedTable() throws SQLException{
         WeedStoreDAO dao = new WeedStoreDAO();
         statement.executeUpdate(
@@ -204,6 +220,10 @@ public class Database {
         }
     }
 
+    /**
+     * Drops all the tables within the database
+     * @throws SQLException
+     */
     public void dropTables()throws SQLException{
         statement.executeUpdate("drop table if exists PropertyAssessments");
         statement.executeUpdate("drop table if exists FruitTrees");
@@ -211,15 +231,27 @@ public class Database {
         statement.executeUpdate("drop table if exists WeedStore");
     }
 
+    /**
+     * Drops the WeedStores table
+     * @throws SQLException
+     */
     public void dropWeed() throws SQLException{
         statement.executeUpdate("drop table if exists WeedStore");
     }
 
+    /**
+     * Opens a connection to the Database
+     * @throws SQLException
+     */
     private void openConnection()throws SQLException{
         // create a database connection
         this.connection = DriverManager.getConnection("jdbc:sqlite:PropertyAssessmentsApp.db");
     }
 
+    /**
+     * Closes the connection to the database
+     * @throws SQLException
+     */
     public void closeConnection()throws SQLException{
         if(connection != null){
             connection.close();
